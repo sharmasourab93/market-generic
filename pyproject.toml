@@ -1,0 +1,11 @@
+[tool.isort]
+profile = "black"
+skip = [".gitignore", ".dockerignore", "py11venv", "venv"]
+src_paths = ["algotrade", "tests"]
+
+[tool.black]
+line-length=88
+target-version=['py311']
+
+
+
