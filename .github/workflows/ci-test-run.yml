@@ -14,7 +14,7 @@ jobs:
         run: | 
           import os 
           import sys 
-          sys.path.append(os.path.abspath('.))
+          sys.path.append(os.path.abspath('.'))
         shell: python
 
       - name: Install system level libraries
