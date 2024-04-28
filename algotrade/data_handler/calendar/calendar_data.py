@@ -5,11 +5,17 @@ from zoneinfo import ZoneInfo
 
 from pandas.tseries.offsets import BDay
 
-from algotrade.data_handler.calendar.constants import (DATE_FMT, HOLIDAY_EXHAUSTED,
-                                                       ISO_WEEK_RANGE,
-                                                       MARKET_CLOSE_TIME,
-                                                       MARKET_START_TIME, TIME_CUTOFF,
-                                                       TIME_ZONE, TODAY, WEEKDAY_TO_ISO)
+from algotrade.data_handler.calendar.constants import (
+    DATE_FMT,
+    HOLIDAY_EXHAUSTED,
+    ISO_WEEK_RANGE,
+    MARKET_CLOSE_TIME,
+    MARKET_START_TIME,
+    TIME_CUTOFF,
+    TIME_ZONE,
+    TODAY,
+    WEEKDAY_TO_ISO,
+)
 
 
 @dataclass
@@ -46,15 +52,15 @@ class DateObj:
     def __str__(self):
         return self.as_str
 
-    def __add__(self, date_diff: Union[timedelta, BDay]) -> 'DateObj':
+    def __add__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
         new_date = self.as_date + date_diff
         return DateObj(new_date.strftime(DATE_FMT))
 
-    def __sub__(self, date_diff: Union[timedelta, BDay]) -> 'DateObj':
+    def __sub__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
         new_date = self.as_date - date_diff
         return DateObj(new_date.strftime(DATE_FMT))
 
-    def __eq__(self, another_date: Union['DateObj', date, datetime]):
+    def __eq__(self, another_date: Union["DateObj", date, datetime]):
 
         if isinstance(another_date, date) or isinstance(another_date, datetime):
             another_date = DateObj(another_date.strftime(DATE_FMT))
@@ -67,7 +73,7 @@ class DateObj:
 
         return False
 
-    def __gt__(self, other_date: Union['DateObj', date, datetime]):
+    def __gt__(self, other_date: Union["DateObj", date, datetime]):
 
         if isinstance(other_date, date) or isinstance(other_date, datetime):
             another_date = DateObj(other_date.strftime(DATE_FMT))
@@ -80,7 +86,7 @@ class DateObj:
 
         return False
 
-    def __lt__(self, other_date: Union['DateObj', date, datetime]):
+    def __lt__(self, other_date: Union["DateObj", date, datetime]):
 
         if isinstance(other_date, date) or isinstance(other_date, datetime):
             other_date = DateObj(other_date.strftime(DATE_FMT))
@@ -234,7 +240,10 @@ class WorkingDayDate:
         return date_
 
     def __post_init__(self):
-        if DateObj(self.given_date) == TODAY and MARKET_START_TIME <= datetime.now().time() <= TIME_CUTOFF:
+        if (
+            DateObj(self.given_date) == TODAY
+            and MARKET_START_TIME <= datetime.now().time() <= TIME_CUTOFF
+        ):
             self.working_day = self.compare_time_cutoff()
         else:
             self.working_day = DateObj(self.given_date)
@@ -266,8 +275,10 @@ class WorkingDayDate:
             yesterday = yesterday - BDay()
 
         if self.market_holidays.prev_working is not None:
-            if self.market_holidays.prev_working < today and \
-                    self.market_holidays.prev_working > yesterday:
+            if (
+                self.market_holidays.prev_working < today
+                and self.market_holidays.prev_working > yesterday
+            ):
                 yesterday = self.market_holidays.prev_working
 
         return yesterday

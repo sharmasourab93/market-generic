@@ -2,32 +2,34 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from algotrade.data_handler.calendar.calendar_data import (DateObj, DayOfWeek,
-                                                           MarketHolidayEntry,
-                                                           MarketHolidayType,
-                                                           MarketHolidays,
-                                                           WorkingDayDate)
+from algotrade.data_handler.calendar.calendar_data import (
+    DateObj,
+    DayOfWeek,
+    MarketHolidayEntry,
+    MarketHolidays,
+    MarketHolidayType,
+    WorkingDayDate,
+)
 from algotrade.data_handler.calendar.constants import DATE_FMT, WEEKDAY_TO_ISO
-
 
 FROZEN_DATE = "2024-04-24"
 HOLIDAYS_DICT = [
-        {
-            "trade_day": "22-Jan-2024",
-            "week_day": "Monday",
-            "description": "Special Holiday\r",
-        },
-        {
-            "trade_day": "01-May-2024",
-            "week_day": "Wednesday",
-            "description": "Maharashtra Day\r",
-        },
-        {
-            "trade_day": "01-Nov-2024",
-            "week_day": "Friday",
-            "description": "Diwali Laxmi Pujan*\r",
-        },
-    ]
+    {
+        "trade_day": "22-Jan-2024",
+        "week_day": "Monday",
+        "description": "Special Holiday\r",
+    },
+    {
+        "trade_day": "01-May-2024",
+        "week_day": "Wednesday",
+        "description": "Maharashtra Day\r",
+    },
+    {
+        "trade_day": "01-Nov-2024",
+        "week_day": "Friday",
+        "description": "Diwali Laxmi Pujan*\r",
+    },
+]
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
@@ -154,20 +156,20 @@ def test_market_holidays_update_next_holiday():
 
 
 @pytest.mark.freeze_time(FROZEN_DATE)
-@pytest.mark.parametrize("given_date, next_date, prev_date", [("24-Apr-2024",
-                                                           "25-Apr-2024",
-                                                     "23-Apr-2024"),
-                                                        ("26-Apr-2024",
-                                                         "29-Apr-2024", "25-Apr-2024"),
-                                                        ("30-Apr-2024", "2-May-2024",
-                                                         "29-Apr-2024"),
-                                                              ("31-Oct-2024",
-                                                               "1-Nov-2024",
-                                                               "30-Oct-2024"),
-                                                              ("1-Nov-2024",
-                                                               "4-Nov-2024",
-                                                               "31-Oct-2024",
-                                                               )])
+@pytest.mark.parametrize(
+    "given_date, next_date, prev_date",
+    [
+        ("24-Apr-2024", "25-Apr-2024", "23-Apr-2024"),
+        ("26-Apr-2024", "29-Apr-2024", "25-Apr-2024"),
+        ("30-Apr-2024", "2-May-2024", "29-Apr-2024"),
+        ("31-Oct-2024", "1-Nov-2024", "30-Oct-2024"),
+        (
+            "1-Nov-2024",
+            "4-Nov-2024",
+            "31-Oct-2024",
+        ),
+    ],
+)
 def test_working_day_date(given_date, next_date, prev_date):
     holidays_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(given_date, holidays_dict)
@@ -178,9 +180,12 @@ def test_working_day_date(given_date, next_date, prev_date):
 
 
 @pytest.mark.freeze_time("2024-04-29 10:40")
-@pytest.mark.parametrize("given_date, next_date, prev_date", [("29-Apr-2024",
-                                                         "29-Apr-2024",
-                                                               "25-Apr-2024"),])
+@pytest.mark.parametrize(
+    "given_date, next_date, prev_date",
+    [
+        ("29-Apr-2024", "29-Apr-2024", "25-Apr-2024"),
+    ],
+)
 def test_working_day_today_1(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(given_date, holiday_dict)
@@ -193,9 +198,12 @@ def test_working_day_today_1(given_date, next_date, prev_date):
 
 
 @pytest.mark.freeze_time("2024-04-29 16:10")
-@pytest.mark.parametrize("given_date, next_date, prev_date", [("29-Apr-2024",
-                                                         "30-Apr-2024",
-                                                               "26-Apr-2024"),])
+@pytest.mark.parametrize(
+    "given_date, next_date, prev_date",
+    [
+        ("29-Apr-2024", "30-Apr-2024", "26-Apr-2024"),
+    ],
+)
 def test_working_day_today_2(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(given_date, holiday_dict)

@@ -3,7 +3,6 @@ from zoneinfo import ZoneInfo
 
 from pytz import timezone
 
-
 ADHOC_MARKET_TIME_OFF = ["22-Jan-2024"]
 ADHOC_MARKET_TIME_ON = ["20-Jan-2024", "2-Mar-2024"]
 
