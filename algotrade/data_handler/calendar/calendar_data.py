@@ -1,7 +1,6 @@
-from datetime import date, datetime
-from typing import Optional, TypedDict, List
 from dataclasses import dataclass, field
-
+from datetime import date, datetime
+from typing import List, Optional, TypedDict
 
 from algotrade.data_handler.calendar.constants import (
     ADHOC_MARKET_TIME_OFF,
@@ -12,7 +11,7 @@ from algotrade.data_handler.calendar.constants import (
     TIME_CUTOFF,
     TIME_ZONE,
     TODAY,
-    WEEKDAY_TO_ISO
+    WEEKDAY_TO_ISO,
 )
 
 
@@ -63,8 +62,12 @@ class MarketHolidayEntry:
 
     def __post_init__(self):
         self.trade_date = DateObj(self.trade_day)
-        self.day = DayOfWeek(self.week_day) if self.week_day in (None, str()) else DayOfWeek(self.trade_date.as_weekday)
-        self.working = True if '*' in self.description else False
+        self.day = (
+            DayOfWeek(self.week_day)
+            if self.week_day in (None, str())
+            else DayOfWeek(self.trade_date.as_weekday)
+        )
+        self.working = True if "*" in self.description else False
 
 
 class MarketHolidayType(TypedDict):
@@ -84,7 +87,9 @@ class MarketHolidays:
         self.holidays = [self._create_holiday_entry(h) for h in self.holidays_dict]
         self.update_next_holiday()
 
-    def _create_holiday_entry(self, holiday_str: MarketHolidayEntry)-> MarketHolidayEntry:
+    def _create_holiday_entry(
+        self, holiday_str: MarketHolidayEntry
+    ) -> MarketHolidayEntry:
 
         return MarketHolidayEntry(**holiday_str)
 
@@ -105,7 +110,100 @@ class MarketHolidays:
             raise StopIteration("Holiday List exhausted. Update Holiday List")
 
 
-if __name__ == '__main__':
-    hols = [{'trade_day': '22-Jan-2024', 'week_day': 'Monday', 'description': 'Special Holiday\r'}, {'trade_day': '26-Jan-2024', 'week_day': 'Friday', 'description': 'Republic Day\r'}, {'trade_day': '08-Mar-2024', 'week_day': 'Friday', 'description': 'Mahashivratri\r'}, {'trade_day': '25-Mar-2024', 'week_day': 'Monday', 'description': 'Holi\r'}, {'trade_day': '29-Mar-2024', 'week_day': 'Friday', 'description': 'Good Friday\r'}, {'trade_day': '11-Apr-2024', 'week_day': 'Thursday', 'description': 'Id-Ul-Fitr (Ramadan Eid)\r'}, {'trade_day': '14-Apr-2024', 'week_day': 'Sunday', 'description': 'Dr. Baba Saheb Ambedkar Jayanti\r'}, {'trade_day': '17-Apr-2024', 'week_day': 'Wednesday', 'description': 'Shri Ram Navmi\r'}, {'trade_day': '21-Apr-2024', 'week_day': 'Sunday', 'description': 'Shri Mahavir Jayanti\r'}, {'trade_day': '01-May-2024', 'week_day': 'Wednesday', 'description': 'Maharashtra Day\r'}, {'trade_day': '17-Jun-2024', 'week_day': 'Monday', 'description': 'Bakri Id\r'}, {'trade_day': '17-Jul-2024', 'week_day': 'Wednesday', 'description': 'Moharram\r'}, {'trade_day': '15-Aug-2024', 'week_day': 'Thursday', 'description': 'Independence Day\r'}, {'trade_day': '07-Sep-2024', 'week_day': 'Saturday', 'description': 'Ganesh Chaturthi\r'}, {'trade_day': '02-Oct-2024', 'week_day': 'Wednesday', 'description': 'Mahatma Gandhi Jayanti\r'}, {'trade_day': '12-Oct-2024', 'week_day': 'Saturday', 'description': 'Dussehra\r'}, {'trade_day': '01-Nov-2024', 'week_day': 'Friday', 'description': 'Diwali Laxmi Pujan*\r'}, {'trade_day': '02-Nov-2024', 'week_day': 'Saturday', 'description': 'Diwali-Balipratipada\r'}, {'trade_day': '15-Nov-2024', 'week_day': 'Friday', 'description': 'Gurunanak Jayanti\r'}, {'trade_day': '25-Dec-2024', 'week_day': 'Wednesday', 'description': 'Christmas\r'}]
+if __name__ == "__main__":
+    hols = [
+        {
+            "trade_day": "22-Jan-2024",
+            "week_day": "Monday",
+            "description": "Special Holiday\r",
+        },
+        {
+            "trade_day": "26-Jan-2024",
+            "week_day": "Friday",
+            "description": "Republic Day\r",
+        },
+        {
+            "trade_day": "08-Mar-2024",
+            "week_day": "Friday",
+            "description": "Mahashivratri\r",
+        },
+        {"trade_day": "25-Mar-2024", "week_day": "Monday", "description": "Holi\r"},
+        {
+            "trade_day": "29-Mar-2024",
+            "week_day": "Friday",
+            "description": "Good Friday\r",
+        },
+        {
+            "trade_day": "11-Apr-2024",
+            "week_day": "Thursday",
+            "description": "Id-Ul-Fitr (Ramadan Eid)\r",
+        },
+        {
+            "trade_day": "14-Apr-2024",
+            "week_day": "Sunday",
+            "description": "Dr. Baba Saheb Ambedkar Jayanti\r",
+        },
+        {
+            "trade_day": "17-Apr-2024",
+            "week_day": "Wednesday",
+            "description": "Shri Ram Navmi\r",
+        },
+        {
+            "trade_day": "21-Apr-2024",
+            "week_day": "Sunday",
+            "description": "Shri Mahavir Jayanti\r",
+        },
+        {
+            "trade_day": "01-May-2024",
+            "week_day": "Wednesday",
+            "description": "Maharashtra Day\r",
+        },
+        {"trade_day": "17-Jun-2024", "week_day": "Monday", "description": "Bakri Id\r"},
+        {
+            "trade_day": "17-Jul-2024",
+            "week_day": "Wednesday",
+            "description": "Moharram\r",
+        },
+        {
+            "trade_day": "15-Aug-2024",
+            "week_day": "Thursday",
+            "description": "Independence Day\r",
+        },
+        {
+            "trade_day": "07-Sep-2024",
+            "week_day": "Saturday",
+            "description": "Ganesh Chaturthi\r",
+        },
+        {
+            "trade_day": "02-Oct-2024",
+            "week_day": "Wednesday",
+            "description": "Mahatma Gandhi Jayanti\r",
+        },
+        {
+            "trade_day": "12-Oct-2024",
+            "week_day": "Saturday",
+            "description": "Dussehra\r",
+        },
+        {
+            "trade_day": "01-Nov-2024",
+            "week_day": "Friday",
+            "description": "Diwali Laxmi Pujan*\r",
+        },
+        {
+            "trade_day": "02-Nov-2024",
+            "week_day": "Saturday",
+            "description": "Diwali-Balipratipada\r",
+        },
+        {
+            "trade_day": "15-Nov-2024",
+            "week_day": "Friday",
+            "description": "Gurunanak Jayanti\r",
+        },
+        {
+            "trade_day": "25-Dec-2024",
+            "week_day": "Wednesday",
+            "description": "Christmas\r",
+        },
+    ]
     market_holidays = MarketHolidays(hols)
     print(market_holidays)

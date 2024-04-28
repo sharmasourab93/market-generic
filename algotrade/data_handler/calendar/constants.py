@@ -7,8 +7,13 @@ ADHOC_MARKET_TIME_OFF = ["22-Jan-2024"]
 ADHOC_MARKET_TIME_ON = ["20-Jan-2024", "2-Mar-2024"]
 
 WEEKDAY_TO_ISO = {
-    'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4,
-    'Friday': 5, 'Saturday': 6, 'Sunday': 7
+    "Monday": 1,
+    "Tuesday": 2,
+    "Wednesday": 3,
+    "Thursday": 4,
+    "Friday": 5,
+    "Saturday": 6,
+    "Sunday": 7,
 }
 
 # Time related Constants used along with Market Calendar Module.
