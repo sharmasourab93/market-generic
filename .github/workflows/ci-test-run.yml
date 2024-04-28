@@ -14,7 +14,9 @@ jobs:
         run: | 
           import os 
           import sys 
+          print(os.getcwd())
           sys.path.append(os.path.abspath('.'))
+          print(os.getcwd())
         shell: python
 
       - name: Install system level libraries
