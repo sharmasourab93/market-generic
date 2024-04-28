@@ -14,11 +14,12 @@ jobs:
         run: | 
           import os 
           import sys 
+          print(os.path.abspath('.'))
           path_ = os.path.join(os.path.abspath('.'), 'algotrade')
-          print(path_)
           print(os.path.exists(path_))
           sys.path.append(path_)
           print(os.getcwd())
+          print(os.listdir('.'))
         shell: python
 
       - name: Install system level libraries
