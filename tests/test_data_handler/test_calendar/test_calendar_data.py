@@ -1,8 +1,8 @@
 import pytest
 from datetime import datetime
 
-from algotrade.data_handler.calendar.calendar_data import DateObj, DayOfWeek, MarketHolidayEntry, MarketHolidays, MarketHolidayType
 from algotrade.data_handler.calendar.constants import TODAY, DATE_FMT, WEEKDAY_TO_ISO
+from algotrade.data_handler.calendar.calendar_data import DateObj, DayOfWeek, MarketHolidayEntry, MarketHolidays, MarketHolidayType
 
 
 FROZEN_DATE = '2024-04-24'
