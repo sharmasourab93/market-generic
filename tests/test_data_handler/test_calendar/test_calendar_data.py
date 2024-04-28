@@ -1,5 +1,9 @@
 import pytest
 from datetime import datetime
+import os
+
+print(os.getcwd())
+print(sys.path)
 
 from algotrade.data_handler.calendar.constants import TODAY, DATE_FMT, WEEKDAY_TO_ISO
 from algotrade.data_handler.calendar.calendar_data import DateObj, DayOfWeek, MarketHolidayEntry, MarketHolidays, MarketHolidayType
