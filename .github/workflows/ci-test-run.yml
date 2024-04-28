@@ -16,6 +16,7 @@ jobs:
           import sys 
           path_ = os.path.join(os.path.abspath('.'), 'algotrade')
           print(path_)
+          print(os.path.exists(path_))
           sys.path.append(path_)
           print(os.getcwd())
         shell: python
@@ -37,4 +38,4 @@ jobs:
       - name: Install & Run pytest
         run: |
           python -m pip install -r requirements.txt
-          pytest --cov=algotrade tests/
+          pytest --cov=./algotrade tests/
