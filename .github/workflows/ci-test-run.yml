@@ -20,6 +20,7 @@ jobs:
           sys.path.append(path_)
           print(os.getcwd())
           print(os.listdir('.'))
+          print(os.listdir(os.path.dirname(os.getcwd())))
         shell: python
 
       - name: Install system level libraries
