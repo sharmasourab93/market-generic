@@ -1,15 +1,9 @@
 from dataclasses import dataclass, field
-from datetime import date, datetime
+from datetime import datetime
 from typing import List, Optional, TypedDict
 
 from algotrade.data_handler.calendar.constants import (
-    ADHOC_MARKET_TIME_OFF,
-    ADHOC_MARKET_TIME_ON,
     DATE_FMT,
-    MARKET_CLOSE_TIME,
-    MARKET_START_TIME,
-    TIME_CUTOFF,
-    TIME_ZONE,
     TODAY,
     WEEKDAY_TO_ISO,
 )
@@ -108,102 +102,3 @@ class MarketHolidays:
                     break
         else:
             raise StopIteration("Holiday List exhausted. Update Holiday List")
-
-
-if __name__ == "__main__":
-    hols = [
-        {
-            "trade_day": "22-Jan-2024",
-            "week_day": "Monday",
-            "description": "Special Holiday\r",
-        },
-        {
-            "trade_day": "26-Jan-2024",
-            "week_day": "Friday",
-            "description": "Republic Day\r",
-        },
-        {
-            "trade_day": "08-Mar-2024",
-            "week_day": "Friday",
-            "description": "Mahashivratri\r",
-        },
-        {"trade_day": "25-Mar-2024", "week_day": "Monday", "description": "Holi\r"},
-        {
-            "trade_day": "29-Mar-2024",
-            "week_day": "Friday",
-            "description": "Good Friday\r",
-        },
-        {
-            "trade_day": "11-Apr-2024",
-            "week_day": "Thursday",
-            "description": "Id-Ul-Fitr (Ramadan Eid)\r",
-        },
-        {
-            "trade_day": "14-Apr-2024",
-            "week_day": "Sunday",
-            "description": "Dr. Baba Saheb Ambedkar Jayanti\r",
-        },
-        {
-            "trade_day": "17-Apr-2024",
-            "week_day": "Wednesday",
-            "description": "Shri Ram Navmi\r",
-        },
-        {
-            "trade_day": "21-Apr-2024",
-            "week_day": "Sunday",
-            "description": "Shri Mahavir Jayanti\r",
-        },
-        {
-            "trade_day": "01-May-2024",
-            "week_day": "Wednesday",
-            "description": "Maharashtra Day\r",
-        },
-        {"trade_day": "17-Jun-2024", "week_day": "Monday", "description": "Bakri Id\r"},
-        {
-            "trade_day": "17-Jul-2024",
-            "week_day": "Wednesday",
-            "description": "Moharram\r",
-        },
-        {
-            "trade_day": "15-Aug-2024",
-            "week_day": "Thursday",
-            "description": "Independence Day\r",
-        },
-        {
-            "trade_day": "07-Sep-2024",
-            "week_day": "Saturday",
-            "description": "Ganesh Chaturthi\r",
-        },
-        {
-            "trade_day": "02-Oct-2024",
-            "week_day": "Wednesday",
-            "description": "Mahatma Gandhi Jayanti\r",
-        },
-        {
-            "trade_day": "12-Oct-2024",
-            "week_day": "Saturday",
-            "description": "Dussehra\r",
-        },
-        {
-            "trade_day": "01-Nov-2024",
-            "week_day": "Friday",
-            "description": "Diwali Laxmi Pujan*\r",
-        },
-        {
-            "trade_day": "02-Nov-2024",
-            "week_day": "Saturday",
-            "description": "Diwali-Balipratipada\r",
-        },
-        {
-            "trade_day": "15-Nov-2024",
-            "week_day": "Friday",
-            "description": "Gurunanak Jayanti\r",
-        },
-        {
-            "trade_day": "25-Dec-2024",
-            "week_day": "Wednesday",
-            "description": "Christmas\r",
-        },
-    ]
-    market_holidays = MarketHolidays(hols)
-    print(market_holidays)
