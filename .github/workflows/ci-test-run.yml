@@ -5,14 +5,15 @@ on:
     branches:
       - '*'
 
+defaults:
+  run:
+    working-directory: $GITHUB_WORKSPACE
+
 jobs:
   unit-tests-pytest:
     name: Run unit tests with pytest
     runs-on: ubuntu-latest
     steps:
-      - name: Change to root directory
-        run: cd $GITHUB_WORKSPACE
-
       - name: Install system level libraries
         run: |
           sudo apt-get update
@@ -29,9 +30,5 @@ jobs:
 
       - name: Install & Run pytest
         run: |
-          ls -lart 
-          export PYTHONPATH="$GITHUB_WORKSPACE/algotrade"
-          echo $PYTHONPATH 
-          echo $PYTHONPATH
           python -m pip install -r requirements.txt
           pytest tests/
