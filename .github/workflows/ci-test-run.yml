@@ -27,15 +27,11 @@ jobs:
           python-version: '3.11'
           architecture: 'x64'
 
-      - name: Add project root to Python Path
+      - name: Install & Run pytest
         run: |
           ls -lart 
           export PYTHONPATH="$GITHUB_WORKSPACE/algotrade"
-          echo $PYTHONPATH
-
-      - name: Install & Run pytest
-        run: |
-          dir 
+          echo $PYTHONPATH 
           echo $PYTHONPATH
           python -m pip install -r requirements.txt
           pytest tests/
