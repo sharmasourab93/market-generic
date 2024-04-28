@@ -28,6 +28,7 @@ TIME_OFFSET = "1600"
 TIME_OFFSET_FMT = "%H%M"
 TIME_CUTOFF = datetime.strptime(TIME_OFFSET, TIME_OFFSET_FMT).time()
 DATE_FMT = "%d-%b-%Y"
+ISO_WEEK_RANGE = (0, 6)
 
 # Fixed Market Start Time and End time for any market day.
 MARKET_START = "0915"
