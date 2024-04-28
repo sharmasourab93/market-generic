@@ -14,10 +14,9 @@ jobs:
         run: | 
           import os 
           import sys 
-          print(os.getcwd())
-          print(os.listdir())
-          print(os.path.abspath('.'))
-          sys.path.append(os.path.abspath('.'))
+          path_ = os.path.join(os.path.abspath('.'), 'algotrade')
+          print(path_)
+          sys.path.append(path_)
           print(os.getcwd())
         shell: python
 
