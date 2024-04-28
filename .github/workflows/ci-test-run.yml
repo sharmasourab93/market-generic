@@ -36,5 +36,6 @@ jobs:
 
       - name: Install & Run pytest
         run: |
+          dir 
           python -m pip install -r requirements.txt
           pytest --cov=algotrade/ tests/
