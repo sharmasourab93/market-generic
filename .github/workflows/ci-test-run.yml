@@ -30,7 +30,8 @@ jobs:
       - name: Add project root to Python Path
         run: |
           ls -lart 
-          export PYTHONPATH="${PYTHONPATH}:~/algotrade/"
+          export PYTHONPATH="$GITHUB_WORKSPACE/algotrade"
+          echo $PYTHONPATH
 
       - name: Install & Run pytest
         run: |
