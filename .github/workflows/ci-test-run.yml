@@ -19,7 +19,7 @@ jobs:
           print(os.path.exists(path_))
           sys.path.append(path_)
           print(os.getcwd())
-          print(os.listdir('.'))
+          print(os.listdir(os.getcwd()))
           print(os.listdir(os.path.dirname(os.getcwd())))
         shell: python
 
