@@ -15,6 +15,7 @@ jobs:
           import os 
           import sys 
           print(os.getcwd())
+          print(os.listdir())
           sys.path.append(os.path.abspath('.'))
           print(os.getcwd())
         shell: python
