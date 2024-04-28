@@ -2,11 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List, Optional, TypedDict
 
-from algotrade.data_handler.calendar.constants import (
-    DATE_FMT,
-    TODAY,
-    WEEKDAY_TO_ISO,
-)
+from algotrade.data_handler.calendar.constants import (DATE_FMT, HOLIDAY_EXHAUSTED,
+                                                       TODAY, WEEKDAY_TO_ISO)
 
 
 @dataclass
@@ -101,4 +98,4 @@ class MarketHolidays:
                 if self.next_holiday is not None and self.next_working is not None:
                     break
         else:
-            raise StopIteration("Holiday List exhausted. Update Holiday List")
+            raise StopIteration(HOLIDAY_EXHAUSTED)
