@@ -1,9 +1,19 @@
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, time
 from typing import List, Optional, TypedDict
+from zoneinfo import ZoneInfo
 
 from algotrade.data_handler.calendar.constants import (DATE_FMT, HOLIDAY_EXHAUSTED,
+                                                       MARKET_CLOSE_TIME,
+                                                       MARKET_START_TIME, TIME_ZONE,
                                                        TODAY, WEEKDAY_TO_ISO)
+
+
+@dataclass
+class MarketTimings:
+    start_time: time = MARKET_START_TIME
+    close_time: time = MARKET_CLOSE_TIME
+    time_zone: ZoneInfo = TIME_ZONE
 
 
 @dataclass
