@@ -10,17 +10,14 @@ jobs:
     name: Run unit tests with pytest
     runs-on: ubuntu-latest
     steps:
-      - name: Add Project root to Python Path
-        run: | 
+      - name: Change to root directory
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Add project root to Python Path
+        run: |
           import os 
           import sys 
-          print(os.path.abspath('.'))
-          path_ = os.path.join(os.path.abspath('.'), 'algotrade')
-          print(os.path.exists(path_))
-          sys.path.append(path_)
-          print(os.getcwd())
-          print(os.listdir(os.getcwd()))
-          print(os.listdir(os.path.dirname(os.getcwd())))
+          sys.path.append(os.path.abspath('.'))
         shell: python
 
       - name: Install system level libraries
