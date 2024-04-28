@@ -4,16 +4,19 @@ on:
   push:
     branches:
       - '*'
-#  workflow_run:
-#    workflows: ["build-image.yml"]
-#    types:
-#      - completed
 
 jobs:
   unit-tests-pytest:
     name: Run unit tests with pytest
     runs-on: ubuntu-latest
     steps:
+      - name: Add Project root to Python Path
+        run: | 
+          import os 
+          import sys 
+          sys.path.append(os.path.abspath('.))
+        shell: python
+
       - name: Install system level libraries
         run: |
           sudo apt-get update
@@ -31,4 +34,4 @@ jobs:
       - name: Install & Run pytest
         run: |
           python -m pip install -r requirements.txt
-          pytest tests/
+          pytest --cov=algotrade tests/
