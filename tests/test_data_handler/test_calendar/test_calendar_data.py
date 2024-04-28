@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-import os
+import os, sys
 
 print(os.getcwd())
 print(sys.path)
