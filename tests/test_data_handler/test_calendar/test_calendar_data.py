@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
 import pytest
-
-from algotrade.data_handler.calendar.calendar_data import (
+from trade.calendar.calendar_data import (
     DATE_FMT,
     WEEKDAY_TO_ISO,
     DateObj,

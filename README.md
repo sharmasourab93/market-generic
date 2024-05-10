@@ -1,8 +1,8 @@
-# AlgoTrade - A Generic Python Package for Stock Market Analysis and Trading
+# Trade - A Generic Python Package for Stock Market Analysis and Trading
 
 ### Overview
 
-AlgoTrade is a powerful and flexible Python library designed to simplify the process of working with stock market data. It provides a comprehensive set of tools and utilities to handle, analyze, and visualize stock data, enabling developers and analysts to build dynamic stock scanners, trading strategies, and other financial applications with ease.
+Trade is a powerful and flexible Python library designed to simplify the process of working with stock market data. It provides a comprehensive set of tools and utilities to handle, analyze, and visualize stock data, enabling developers and analysts to build dynamic stock scanners, trading strategies, and other financial applications with ease.
 
 
 ### Key Features
@@ -16,17 +16,17 @@ AlgoTrade is a powerful and flexible Python library designed to simplify the pro
 To install the AlgoTrade package, use pip:
 
 ```
-pip install algotrade
+pip install trade
 ```
 
 ### Usage
 
-Here's a simple example of how to use the AlgoTrade package to fetch and analyze stock data:
+Here's a simple example of how to use the Trade package to fetch and analyze stock data:
 python
 
 ```
-from algotrade.data import StockDataFetcher
-from algotrade.indicators import MovingAverage
+from trade.data import StockDataFetcher
+from trade.indicators import MovingAverage
 
 # Fetch stock data for Apple (AAPL)
 fetcher = StockDataFetcher()
@@ -42,4 +42,4 @@ sma_20.plot(label='SMA-20')
 
 ### Documentation
 
-For detailed documentation, examples, and API reference, please visit the [AlgoTrade GitHub repository](https://github.com/sharmasourab93/AlgoTrade).
+For detailed documentation, examples, and API reference, please visit the [Trade GitHub repository](https://github.com/sharmasourab93/Trade).
