@@ -3,18 +3,22 @@ from datetime import datetime, timedelta
 import pytest
 
 from algotrade.data_handler.calendar.calendar_data import (
+    DATE_FMT,
+    WEEKDAY_TO_ISO,
     DateObj,
     DayOfWeek,
     MarketHolidayEntry,
     MarketHolidays,
     MarketHolidayType,
     WorkingDayDate,
-    DATE_FMT,
-    WEEKDAY_TO_ISO
 )
 
-MARKET_TIMINGS = {"start_time": "0915", "close_time": "1530",
-                  "time_zone": "Asia/Kolkata", "time_cutoff": "1600"}
+MARKET_TIMINGS = {
+    "start_time": "0915",
+    "close_time": "1530",
+    "time_zone": "Asia/Kolkata",
+    "time_cutoff": "1600",
+}
 FROZEN_DATE = "2024-04-24"
 HOLIDAYS_DICT = [
     {
@@ -175,7 +179,9 @@ def test_market_holidays_update_next_holiday():
 )
 def test_working_day_date(given_date, next_date, prev_date):
     holidays_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holidays_dict, market_timings=MARKET_TIMINGS)
+    working_date_obj = WorkingDayDate(
+        given_date, holidays_dict, market_timings=MARKET_TIMINGS
+    )
     previous_day = working_date_obj.previous_business_day
     next_day = working_date_obj.next_business_day
     assert next_day == next_date
@@ -191,7 +197,9 @@ def test_working_day_date(given_date, next_date, prev_date):
 )
 def test_working_day_today_1(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holiday_dict, market_timings=MARKET_TIMINGS)
+    working_date_obj = WorkingDayDate(
+        given_date, holiday_dict, market_timings=MARKET_TIMINGS
+    )
 
     next_day = working_date_obj.next_business_day
     prev_day = working_date_obj.previous_business_day
@@ -209,7 +217,9 @@ def test_working_day_today_1(given_date, next_date, prev_date):
 )
 def test_working_day_today_2(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holiday_dict, market_timings=MARKET_TIMINGS)
+    working_date_obj = WorkingDayDate(
+        given_date, holiday_dict, market_timings=MARKET_TIMINGS
+    )
 
     next_day = working_date_obj.next_business_day
     prev_day = working_date_obj.previous_business_day

@@ -300,7 +300,10 @@ class WorkingDayDate:
         today = self.day
         yesterday = today - BDay()
 
-        if today not in self.market_holidays and today < datetime.now(tz=self.market_timings.tz).today():
+        if (
+            today not in self.market_holidays
+            and today < datetime.now(tz=self.market_timings.tz).today()
+        ):
             return today
 
         if yesterday == self.market_holidays.next_holiday:
@@ -315,22 +318,24 @@ class WorkingDayDate:
 
         return yesterday
 
-    def __add__(self, days: int) -> 'WorkObj':
+    def __add__(self, days: int) -> "WorkObj":
         count_days = 0
         iter_work_day = self.day
         while count_days < days:
-            iter_work_day = WorkingDayDate(iter_work_day.as_str,
-                                           self.market_holidays).next_business_day
-            count_days+=1
+            iter_work_day = WorkingDayDate(
+                iter_work_day.as_str, self.market_holidays
+            ).next_business_day
+            count_days += 1
 
         return WorkingDayDate(iter_work_day.as_str, self.market_holidays)
 
-    def __sub__(self, days: int) -> 'WorkObj':
+    def __sub__(self, days: int) -> "WorkObj":
         count_days = days
         iter_work_day = self.day
         while count_days > 0:
-            iter_work_day = WorkingDayDate(iter_work_day.as_str,
-                                           self.market_holidays).previous_business_day
-            count_days-=1
+            iter_work_day = WorkingDayDate(
+                iter_work_day.as_str, self.market_holidays
+            ).previous_business_day
+            count_days -= 1
 
         return WorkingDayDate(iter_work_day.as_str, self.market_holidays)
