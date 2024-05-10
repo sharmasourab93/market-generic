@@ -31,4 +31,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
-        twine upload --repository-url https://maven.pkg.github.com/${{ github.repository }} dist/*
+        twine upload --repository-url https://maven.pkg.github.com/${{ github.repository }} dist/* --username __token__ --password ${{ secrets.TOKEN }}
