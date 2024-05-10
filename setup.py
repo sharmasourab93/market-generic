@@ -10,7 +10,7 @@ EMAIL = "sharmasourab93@gmail.com"
 with open("README.md", "r") as f:
     LONG_DESCRIPTION = f.read()
 
-with open('requirements.txt', 'r') as file:
+with open("requirements.txt", "r") as file:
     INSTALL_REQUIRES = [line.strip() for line in file.readlines()]
 
 KEYWORDS = ["Market", "Trade", "Analysis"]
