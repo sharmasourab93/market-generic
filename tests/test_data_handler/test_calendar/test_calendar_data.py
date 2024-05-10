@@ -9,9 +9,12 @@ from algotrade.data_handler.calendar.calendar_data import (
     MarketHolidays,
     MarketHolidayType,
     WorkingDayDate,
+    DATE_FMT,
+    WEEKDAY_TO_ISO
 )
-from algotrade.data_handler.calendar.constants import DATE_FMT, WEEKDAY_TO_ISO
 
+MARKET_TIMINGS = {"start_time": "0915", "close_time": "1530",
+                  "time_zone": "Asia/Kolkata", "time_cutoff": "1600"}
 FROZEN_DATE = "2024-04-24"
 HOLIDAYS_DICT = [
     {
@@ -172,23 +175,23 @@ def test_market_holidays_update_next_holiday():
 )
 def test_working_day_date(given_date, next_date, prev_date):
     holidays_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holidays_dict)
+    working_date_obj = WorkingDayDate(given_date, holidays_dict, market_timings=MARKET_TIMINGS)
     previous_day = working_date_obj.previous_business_day
     next_day = working_date_obj.next_business_day
     assert next_day == next_date
     assert previous_day == prev_date
 
 
-@pytest.mark.freeze_time("2024-04-29 10:40")
+@pytest.mark.freeze_time("2024-04-29 5:10")
 @pytest.mark.parametrize(
     "given_date, next_date, prev_date",
     [
-        ("29-Apr-2024", "29-Apr-2024", "25-Apr-2024"),
+        ("29-Apr-2024", "29-Apr-2024", "26-Apr-2024"),
     ],
 )
 def test_working_day_today_1(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holiday_dict)
+    working_date_obj = WorkingDayDate(given_date, holiday_dict, market_timings=MARKET_TIMINGS)
 
     next_day = working_date_obj.next_business_day
     prev_day = working_date_obj.previous_business_day
@@ -197,7 +200,7 @@ def test_working_day_today_1(given_date, next_date, prev_date):
     assert prev_day == prev_date
 
 
-@pytest.mark.freeze_time("2024-04-29 16:10")
+@pytest.mark.freeze_time("2024-04-29 10:40")
 @pytest.mark.parametrize(
     "given_date, next_date, prev_date",
     [
@@ -206,7 +209,7 @@ def test_working_day_today_1(given_date, next_date, prev_date):
 )
 def test_working_day_today_2(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
-    working_date_obj = WorkingDayDate(given_date, holiday_dict)
+    working_date_obj = WorkingDayDate(given_date, holiday_dict, market_timings=MARKET_TIMINGS)
 
     next_day = working_date_obj.next_business_day
     prev_day = working_date_obj.previous_business_day

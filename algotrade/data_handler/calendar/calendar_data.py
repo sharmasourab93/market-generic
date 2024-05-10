@@ -1,40 +1,58 @@
 from dataclasses import dataclass, field
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Optional, TypedDict, Union
-from zoneinfo import ZoneInfo
 
 from pandas.tseries.offsets import BDay
+from pytz import timezone
 
-from algotrade.data_handler.calendar.constants import (
-    DATE_FMT,
-    HOLIDAY_EXHAUSTED,
-    ISO_WEEK_RANGE,
-    MARKET_CLOSE_TIME,
-    MARKET_START_TIME,
-    TIME_CUTOFF,
-    TIME_ZONE,
-    TODAY,
-    WEEKDAY_TO_ISO,
-)
+WEEKDAY_TO_ISO = {
+    "Monday": 1,
+    "Tuesday": 2,
+    "Wednesday": 3,
+    "Thursday": 4,
+    "Friday": 5,
+    "Saturday": 6,
+    "Sunday": 7,
+}
+
+
+class MarketTimingType(TypedDict):
+    start_time: str
+    close_time: str
+    time_zone: str
+    time_cutoff: str
+
+
+DATE_FMT = "%d-%b-%Y"
+TIME_STRF = "%H%M"
+HOLIDAY_EXHAUSTED = "Holiday List exhausted. Update Holiday List"
+ISO_WEEK_RANGE = (0, 6)
 
 
 @dataclass
 class MarketTimings:
-    start_time: time = MARKET_START_TIME
-    close_time: time = MARKET_CLOSE_TIME
-    time_zone: ZoneInfo = TIME_ZONE
-    time_cutoff: time = TIME_CUTOFF
+    start_time: str
+    close_time: str
+    time_zone: str
+    time_cutoff: str
+
+    def __post_init__(self):
+        self.tz = timezone(self.time_zone)
+        self.start_time = datetime.strptime(self.start_time, TIME_STRF).time()
+        self.close_time = datetime.strptime(self.close_time, TIME_STRF).time()
+        self.time_cutoff = datetime.strptime(self.time_cutoff, TIME_STRF).time()
 
 
 @dataclass
 class DateObj:
     raw_date: str
-    _formatted_date: datetime = field(init=False)
+    _formatted_date: datetime = None
+
+    def __post_init__(self):
+        self._formatted_date = datetime.strptime(self.raw_date, DATE_FMT).date()
 
     @property
     def as_date(self) -> datetime:
-        self._formatted_date = datetime.strptime(self.raw_date, DATE_FMT).date()
-
         return self._formatted_date
 
     @property
@@ -144,11 +162,18 @@ class MarketHolidays:
     holidays: List[MarketHolidayEntry] = field(init=False, default_factory=list)
     next_holiday: Optional[DateObj] = None
     next_working: Optional[DateObj] = None
+    today: Optional[date] = None
 
     def __len__(self) -> int:
         return len(self.holidays)
 
+    def __contains__(self, item):
+        return item in [i.trade_date for i in self.holidays]
+
     def __post_init__(self):
+        if self.today is None:
+            self.today = datetime.today().date()
+
         self.holidays = [self._create_holiday_entry(h) for h in self.holidays_dict]
         self.update_next_holiday()
 
@@ -159,10 +184,9 @@ class MarketHolidays:
         return MarketHolidayEntry(**holiday_str)
 
     def update_next_holiday(self) -> None:
-        today = TODAY
 
         for i, holiday in enumerate(self.holidays):
-            if holiday.trade_date.as_date >= today:
+            if holiday.trade_date.as_date >= self.today:
                 if holiday.working and self.next_working is None:
                     self.next_working = DateObj(holiday.trade_date.as_str)
 
@@ -176,20 +200,17 @@ class MarketHolidays:
 
     @property
     def prev_holiday(self) -> DateObj:
-        today = TODAY
-
         for holiday in reversed(self.holidays):
-            if holiday.trade_date < today and not holiday.working:
+            if holiday.trade_date < self.today and not holiday.working:
                 return DateObj(holiday.trade_date.as_str)
 
         return None
 
     @property
     def prev_working(self) -> DateObj:
-        today = TODAY
 
         for holiday in reversed(self.holidays):
-            if holiday.trade_date < today and holiday.working:
+            if holiday.trade_date < self.today and holiday.working:
                 return DateObj(holiday.trade_date.as_str)
 
         return None
@@ -198,8 +219,10 @@ class MarketHolidays:
 @dataclass
 class WorkingDayDate:
     given_date: str
-    market_holidays: List[MarketHolidayType]
+    market_holidays: Union[List[MarketHolidayType], MarketHolidays]
     working_day: DateObj = field(init=False)
+    market_timings: MarketTimingType
+    today: Optional[date] = None
 
     @property
     def day(self):
@@ -209,8 +232,8 @@ class WorkingDayDate:
         date_ = DateObj(self.given_date)
         tomorrow: DateObj = date_ + BDay()
         yesterday: DateObj = date_ - BDay()
-        cut_off = TIME_CUTOFF
-        now = datetime.now().time()
+        cut_off = self.market_timings.time_cutoff
+        now = datetime.now(tz=self.market_timings.tz).time()
 
         if date_ > tomorrow and date_ > yesterday:
             return date_
@@ -219,7 +242,7 @@ class WorkingDayDate:
             return date_
 
         if cut_off > now:
-            if date_ == TODAY:
+            if date_ == self.today:
                 if date_.as_weekday_iso in ISO_WEEK_RANGE:
                     return date_ - BDay()
                 return yesterday
@@ -240,18 +263,24 @@ class WorkingDayDate:
         return date_
 
     def __post_init__(self):
+        self.market_timings = MarketTimings(**self.market_timings)
+
+        if self.today is None:
+            self.today = datetime.now(tz=self.market_timings.tz).today().date()
+        now = datetime.now(tz=self.market_timings.tz).time()
         if (
-            DateObj(self.given_date) == TODAY
-            and MARKET_START_TIME <= datetime.now().time() <= TIME_CUTOFF
+            DateObj(self.given_date) == self.today
+            and self.market_timings.start_time <= now <= self.market_timings.time_cutoff
         ):
             self.working_day = self.compare_time_cutoff()
         else:
             self.working_day = DateObj(self.given_date)
 
-        self.market_holidays = MarketHolidays(self.market_holidays)
+        if not isinstance(self.market_holidays, MarketHolidays):
+            self.market_holidays = MarketHolidays(self.market_holidays)
 
     @property
-    def next_business_day(self) -> None:
+    def next_business_day(self) -> DateObj:
 
         today = self.day
         tomorrow = today + BDay()
@@ -266,10 +295,13 @@ class WorkingDayDate:
         return tomorrow
 
     @property
-    def previous_business_day(self) -> None:
+    def previous_business_day(self) -> DateObj:
 
         today = self.day
         yesterday = today - BDay()
+
+        if today not in self.market_holidays and today < datetime.now(tz=self.market_timings.tz).today():
+            return today
 
         if yesterday == self.market_holidays.next_holiday:
             yesterday = yesterday - BDay()
@@ -282,3 +314,23 @@ class WorkingDayDate:
                 yesterday = self.market_holidays.prev_working
 
         return yesterday
+
+    def __add__(self, days: int) -> 'WorkObj':
+        count_days = 0
+        iter_work_day = self.day
+        while count_days < days:
+            iter_work_day = WorkingDayDate(iter_work_day.as_str,
+                                           self.market_holidays).next_business_day
+            count_days+=1
+
+        return WorkingDayDate(iter_work_day.as_str, self.market_holidays)
+
+    def __sub__(self, days: int) -> 'WorkObj':
+        count_days = days
+        iter_work_day = self.day
+        while count_days > 0:
+            iter_work_day = WorkingDayDate(iter_work_day.as_str,
+                                           self.market_holidays).previous_business_day
+            count_days-=1
+
+        return WorkingDayDate(iter_work_day.as_str, self.market_holidays)
