@@ -32,3 +32,23 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       run: |
         twine upload --verbose --repository-url https://maven.pkg.github.com/${{ github.repository }} dist/* --username __token__ --password ${{ secrets.TOKEN }}
+
+    - name: Get latest tag number
+      id: get_latest_tag
+      run: | 
+        latest_tag=$(git dexcribe --tags --abbrev=0)
+        tag_number=$(echo $latest_tag| sed 's/v\([0-9]*\)\.\([0-9]*\)\.\([0-9]*\)/\1/')
+        echo "::set-output name=tag_number::$((tag_number + 1))"
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        tag_name: v${{ setps.get_latest_tag.outputs.tag_number }}
+        title: Release v${{ steps.get_latest_tag.outputs.tag_number }}
+        body: Automated release created by GitHub Actions
+
+    - name: Install Package
+      run: |
+        pip install git+https://github.com/${{ github.repository }}.git@v${{ steps.get_latest_tag.outputs.tag_number }}
