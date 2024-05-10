@@ -24,7 +24,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url=URL,
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     install_requires=INSTALL_REQUIRES,
     keywords=KEYWORDS,
 )
