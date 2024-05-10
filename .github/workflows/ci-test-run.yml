@@ -5,6 +5,12 @@ on:
     branches:
       - '*'
 
+  workflow_run:
+    workflows:
+      - "cd-build-upload.yml"
+    types:
+      - completed
+
 jobs:
   unit-tests-pytest:
     name: Run unit tests with pytest
