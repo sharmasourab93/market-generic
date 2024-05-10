@@ -1,0 +1,29 @@
+<servers>
+  <server>
+    <id>github</id>
+    <username>sharmasourab93</username>
+    <password>${{ secrets.TOKEN }}</password>
+  </server>
+</servers>
+
+<profiles>
+  <profile>
+    <id>github</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <repositories>
+      <repository>
+        <id>central</id>
+        <url>https://repo1.maven.org/maven2</url>
+      </repository>
+      <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/sharmasourab93/Trade</url>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+      </repository>
+    </repositories>
+  </profile>
+</profiles>
