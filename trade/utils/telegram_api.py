@@ -17,7 +17,12 @@ class TelegramBot(metaclass=SingletonMeta):
     over and over again in an optimized manner.
     """
 
-    def __init__(self, telegram_bot_enabled: bool = False, chat_id: str = getenv("CHAT_ID", None), telegram_sign: str = TELEGRAM_SIGNATURE):
+    def __init__(
+        self,
+        telegram_bot_enabled: bool = False,
+        chat_id: str = getenv("CHAT_ID", None),
+        telegram_sign: str = TELEGRAM_SIGNATURE,
+    ):
         self.telegram_enabled = telegram_bot_enabled
         self.chat_id = chat_id
         self.telegram_sign = telegram_sign

@@ -5,7 +5,10 @@ from typing import TypedDict
 
 import gspread
 
-MISSING_GSHEET_CREDS = "Google Sheet Credentials: GSHEET_CRED & GSHEET_KEY as Environment variables."
+MISSING_GSHEET_CREDS = (
+    "Google Sheet Credentials: GSHEET_CRED & GSHEET_KEY as Environment variables."
+)
+
 
 class GSheetCredType(TypedDict):
     GSHEET_KEY: str
