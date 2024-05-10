@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 import pytest
-
 from trade.calendar.calendar_data import (
     DATE_FMT,
     WEEKDAY_TO_ISO,
