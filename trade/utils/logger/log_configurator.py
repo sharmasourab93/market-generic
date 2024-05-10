@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from logging import config as log_conf
-from os import path, mkdir
+from os import mkdir, path
 from typing import Any
 
 LOG_MAP = {
@@ -73,7 +73,7 @@ class LogConfig:
         config_path: str = None,
         level=logging.INFO,
         to_log=True,
-        to_console=True
+        to_console=True,
     ):
         """
         Configure logging based on provided parameters.
@@ -95,9 +95,15 @@ class LogConfig:
 
         if not log_path or not path.exists(path.abspath(log_path)):
             log_folder = log_path.lower()
-            log_dir = path.join(path.abspath(log_path), log_folder) if log_folder else path.abspath(log_path)
+            log_dir = (
+                path.join(path.abspath(log_path), log_folder)
+                if log_folder
+                else path.abspath(log_path)
+            )
             mkdir(log_dir, exist_ok=True)
-            log_path = path.join(log_dir, f"{log_folder}_{time}.log" if log_folder else f"log_{time}.log")
+            log_path = path.join(
+                log_dir, f"{log_folder}_{time}.log" if log_folder else f"log_{time}.log"
+            )
 
         config["handlers"]["file_handler"]["filename"] = log_path
         config["root"]["level"] = level
