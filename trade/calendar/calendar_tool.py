@@ -1,6 +1,6 @@
 from typing import List, NewType
 
-from algotrade.calendar.calendar_data import (
+from trade.calendar.calendar_data import (
     MarketHolidayType,
     MarketTimingType,
     WorkingDayDate,
