@@ -45,7 +45,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: dist/*
-        tag_name: v${{ setps.get_latest_tag.outputs.tag_number }}
+        tag_name: v${{ steps.get_latest_tag.outputs.tag_number }}
         title: Release v${{ steps.get_latest_tag.outputs.tag_number }}
         body: Automated release created by GitHub Actions
 
