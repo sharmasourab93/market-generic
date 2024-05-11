@@ -267,7 +267,9 @@ class WorkingDayDate:
 
         if self.today is None:
             self.today = datetime.now(tz=self.market_timings.tz).today().date()
+
         now = datetime.now(tz=self.market_timings.tz).time()
+
         if (
             DateObj(self.given_date) == self.today
             and self.market_timings.start_time <= now <= self.market_timings.time_cutoff
