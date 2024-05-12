@@ -1,0 +1,222 @@
+{
+    "INDUSTRY": [
+        "Automobile and Auto Components",
+        "Capital Goods",
+        "Chemicals",
+        "Construction",
+        "Construction Materials",
+        "Consumer Durables",
+        "Consumer Services",
+        "Diversified",
+        "Fast Moving Consumer Goods",
+        "Financial Services",
+        "Forest Materials",
+        "Healthcare",
+        "Information Technology",
+        "Media, Entertainment & Publication",
+        "Metals & Mining",
+        "Oil, Gas & Consumable Fuels",
+        "Power",
+        "Realty",
+        "Services",
+        "Telecommunication",
+        "Textiles",
+        "Utilities"
+    ],
+    "MARKET": {
+        "NSE": {
+                "API": {
+                    "BLOCK-DEAL": "api/block-deal",
+                    "CHART": {
+                        "CHART-DATA": "api/chart-databyindex?index={0}EQN",
+                        "CHART-PREOPEN": "&preopen=true"
+                    },
+                    "COMMODITY": {
+                        "COMMODITY-QUOTES-MASTER": "api/quotes-commodity-derivatives-master"
+                    },
+                    "CORPORATE": {
+                        "actions": [
+                            "equities",
+                            "debt",
+                            "mf",
+                            "sme"
+                        ],
+                        "announcements": {
+                            "keys": [
+                                "homepage",
+                                "equities",
+                                "debt",
+                                "mf",
+                                "sme"
+                            ],
+                            "url": "api/home-corporate-announcements?index={0}"
+                        },
+                        "sub-domain": "api/corporates-corporateActions?index={0}"
+                    },
+                    "DERIVATIVE": {
+                        "DERIVATIVE-MASTER-LIST": "api/master-quote",
+                        "DERIVATIVE-OPTION-CHAIN": "api/option-chain-equities?symbol={0}",
+                        "DERIVATIVE-OPTION-INDEX": "api/option-chain-indices?symbol={0}",
+                        "DERIVATIVE-QUOTE": "api/quote-derivative?symbol={0}"
+                    },
+                    "EQUITY": {
+                        "EQUITY-META": "api/equity-meta-info?symbol={0}",
+                        "EQUITY-QUOTE": "api/quote-equity?symbol={0}",
+                        "EQUITY-TRADE": "api/quote-equity?symbol={0}&section=trade_info"
+                    },
+                    "ETF": {
+                        "ETF-ALL": "api/etf",
+                        "ETF-QUOTE": "api/quote-equity?symbol={0}"
+                    },
+                    "GLOSSARY": "api/cmsContent?url=/glossary",
+                    "HOLIDAY": {
+                        "CLEARING": "api/holiday-master?type=clearing",
+                        "TRADING": "api/holiday-master?type=trading"
+                    },
+                    "INDEX": {
+                        "EQUITY-MASTER": "api/equity-master",
+                        "INDEX-NAMES": "api/index-names",
+                        "INDICES": "api/allIndices",
+                        "QUOTE-INDEX": "api/equity-stockIndices?index={0}",
+                        "VIX": "api/historical/vixhistory?from={0}&to={1}"
+                    },
+                    "ISSUES": {
+                        "ISSUE-CATEGORY": [
+                            "",
+                            "ipo",
+                            "ofs",
+                            "rights",
+                            "tender",
+                            "ipp"
+                        ],
+                        "IPO": "api/ipo-current-issue",
+                        "UPCOMING": "api/all-upcoming-issues?category={0}",
+                        "PAST-ISSUES": "api/public-past-issues"
+                    },
+                    "MF": {
+                        "date-fmt": "%d-%m-%Y",
+                        "quote": "api/mfss-new-fund?&from_date={0}&to_date={1}"
+                    },
+                    "PRE-OPEN": {
+                        "keys": [
+                            "NIFTY 50",
+                            "NIFTY BANK",
+                            "Emerge",
+                            "Securities in F&O",
+                            "Others",
+                            "All"
+                        ],
+                        "url": "api/market-data-pre-open?key={0}"
+                    },
+                    "SGB": {
+                        "issue": "api/quote-equity?symbol={0}",
+                        "sgb-all": "api/sovereign-gold-bonds"
+                    },
+                    "FII-DII-REPORT": "api/fiidiiTradeReact"
+                },
+                "SECTORAL-INDICES": {
+                    "NIFTY-AUTO": "https://niftyindices.com/IndexConstituent/ind_niftyautolist.csv",
+                    "NIFTY-BANK": "https://niftyindices.com/IndexConstituent/ind_niftybanklist.csv",
+                    "NIFTY-COMMODITIES": "https://niftyindices.com/IndexConstituent/ind_niftycommoditieslist.csv",
+                    "NIFTY-CONSRDURBL": "https://niftyindices.com/IndexConstituent/ind_niftyconsumerdurableslist.csv",
+                    "NIFTY-CONSUMPTION": "https://niftyindices.com/IndexConstituent/ind_nifty_consumptionlist.csv",
+                    "NIFTY-ENERGY": "https://niftyindices.com/IndexConstituent/ind_niftyenergylist.csv",
+                    "NIFTY-FIN SERVICE": "https://niftyindices.com/IndexConstituent/ind_niftyfinancelist.csv",
+                    "NIFTY-FMCG": "https://niftyindices.com/IndexConstituent/ind_niftyfmcglist.csv",
+                    "NIFTY-HEALTHCARE": "https://niftyindices.com/IndexConstituent/ind_niftyhealthcarelist.csv",
+                    "NIFTY-HOUSING": "https://niftyindices.com/IndexConstituent/ind_niftyhousing_list.csv",
+                    "NIFTY-INDIA-MANUFACTURING": "https://niftyindices.com/IndexConstituent/ind_niftyindiamanufacturing_list.csv",
+                    "NIFTY-INFRA": "https://niftyindices.com/IndexConstituent/ind_niftyinfralist.csv",
+                    "NIFTY-IT": "https://niftyindices.com/IndexConstituent/ind_niftyitlist.csv",
+                    "NIFTY-MEDIA": "https://niftyindices.com/IndexConstituent/ind_niftymedialist.csv",
+                    "NIFTY-METAL": "https://niftyindices.com/IndexConstituent/ind_niftymetallist.csv",
+                    "NIFTY-MIDSML-FINSRV": "https://niftyindices.com/IndexConstituent/ind_niftymidsmallfinancialservice_list.csv",
+                    "NIFTY-MIDSML-HEALTHCARE": "https://niftyindices.com/IndexConstituent/ind_niftymidsmallhealthcare_list.csv",
+                    "NIFTY-MIDSML-IT-TELECOM": "https://niftyindices.com/IndexConstituent/ind_niftymidsmallitAndtelecom_list.csv",
+                    "NIFTY-OIL-GAS": "https://niftyindices.com/IndexConstituent/ind_niftyoilgaslist.csv",
+                    "NIFTY-PHARMA": "https://niftyindices.com/IndexConstituent/ind_niftypharmalist.csv",
+                    "NIFTY-PSU-BANK": "https://niftyindices.com/IndexConstituent/ind_niftypsubanklist.csv",
+                    "NIFTY-PVT-BANK": "https://niftyindices.com/IndexConstituent/ind_nifty_privatebanklist.csv",
+                    "NIFTY-REALTY": "https://niftyindices.com/IndexConstituent/ind_niftyrealtylist.csv"
+                },
+                "DATE-FMT": "%d-%b-%Y",
+                "DOWNLOADS": {
+                    "52Wk-hl": {
+                        "date-fmt": "%d%m%Y",
+                        "file_path": "data/input/downloaded/bhav/CM_52_wk_high_low_{0}.csv",
+                        "name": "52Wk-hl",
+                        "url": "content/CM_52_wk_High_low_{0}.csv"
+                    },
+                    "BLOCK-DEAL": {
+                        "file_path": "data/input/downloaded/block/block.csv",
+                        "name": "block-deal",
+                        "url": "content/equities/block.csv"
+                    },
+                    "BULK-DEAL": {
+                        "file_path": "data/input/downloaded/bulk/bulk.csv",
+                        "name": "bulk-deal",
+                        "url": "content/equities/bulk.csv"
+                    },
+                    "EQ-BHAVCOPY": {
+                        "file_path": "data/input/downloaded/temp.zip",
+                        "name": "EQ-BhavCopy",
+                        "url": "content/historical/EQUITIES/{0}/{3}/NSE_CM_bhavcopy_{2}{1}{0}.csv.zip"
+                    },
+                    "FO-MKLOTS": {
+                        "domain": "https://archives.nseindia.com",
+                        "file_path": "data/input/downloaded/fo/fo_mktlots.csv",
+                        "name": "mkt_lots",
+                        "url": "https://archives.nseindia.com/content/fo/fo_mktlots.csv"
+                    },
+                    "FO-BHAVCOPY": {
+                        "file_path": "data/input/downloaded/fo/temp.zip",
+                        "name": "FO-BhavCopy",
+                        "url": "content/historical/DERIVATIVES/{0}/{1}/fo{2}{1}{0}bhav.csv.zip"
+                    },
+                    "FO-SECBAN": {
+                        "file_path": "data/input/downloaded/fo/fo_secban.csv",
+                        "name": "FO-SecBanList",
+                        "url": "archives/fo/sec_ban/fo_secban_{0}{1}{2}.csv"
+                    },
+                    "INDEX": {
+                        "file_path": "data/input/downloaded/MW_SEC_FO.csv",
+                        "name": "MW-SEC-FO-Index",
+                        "url": "api/equity-stockIndices?csv=true&index=SECURITIES%20IN%20F%26O"
+                    },
+                    "DOWNLOAD-DOMAIN": "https://archives.nseindia.com/"
+                },
+                "RELEASE": {
+                    "date-fmt": "%d-%m-%Y",
+                    "url": "https://www.nseindia.com/api/event-calendar?index=equities&from_date={0}&to_date={1}"
+                },
+                "ALL-MARKET-STATUS": "api/allMarketStatus",
+                "MAIN-DOMAIN": "https://www.nseindia.com/",
+                "HEADERS": {
+                    "advanced": {
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                        "Accept-Encoding": "gzip, deflate, br",
+                        "Accept-Language": "en-US,en;q=0.9",
+                        "Connection": "keep-alive",
+                        "Host": "www.nseindia.com",
+                        "Referer": "https://www.nseindia.com/products/content/equities/equities/archieve_eq.htm",
+                        "Sec-Fetch-Dest": "empty",
+                        "Sec-Fetch-Mode": "cors",
+                        "Sec-Fetch-Site": "same-origin",
+                        "Upgrade-Insecure-Requests": "1",
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"
+                    },
+                    "intermediate": {
+                        "accept-encoding": "gzip, deflate, br",
+                        "accept-language": "en-US,en;q=0.9,hi-IN;q=0.8,hi;q=0.7,ja-JP;q=0.6,ja;q=0.5",
+                        "connection": "keep-alive",
+                        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"
+                    },
+                    "simple": {
+                        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36(KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36 Edg/88.0.705.63"
+                    }
+                },
+                "STATUS": "api/marketStatus"
+        }
+    },
+    "version": 2
+}
