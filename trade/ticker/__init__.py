@@ -1,1 +1,1 @@
-from trade.ticker.market import GenericMarket
+from trade.ticker.market import Exchange, ExchangeData
