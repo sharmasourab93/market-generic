@@ -3,12 +3,12 @@ import os
 from functools import wraps
 from os import getenv
 from time import perf_counter
-from pd import set_option
 from typing import Optional
 
+from pd import set_option
+from trade.utils.log_configurator import LogConfig as Logger
+from trade.utils.log_configurator import LoggingType
 from trade.utils.telegram_api import TelegramBot
-from trade.utils.log_configurator import LoggingType, LogConfig as Logger
-
 
 EXECUTION_TIME_STR = "Execution time for {0} method {1}: {2}s"
 SYNC, ASYNC = "sync", "async"
@@ -27,7 +27,9 @@ def compute_execution_time(method):
             end = perf_counter()
             elapsed_time = round(end - start, 2)
 
-            self.logger.debug(EXECUTION_TIME_STR.format(SYNC, method.__name__, elapsed_time))
+            self.logger.debug(
+                EXECUTION_TIME_STR.format(SYNC, method.__name__, elapsed_time)
+            )
 
             return execution
 
@@ -41,7 +43,9 @@ def compute_execution_time(method):
             result = await method(self, *args, **kwargs)
             end = perf_counter()
             elapsed_time = round(end - start, 2)
-            self.logger.debug(EXECUTION_TIME_STR.format(ASYNC, method.__name__, elapsed_time))
+            self.logger.debug(
+                EXECUTION_TIME_STR.format(ASYNC, method.__name__, elapsed_time)
+            )
             return result
 
         return async_wrapper

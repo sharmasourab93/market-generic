@@ -1,15 +1,12 @@
 import re
 from calendar import monthrange
 from datetime import date, datetime
-from typing import List, Tuple, Dict, Optional
-
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 import yfinance as yf
-
-from trade.utils import MarketDFUtils, Logger
-
+from trade.utils import Logger, MarketDFUtils
 
 SYMBOL_ERROR = "Error Incurred for symbol: {0}"
 YFIN_TICKER_BY_COUNTRY = {
@@ -19,12 +16,14 @@ YFIN_TICKER_BY_COUNTRY = {
 
 
 class YFinData(MarketDFUtils):
-    def __init__(self,
-                 market: str,
-                 country: str,
-                 date_fmt: str,
-                 *,
-                 ticker_modifications: dict = None):
+    def __init__(
+        self,
+        market: str,
+        country: str,
+        date_fmt: str,
+        *,
+        ticker_modifications: dict = None,
+    ):
         self.market = market
         self.country = country
         self.date_fmt = date_fmt
@@ -34,7 +33,7 @@ class YFinData(MarketDFUtils):
 
         if not index:
             if self.country in YFIN_TICKER_BY_COUNTRY.keys():
-                suffix = YFIN_TICKER_BY_COUNTRY[self.country].get(self.market, '')
+                suffix = YFIN_TICKER_BY_COUNTRY[self.country].get(self.market, "")
 
             if suffix != str():
                 return symbol.upper() + suffix
@@ -42,19 +41,21 @@ class YFinData(MarketDFUtils):
         return symbol.upper()
 
     def log_method(self, message) -> None:
-        if hasattr(self, 'logger'):
+        if hasattr(self, "logger"):
             self.logger.error(message)
 
-    def get_period_data(self,
-                        symbol: str,
-                        period: str = "1mo",
-                        interval: str = "1d",
-                        rounding: bool = True,
-                        index: bool = False,
-                        ascending: bool = False,
-                        auto_adjust: bool = True,
-                        progress: bool = False,
-                        **kwargs) -> pd.DataFrame:
+    def get_period_data(
+        self,
+        symbol: str,
+        period: str = "1mo",
+        interval: str = "1d",
+        rounding: bool = True,
+        index: bool = False,
+        ascending: bool = False,
+        auto_adjust: bool = True,
+        progress: bool = False,
+        **kwargs,
+    ) -> pd.DataFrame:
 
         symbol = self.adjust_yfin_ticker_by_market(symbol, index)
 

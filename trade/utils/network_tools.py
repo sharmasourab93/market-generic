@@ -1,13 +1,14 @@
 import csv
 import os
+from abc import ABC
 from io import BytesIO
 from urllib.parse import urlparse
 from zipfile import ZipFile
+
 import requests
 from pandas import DataFrame, read_csv, read_excel
 from requests import Session
 from requests.exceptions import ConnectionError, InvalidURL, ReadTimeout
-from abc import ABC
 
 CHUNK_SIZE = 1024
 INVALID_URL = "URL: {0}, Status Code:{1}"
@@ -28,11 +29,9 @@ class DownloadTools(ABC):
 
         return dict(request.cookies)
 
-    def get_request_api(self,
-                        url: str,
-                        headers: dict,
-                        cookies: Optional[dict] = None,
-                        **kwargs):
+    def get_request_api(
+        self, url: str, headers: dict, cookies: Optional[dict] = None, **kwargs
+    ):
 
         cookies = self.get_cookies(url, headers)
         result = requests.get(url, headers=headers, cookies=cookies, **kwargs)

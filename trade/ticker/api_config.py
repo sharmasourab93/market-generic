@@ -1,16 +1,15 @@
 import json
 from abc import ABC
 from pathlib import Path
-from typing import TypedDict, List, Union, Dict
+from typing import Dict, List, TypedDict, Union
 
 from trade.utils.operations import containing_sub_string
 
-
-ACCEPTED_SUFFIXES = ('.json', '.yml')
+ACCEPTED_SUFFIXES = (".json", ".yml")
 FILE_NOT_FOUND = "File Not found."
 INVALID_FILE = "Invalid Config file provided."
 MARKET_SUB_TYPE = Union[List[str], Dict[str, str]]
-MARKET_TYPE = Dict[str, Union[List[str],MARKET_SUB_TYPE]]
+MARKET_TYPE = Dict[str, Union[List[str], MARKET_SUB_TYPE]]
 EXTRACT_MAP_TYPE = Dict[str, Union[str, Union[List[str], Dict[str, str]]]]
 
 
@@ -46,27 +45,27 @@ class APIConfig(ABC):
                         if isinstance(item, dict):
                             capitalized_keys.extend(self._extract_all_keys(value))
 
-                if key.isupper() or not containing_sub_string('date', key):
+                if key.isupper() or not containing_sub_string("date", key):
                     modified_key = key.replace("-", "_").lower()
                     capitalized_keys.append({modified_key: value})
 
         return capitalized_keys
 
-    def _read_json(self, file: str, mode: str = 'r') -> MARKET_TYPE:
+    def _read_json(self, file: str, mode: str = "r") -> MARKET_TYPE:
 
         with open(file, mode) as file:
             data = json.load(file)
 
         return data
 
-    def _read_yml(self, file: str, mode: str = 'r') ->MARKET_TYPE:
+    def _read_yml(self, file: str, mode: str = "r") -> MARKET_TYPE:
         with open(file, mode) as file:
             data = yaml.safe_load(file)
 
         return data
 
     def _method_map_to_suffix(self, config: str) -> MARKET_TYPE:
-        if config.suffix.lower() == '.json':
+        if config.suffix.lower() == ".json":
             return self._read_json(config)
         else:
             return self._read_yml(config)
