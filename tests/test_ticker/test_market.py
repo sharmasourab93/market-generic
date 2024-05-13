@@ -1,5 +1,7 @@
+import logging
 import os
 import pytest
+import logging
 from pathlib import Path
 from pandas import DataFrame
 from freezegun import freeze_time
@@ -18,6 +20,10 @@ MARKET_TIMINGS = dict([("start_time", "0915"),
                        ("close_time", "1530"),
                        ("time_zone","Asia/Kolkata"),
                       ("time_cutoff", "1600")])
+
+log = LoggingType(date_fmt=DATE_FMT, log_path="",config_path=None,
+                  level=logging.DEBUG,
+            to_log=True, to_console=True)
 
 HOLIDAYS_DICT = [
     {

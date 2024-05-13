@@ -21,7 +21,7 @@ class CombinedMeta(type(Exchange), type(Utilities)):
     pass
 
 
-class Market(Exchange, metaclass=CombinedMeta):
+class Market(Exchange):
 
     def __init__(self, today: str, date_fmt: str,
                  market_config: Union[Path, str],
@@ -29,9 +29,9 @@ class Market(Exchange, metaclass=CombinedMeta):
                  market_holiday: MarketHolidayType,
                  market_timing: MarketTimingType,
                  ticker_mod: Optional[Dict[str, str]] = None,
-                 logging_config: Optional[LoggingType] = None):
+                 logging_config: Optional[LoggingType] = None, **kwargs):
 
         super().__init__(today=today, date_fmt=date_fmt,
                         market=market, country=country,
                         config=market_config, market_holidays=market_holiday,
-                        market_timings=market_timing, ticker_mod=ticker_mod)
+                        market_timings=market_timing, ticker_mod=ticker_mod, **kwargs)
