@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+
+import pytest
 from trade.ticker.api_config import APIConfig
 
 
@@ -20,5 +21,5 @@ def test_api_config(nse_config):
         config = Path(__file__).parent.parent.parent.resolve() / config
         nse_conf = nse_config(config)
 
-    columns = ("industry", "market", "nse", "api", "block_deal",  "fii_dii_report")
+    columns = ("industry", "market", "nse", "api", "block_deal", "fii_dii_report")
     assert all([hasattr(nse_conf, i) for i in columns])
