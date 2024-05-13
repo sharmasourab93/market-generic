@@ -17,14 +17,15 @@ class MarketCalendar:
     def __init__(
         self,
         today: NewType("DateFormat", str),
+        date_fmt: str,
         market_holidays: List[MarketHolidayType],
         market_timings: MarketTimingType,
     ):
         self.today = today
         self.working_day = WorkingDayDate(
-            self.today, market_holidays, market_timings=market_timings
+            self.today, market_holidays, market_timings=market_timings,
+            date_fmt=date_fmt
         )
-        self.market_name = market_name
 
     @property
     def prev_day(self) -> DateObj:
