@@ -7,30 +7,31 @@ from trade.calendar import MarketCalendar, MarketHolidayType, MarketTimingType
 from trade.ticker.api_config import APIConfig
 
 
-class ExchangeData(APIConfig, YFinance, MarketCalendar, DownloadTools):
+class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
 
     def __init__(self, today, date_fmt, config, market, country, market_holidays,
                  market_timings, ticker_mod):
-        APIConfig.__init__(config)
-        YFinance.__init__(market, country, date_fmt,ticker_modifications=ticker_mod)
-        MarketCalendar.__init__(today, date_fmt, market_holiday, market_timing)
+        super().__init__(config)
+        YFinance.__init__(self, market, country, date_fmt,
+                          ticker_modifications=ticker_mod)
+        MarketCalendar.__init__(self, today, date_fmt, market_holidays, market_timings)
 
 
-class CombinedMeta(type(ExchangeData), type(Utilities)):
+class CombinedMeta(type(Exchange), type(Utilities)):
     pass
 
 
-class Exchange(ExchangeData, metaclass=CombinedMeta):
+class Market(Exchange, metaclass=CombinedMeta):
 
     def __init__(self, today: str, date_fmt: str,
-                 market: str, country: str,
                  market_config: Union[Path, str],
+                 market: str, country: str,
                  market_holiday: MarketHolidayType,
                  market_timing: MarketTimingType,
                  ticker_mod: Optional[Dict[str, str]] = None,
                  logging_config: Optional[LoggingType] = None):
 
-        ExchangeData.__init__(today, date_fmt,
-                              market, country,
-                              market_config, market_holiday,
-                              market_timing, ticker_mod)
+        super().__init__(today=today, date_fmt=date_fmt,
+                        market=market, country=country,
+                        config=market_config, market_holidays=market_holiday,
+                        market_timings=market_timing, ticker_mod=ticker_mod)
