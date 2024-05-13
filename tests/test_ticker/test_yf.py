@@ -1,5 +1,5 @@
 import pytest
-from trade.ticker import YFinance
+from trade.ticker.yf import YFinance
 
 
 @pytest.fixture

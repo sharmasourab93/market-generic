@@ -1,1 +1,1 @@
-from trade.ticker.yf import YFinance
+from trade.ticker.market import GenericMarket

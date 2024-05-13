@@ -28,6 +28,7 @@ class YFinance(MarketDFUtils):
         self.country = country
         self.date_fmt = date_fmt
         self.ticker_modifications = ticker_modifications
+        self.yf = yf
 
     def adjust_yfin_ticker_by_market(self, symbol: str, index: bool) -> str:
 
@@ -59,7 +60,7 @@ class YFinance(MarketDFUtils):
 
         symbol = self.adjust_yfin_ticker_by_market(symbol, index)
 
-        data = yf.download(
+        data = self.yf.download(
             symbol,
             period=period,
             interval=interval,
