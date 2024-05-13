@@ -27,11 +27,12 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
 
-    - name: Publish to GitHub Packages
+    - name: Publish to PyPI
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        twine upload --verbose --repository-url https://maven.pkg.github.com/${{ github.repository }} dist/* --username __token__ --password ${{ secrets.TOKEN }}
+        twine upload --verbose dist/*
 
     - name: Get latest tag number
       id: get_latest_tag
@@ -48,7 +49,3 @@ jobs:
         tag_name: v${{ steps.get_latest_tag.outputs.tag_number }}
         title: Release v${{ steps.get_latest_tag.outputs.tag_number }}
         body: Automated release created by GitHub Actions
-
-    - name: Install Package
-      run: |
-        pip install git+https://github.com/${{ github.repository }}.git@v${{ steps.get_latest_tag.outputs.tag_number }}
