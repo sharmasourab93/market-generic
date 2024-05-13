@@ -4,7 +4,7 @@ from functools import cache
 from os import getenv
 
 import telegram
-from trade.utils.meta.singleton_meta import SingletonMeta
+from trade.utils.meta_utils.singleton_meta import SingletonMeta
 
 TELEGRAM_SIGNATURE = "\n Generated on {0}."
 

@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 import pytest
 from trade.calendar.calendar_data import (
-    DATE_FMT,
     WEEKDAY_TO_ISO,
     DateObj,
     DayOfWeek,
@@ -18,6 +17,8 @@ MARKET_TIMINGS = {
     "time_zone": "Asia/Kolkata",
     "time_cutoff": "1600",
 }
+
+DATE_FMT = "%d-%b-%Y"
 FROZEN_DATE = "2024-04-24"
 HOLIDAYS_DICT = [
     {
@@ -40,37 +41,37 @@ HOLIDAYS_DICT = [
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_as_datetime(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     assert date_obj.as_date == datetime.strptime(given_date, DATE_FMT).date()
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_as_str(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     assert date_obj.as_str == given_date
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_as_weekday(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     assert date_obj.as_weekday == datetime.strptime(given_date, DATE_FMT).strftime("%A")
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_str(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     assert str(date_obj) == given_date
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_eq(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     assert date_obj == given_date
 
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_add(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     delta_days = timedelta(days=10)
     next_day = (datetime.strptime(given_date, DATE_FMT) + delta_days).date()
     assert date_obj + delta_days == next_day
@@ -78,7 +79,7 @@ def test_date_obj_add(given_date):
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_sub(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     delta_days = timedelta(days=10)
     next_day = (datetime.strptime(given_date, DATE_FMT) - delta_days).date()
     assert date_obj - delta_days == next_day
@@ -86,7 +87,7 @@ def test_date_obj_sub(given_date):
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_gt(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     delta_days = timedelta(days=10)
     next_day = (datetime.strptime(given_date, DATE_FMT) - delta_days).date()
     assert date_obj > next_day
@@ -94,7 +95,7 @@ def test_date_obj_gt(given_date):
 
 @pytest.mark.parametrize("given_date", ["28-Apr-2024", "01-Jan-2024"])
 def test_date_obj_lt(given_date):
-    date_obj = DateObj(given_date)
+    date_obj = DateObj(given_date, date_fmt=DATE_FMT)
     delta_days = timedelta(days=10)
     next_day = (datetime.strptime(given_date, DATE_FMT) + delta_days).date()
     assert date_obj < next_day
@@ -112,7 +113,7 @@ def test_day_of_week_iso(weekday, week_iso):
 @pytest.mark.freeze_time(FROZEN_DATE)
 @pytest.mark.parametrize("entry", HOLIDAYS_DICT)
 def test_market_holiday_entry_creation(entry: MarketHolidayType):
-    holiday_entry = MarketHolidayEntry(**entry)
+    holiday_entry = MarketHolidayEntry(**entry, date_fmt=DATE_FMT)
     assert holiday_entry.trade_date.as_str == entry["trade_day"]
     assert str(holiday_entry.trade_date) == entry["trade_day"]
     assert (
@@ -132,7 +133,7 @@ def test_market_holiday_entry_creation(entry: MarketHolidayType):
 @pytest.mark.freeze_time(FROZEN_DATE)
 def test_market_holidays_creation():
     holidays_dict = HOLIDAYS_DICT
-    market_holidays = MarketHolidays(holidays_dict=holidays_dict)
+    market_holidays = MarketHolidays(holidays_dict=holidays_dict, date_fmt=DATE_FMT)
     assert len(market_holidays) == len(holidays_dict)
     assert market_holidays.next_working == holidays_dict[-1]["trade_day"]
     assert market_holidays.next_holiday == holidays_dict[1]["trade_day"]
@@ -143,7 +144,7 @@ def test_market_holidays_creation():
 @pytest.mark.freeze_time(FROZEN_DATE)
 def test_market_holidays_update_next_holiday():
     holidays_dict = HOLIDAYS_DICT
-    market_holidays = MarketHolidays(holidays_dict=holidays_dict)
+    market_holidays = MarketHolidays(holidays_dict=holidays_dict, date_fmt=DATE_FMT)
     market_holidays.update_next_holiday()
     assert (
         market_holidays.next_working.trade_date.as_str == holidays_dict[-1]["trade_day"]
@@ -157,7 +158,7 @@ def test_market_holidays_update_next_holiday():
 def test_market_holidays_update_next_holiday():
     holidays_dict = []
     with pytest.raises(StopIteration):
-        market_holidays = MarketHolidays(holidays_dict=holidays_dict)
+        market_holidays = MarketHolidays(holidays_dict=holidays_dict, date_fmt=DATE_FMT)
         market_holidays.update_next_holiday()
 
 
@@ -179,7 +180,7 @@ def test_market_holidays_update_next_holiday():
 def test_working_day_date(given_date, next_date, prev_date):
     holidays_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(
-        given_date, holidays_dict, market_timings=MARKET_TIMINGS
+        given_date, holidays_dict, market_timings=MARKET_TIMINGS, date_fmt=DATE_FMT
     )
     previous_day = working_date_obj.previous_business_day
     next_day = working_date_obj.next_business_day
@@ -197,7 +198,7 @@ def test_working_day_date(given_date, next_date, prev_date):
 def test_working_day_today_1(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(
-        given_date, holiday_dict, market_timings=MARKET_TIMINGS
+        given_date, holiday_dict, market_timings=MARKET_TIMINGS, date_fmt=DATE_FMT
     )
 
     next_day = working_date_obj.next_business_day
@@ -217,7 +218,7 @@ def test_working_day_today_1(given_date, next_date, prev_date):
 def test_working_day_today_2(given_date, next_date, prev_date):
     holiday_dict = HOLIDAYS_DICT
     working_date_obj = WorkingDayDate(
-        given_date, holiday_dict, market_timings=MARKET_TIMINGS
+        given_date, holiday_dict, market_timings=MARKET_TIMINGS, date_fmt=DATE_FMT
     )
 
     next_day = working_date_obj.next_business_day
