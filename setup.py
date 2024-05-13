@@ -25,7 +25,7 @@ setup(
     long_description_content_type="text/markdown",
     url=URL,
     packages=find_packages(exclude=["tests", ".github"]),
-    setup_requires=['wheel'],
+    setup_requires=["wheel"],
     install_requires=INSTALL_REQUIRES,
     keywords=KEYWORDS,
 )
