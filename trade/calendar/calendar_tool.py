@@ -23,8 +23,10 @@ class MarketCalendar:
     ):
         self.today = today
         self.working_day = WorkingDayDate(
-            self.today, market_holidays, market_timings=market_timings,
-            date_fmt=date_fmt
+            self.today,
+            market_holidays,
+            market_timings=market_timings,
+            date_fmt=date_fmt,
         )
 
     @property
