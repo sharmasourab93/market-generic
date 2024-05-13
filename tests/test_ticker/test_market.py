@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from freezegun import freeze_time
 from pandas import DataFrame
+
 from trade.calendar import MarketCalendar, MarketHolidayType
 from trade.ticker import Market
 from trade.utils import LoggingType
