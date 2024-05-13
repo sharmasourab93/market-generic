@@ -7,4 +7,5 @@ numpy==1.26.4
 pandas==2.2.2
 dateutils==0.6.12
 gspread==6.1.0
-python-telegram-bot==20.3
+python-telegram-bot==21.1.1
+yfinance==0.2.38

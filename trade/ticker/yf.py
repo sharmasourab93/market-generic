@@ -18,7 +18,7 @@ YFIN_TICKER_BY_COUNTRY = {
 }
 
 
-class YFinData(MarketDFUtils):
+class YFinance(MarketDFUtils):
     def __init__(self,
                  market: str,
                  country: str,
@@ -30,7 +30,7 @@ class YFinData(MarketDFUtils):
         self.date_fmt = date_fmt
         self.ticker_modifications = ticker_modifications
 
-    def adjust_yfin_ticker_by_market(self, symbol: str, index: bool) -> str:
+    def adjust_yfin_ticker_by_market(self, symbol: str, index: bool = False) -> str:
 
         if not index:
             if self.country in YFIN_TICKER_BY_COUNTRY.keys():
@@ -72,11 +72,12 @@ class YFinData(MarketDFUtils):
             message = SYMBOL_ERROR.format(symbol)
             self.log_method(message)
 
-            if symbol in list(self.ticker_modifications.keys()):
-                return self.get_period_data(
-                    self.ticker_modifications[symbol], period, interval
-                )
-            return pd.DataFrame()
+            if self.ticker_modifications is not None:
+                if symbol in list(self.ticker_modifications.keys()):
+                    return self.get_period_data(
+                        self.ticker_modifications[symbol], period, interval
+                    )
+                return pd.DataFrame()
 
         data["prev_close"] = data.Close.shift(1)
         data = data.loc[~data.prev_close.isna(), :]
@@ -91,13 +92,9 @@ class YFinData(MarketDFUtils):
 
         data.columns = data.columns.str.lower()
 
-        if date_fmt is not None:
+        if self.date_fmt is not None:
             data["date"] = pd.to_datetime(data.date).apply(
-                lambda x: x.strftime(date_fmt)
+                lambda x: x.strftime(self.date_fmt)
             )
 
         return data.round(2)
-
-    def get_unique_ticker_set(self, tickers: List[str]) -> Tuple[str]:
-
-        return tuple([self.adjust_yfin_ticker_by_market(i) for i in tickers])

@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from logging import config as log_conf
 from os import mkdir, path
-from typing import Any
+from typing import Any, TypedDict
 
 LOG_MAP = {
     "version": 1,

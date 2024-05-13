@@ -3,7 +3,7 @@ import os
 from functools import wraps
 from os import getenv
 from time import perf_counter
-from pd import set_option
+from pandas import set_option
 from typing import Optional
 
 from trade.utils.telegram_api import TelegramBot

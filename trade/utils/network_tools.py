@@ -8,6 +8,7 @@ from pandas import DataFrame, read_csv, read_excel
 from requests import Session
 from requests.exceptions import ConnectionError, InvalidURL, ReadTimeout
 from abc import ABC
+from typing import Optional, List, Dict, TypedDict, Tuple
 
 CHUNK_SIZE = 1024
 INVALID_URL = "URL: {0}, Status Code:{1}"
