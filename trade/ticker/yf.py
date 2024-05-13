@@ -6,7 +6,6 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 import yfinance as yf
-
 from trade.utils import Logger, MarketDFUtils
 
 SYMBOL_ERROR = "Error Incurred for symbol: {0}"
