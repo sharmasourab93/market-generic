@@ -16,7 +16,7 @@ Trade is a powerful and flexible Python library designed to simplify the process
 To install the AlgoTrade package, use pip:
 
 ```
-pip install trade
+pip install market-generic
 ```
 
 ### Usage
@@ -24,21 +24,7 @@ pip install trade
 Here's a simple example of how to use the Trade package to fetch and analyze stock data:
 python
 
-```
-from trade.data import StockDataFetcher
-from trade.indicators import MovingAverage
 
-# Fetch stock data for Apple (AAPL)
-fetcher = StockDataFetcher()
-data = fetcher.get_stock_data('AAPL')
-
-# Calculate the 20-day simple moving average
-sma_20 = MovingAverage(data, window=20, type='simple')
-
-# Plot the stock price and the moving average
-data.plot(y='Close', label='Price')
-sma_20.plot(label='SMA-20')
-```
 
 ### Documentation
 
