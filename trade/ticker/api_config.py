@@ -3,7 +3,7 @@ from abc import ABC
 from pathlib import Path
 from typing import Dict, List, TypedDict, Union
 
-from trade.utils.operations import containing_sub_string
+from trade.utils import operations
 
 ACCEPTED_SUFFIXES = (".json", ".yml")
 FILE_NOT_FOUND = "File Not found."
@@ -45,7 +45,7 @@ class APIConfig(ABC):
                         if isinstance(item, dict):
                             capitalized_keys.extend(self._extract_all_keys(value))
 
-                if key.isupper() or not containing_sub_string("date", key):
+                if key.isupper() or not operations.containing_sub_string("date", key):
                     modified_key = key.replace("-", "_").lower()
                     capitalized_keys.append({modified_key: value})
 
