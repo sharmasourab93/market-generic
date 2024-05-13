@@ -2,9 +2,9 @@ import csv
 import os
 from abc import ABC
 from io import BytesIO
+from typing import Optional
 from urllib.parse import urlparse
 from zipfile import ZipFile
-from typing import Optional
 
 import requests
 from pandas import DataFrame, read_csv, read_excel
