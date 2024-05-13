@@ -1,9 +1,9 @@
 from setuptools import find_packages, setup
 
-NAME = "generic-trade"
+NAME = "market-generic"
 VERSION = "0.0"
 DESCRITPION = "A Generic Python Package for Stock Market Analysis and Trading"
-URL = "https://github.com/sharmasourab93/Trade"
+URL = "https://github.com/sharmasourab93/market-gen"
 AUTHOR = "Sourab S Sharma"
 EMAIL = "sharmasourab93@gmail.com"
 
