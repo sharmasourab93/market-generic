@@ -10,7 +10,7 @@ def yfin_data_instance():
 @pytest.mark.parametrize("ticker", ["reliance", "sbin"])
 def test_adjust_yfin_ticker_by_market(yfin_data_instance, ticker):
     assert (
-        yfin_data_instance.adjust_yfin_ticker_by_market(ticker)
+        yfin_data_instance.adjust_yfin_ticker_by_market(ticker, index=False)
         == ticker.upper() + ".NS"
     )
 

@@ -15,7 +15,7 @@ YFIN_TICKER_BY_COUNTRY = {
 }
 
 
-class YFinData(MarketDFUtils):
+class YFinance(MarketDFUtils):
     def __init__(
         self,
         market: str,
@@ -73,11 +73,12 @@ class YFinData(MarketDFUtils):
             message = SYMBOL_ERROR.format(symbol)
             self.log_method(message)
 
-            if symbol in list(self.ticker_modifications.keys()):
-                return self.get_period_data(
-                    self.ticker_modifications[symbol], period, interval
-                )
-            return pd.DataFrame()
+            if self.ticker_modifications is not None:
+                if symbol in list(self.ticker_modifications.keys()):
+                    return self.get_period_data(
+                        self.ticker_modifications[symbol], period, interval
+                    )
+                return pd.DataFrame()
 
         data["prev_close"] = data.Close.shift(1)
         data = data.loc[~data.prev_close.isna(), :]
@@ -92,9 +93,9 @@ class YFinData(MarketDFUtils):
 
         data.columns = data.columns.str.lower()
 
-        if date_fmt is not None:
+        if self.date_fmt is not None:
             data["date"] = pd.to_datetime(data.date).apply(
-                lambda x: x.strftime(date_fmt)
+                lambda x: x.strftime(self.date_fmt)
             )
 
         return data.round(2)
