@@ -1,5 +1,4 @@
 import pytest
-
 from trade.ticker.yf import YFinance
 
 
