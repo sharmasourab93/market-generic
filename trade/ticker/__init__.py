@@ -1,1 +1,1 @@
-from trade.ticker.market import Market, Exchange
+from trade.ticker.market import Exchange, Market

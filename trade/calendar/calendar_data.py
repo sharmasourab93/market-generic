@@ -81,8 +81,9 @@ class DateObj:
     def __eq__(self, another_date: Union["DateObj", date, datetime]):
 
         if isinstance(another_date, date) or isinstance(another_date, datetime):
-            another_date = DateObj(another_date.strftime(self.date_fmt),
-                                   date_fmt=self.date_fmt)
+            another_date = DateObj(
+                another_date.strftime(self.date_fmt), date_fmt=self.date_fmt
+            )
 
         if isinstance(another_date, str):
             another_date = DateObj(another_date, date_fmt=self.date_fmt)
@@ -95,8 +96,9 @@ class DateObj:
     def __gt__(self, other_date: Union["DateObj", date, datetime]):
 
         if isinstance(other_date, date) or isinstance(other_date, datetime):
-            another_date = DateObj(other_date.strftime(self.date_fmt),
-                                   date_fmt=self.date_fmt)
+            another_date = DateObj(
+                other_date.strftime(self.date_fmt), date_fmt=self.date_fmt
+            )
 
         if isinstance(other_date, str):
             other_date = DateObj(other_date, date_fmt=self.date_fmt)
@@ -109,7 +111,9 @@ class DateObj:
     def __lt__(self, other_date: Union["DateObj", date, datetime]):
 
         if isinstance(other_date, date) or isinstance(other_date, datetime):
-            other_date = DateObj(other_date.strftime(self.date_fmt), date_fmt=self.date_fmt)
+            other_date = DateObj(
+                other_date.strftime(self.date_fmt), date_fmt=self.date_fmt
+            )
 
         if isinstance(other_date, str):
             other_date = DateObj(other_date, date_fmt=self.date_fmt)
@@ -192,12 +196,14 @@ class MarketHolidays:
         for i, holiday in enumerate(self.holidays):
             if holiday.trade_date.as_date >= self.today:
                 if holiday.working and self.next_working is None:
-                    self.next_working = DateObj(holiday.trade_date.as_str,
-                                                date_fmt=self.date_fmt)
+                    self.next_working = DateObj(
+                        holiday.trade_date.as_str, date_fmt=self.date_fmt
+                    )
 
                 if not holiday.working and self.next_holiday is None:
-                    self.next_holiday = DateObj(holiday.trade_date.as_str,
-                                                date_fmt=self.date_fmt)
+                    self.next_holiday = DateObj(
+                        holiday.trade_date.as_str, date_fmt=self.date_fmt
+                    )
 
                 if self.next_holiday is not None and self.next_working is not None:
                     break
@@ -286,8 +292,9 @@ class WorkingDayDate:
             self.working_day = DateObj(self.given_date, self.date_fmt)
 
         if not isinstance(self.market_holidays, MarketHolidays):
-            self.market_holidays = MarketHolidays(self.market_holidays,
-                                                  date_fmt=self.date_fmt)
+            self.market_holidays = MarketHolidays(
+                self.market_holidays, date_fmt=self.date_fmt
+            )
 
     @property
     def next_business_day(self) -> DateObj:
@@ -337,8 +344,9 @@ class WorkingDayDate:
             ).next_business_day
             count_days += 1
 
-        return WorkingDayDate(iter_work_day.as_str, self.market_holidays,
-                              date_fmt=self.date_fmt)
+        return WorkingDayDate(
+            iter_work_day.as_str, self.market_holidays, date_fmt=self.date_fmt
+        )
 
     def __sub__(self, days: int) -> "WorkObj":
         count_days = days
@@ -349,5 +357,6 @@ class WorkingDayDate:
             ).previous_business_day
             count_days -= 1
 
-        return WorkingDayDate(iter_work_day.as_str, self.market_holidays,
-                              date_fmt=self.date_fmt)
+        return WorkingDayDate(
+            iter_work_day.as_str, self.market_holidays, date_fmt=self.date_fmt
+        )

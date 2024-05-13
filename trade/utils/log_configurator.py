@@ -1,8 +1,8 @@
 import logging
-from pathlib import Path
 from datetime import datetime
 from logging import config as log_conf
 from os import mkdir, path
+from pathlib import Path
 from typing import Any, TypedDict
 
 LOG_MAP = {
@@ -101,7 +101,7 @@ class LogConfig:
                 if log_folder
                 else path.abspath(log_path)
             )
-            mkdir(Path(log_dir)/ Path("log"))
+            mkdir(Path(log_dir) / Path("log"))
             log_path = path.join(
                 log_dir, f"{log_folder}_{time}.log" if log_folder else f"log_{time}.log"
             )
