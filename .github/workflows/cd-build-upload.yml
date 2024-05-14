@@ -33,7 +33,8 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        if [ ${{github.ref }} == 'refs/heads/master' ]; then
+        if [[ ${{github.ref }} == 'refs/heads/master' ]]; then
           twine upload --repository pypi dist/* --verbose
         else: 
           twine upload --repository testpypi dist/* --verbose
+        fi
