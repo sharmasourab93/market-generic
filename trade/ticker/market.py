@@ -1,24 +1,40 @@
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, List
 
 from trade.calendar import MarketCalendar, MarketHolidayType, MarketTimingType
 from trade.ticker.api_config import APIConfig
 from trade.ticker.yf import YFinance
-from trade.utils import DownloadTools, Logger, LoggingType, Utilities
+from trade.utils import DownloadTools, Logger, LoggingType
+
+
+@dataclass
+class ExchangeArgs:
+    today: str
+    date_fmt: str
+    config: str
+    market: str
+    country: str
+    market_holidays: List[MarketHolidayType]
+    market_timings: List[MarketTimingType]
+    ticker_mod: Optional[Dict[str, str]] = None
+    log_config: Optional[LoggingType] = None
 
 
 class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
 
     def __init__(
         self,
-        today,
-        date_fmt,
-        config,
-        market,
-        country,
-        market_holidays,
-        market_timings,
-        ticker_mod,
+            *,
+        today: str,
+        date_fmt: str,
+        config: str,
+        market: str,
+        country:str,
+        market_holidays: List[MarketHolidayType],
+        market_timings: List[MarketTimingType],
+        ticker_mod: Optional[Dict[str, str]] = None,
+        logging_config: Optional[LoggingType] = None
     ):
         super().__init__(config)
         YFinance.__init__(
@@ -26,35 +42,9 @@ class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
         )
         MarketCalendar.__init__(self, today, date_fmt, market_holidays, market_timings)
 
-
-class CombinedMeta(type(Exchange), type(Utilities)):
-    pass
-
-
-class Market(Exchange):
-
-    def __init__(
-        self,
-        today: str,
-        date_fmt: str,
-        market_config: Union[Path, str],
-        market: str,
-        country: str,
-        market_holiday: MarketHolidayType,
-        market_timing: MarketTimingType,
-        ticker_mod: Optional[Dict[str, str]] = None,
-        logging_config: Optional[LoggingType] = None,
-        **kwargs,
-    ):
-
-        super().__init__(
-            today=today,
-            date_fmt=date_fmt,
-            market=market,
-            country=country,
-            config=market_config,
-            market_holidays=market_holiday,
-            market_timings=market_timing,
-            ticker_mod=ticker_mod,
-            **kwargs,
-        )
+        # TODO: Identify a way to make use of metaclasses to enable, logging,
+        #  telegram & compute execution time methods.
+        # This is just for the time being.
+        if logging_config is not None:
+            Logger.setup_logging(**logging_config)
+            self.logger = Logger.get_logger(__name__)
