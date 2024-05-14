@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   build-and-upload:
@@ -32,4 +33,21 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        twine upload --repository pypi dist/* --verbose 
+        if [[ ${{github.ref }} == 'refs/heads/master' ]]; then
+          twine upload --repository pypi dist/* --verbose
+        else: 
+          twine upload --repository testpypi dist/* --verbose
+        fi
+
+    - name: Create Release
+      id: create_release
+      if: github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: | 
+          Release created automatically by GitHub Actions.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
