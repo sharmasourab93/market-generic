@@ -1,9 +1,10 @@
 import logging
+from dataclasses import dataclass
 from datetime import datetime
 from logging import config as log_conf
 from os import mkdir, path
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, Literal
 
 LOG_MAP = {
     "version": 1,
@@ -32,11 +33,12 @@ LOG_MAP = {
 }
 
 
-class LoggingType(TypedDict):
+@dataclass
+class LoggingType:
     date_fmt: str
     log_path: str
     config_path: str
-    level: Any
+    level: Literal[0, 10, 20, 30, 40, 50]
     to_log: bool = True
     to_console: bool = True
 
