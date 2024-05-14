@@ -38,3 +38,16 @@ jobs:
         else: 
           twine upload --repository testpypi dist/* --verbose
         fi
+
+    - name: Create Release
+      id: create_release
+      if: github.ref == 'refs/heads/master'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: | 
+          Release created automatically by GitHub Actions.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
