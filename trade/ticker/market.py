@@ -25,7 +25,6 @@ class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
 
     def __init__(
         self,
-            *,
         today: str,
         date_fmt: str,
         config: str,
