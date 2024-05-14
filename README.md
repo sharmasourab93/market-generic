@@ -1,4 +1,4 @@
-# Trade - A Generic Python Package for Stock Market Analysis and Trading
+# market-generic - A Generic Python Package for Stock Market Analysis and Trading
 
 ### Overview
 
@@ -24,6 +24,7 @@ pip install market-generic
 Here's a simple example of how to use the Trade package to fetch and analyze stock data:
 python
 
+`Coming Soon`
 
 
 ### Documentation
