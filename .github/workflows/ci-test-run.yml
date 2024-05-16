@@ -9,7 +9,6 @@ jobs:
   unit-tests-pytest:
     name: Run unit tests with pytest
     runs-on: ubuntu-latest
-    needs: format
     steps:
       - name: Install system level libraries
         run: |
