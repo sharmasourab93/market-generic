@@ -32,13 +32,13 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         python setup.py sdist bdist_wheel
+        semantic-release version 
         
         if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-          semantic-release version 
-          semantic-release publish 
+          semantic-release publish --no-commit
           twine upload dist/* --verbose
-        elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
-          semantic-release version 
+        elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then 
+          semantic-release publish --no-committ
           export TWINE_PASSWORD=${{ secrets.TEST_PYPI_PASSWORD }};
           twine upload --repository testpypi dist/* --verbose 
         fi
