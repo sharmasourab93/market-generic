@@ -1,7 +1,7 @@
 [tool.isort]
 profile = "black"
 skip = [".gitignore", ".dockerignore", "py11venv", "venv"]
-src_paths = ["algotrade", "tests"]
+src_paths = ["trade", "tests"]
 
 [tool.black]
 line-length=88
