@@ -5,12 +5,6 @@ on:
     branches:
       - '*'
 
-  pull_request:
-    branches:
-      - '*'
-      - '!master'
-      - '!develop'
-
 jobs:
   format:
     runs-on: ubuntu-latest
