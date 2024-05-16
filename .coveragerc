@@ -1,0 +1,9 @@
+[run]
+omit =
+    */site-packages/*
+    */tests/*
+    *__init__.py
+
+
+[xml]
+output = coverage.xml

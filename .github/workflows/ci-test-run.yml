@@ -5,12 +5,6 @@ on:
     branches:
       - '*'
 
-  workflow_run:
-    workflows:
-      - "cd-build-upload.yml"
-    types:
-      - completed
-
 jobs:
   unit-tests-pytest:
     name: Run unit tests with pytest
@@ -34,6 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install pytest pytest-cov pytest-json-report pytest-freezegun
           pip install -r requirements.txt
 
       - name: Print current working directory
@@ -43,6 +38,14 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/
+          pytest --cov=. --cov-config=.coveragerc --cov-report=html:coverage_report --json-report --json-report-file=test_report.json tests/
         env:
           PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload Coverage and test reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-reports
+          path: |
+            coverage_report/
+            test_report.json

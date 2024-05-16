@@ -6,6 +6,7 @@ from time import perf_counter
 from typing import Optional
 
 from pandas import set_option
+
 from trade.utils.log_configurator import LogConfig as Logger
 from trade.utils.log_configurator import LoggingType
 from trade.utils.telegram_api import TelegramBot
