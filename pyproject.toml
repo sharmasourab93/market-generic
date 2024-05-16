@@ -7,5 +7,16 @@ src_paths = ["algotrade", "tests"]
 line-length=88
 target-version=['py311']
 
+[tool.semantic_release]
+version_variables = "setup.py:__version__"
+version_source = "setup.py"
+branch = "master"
+changelog_file = "CHANGELOG.md"
+build_command = "python setup.py sdist bdist_wheel"
+dist_path = "dist/"
+upload_to_release = true
+upload_pypi = true
+remove_dist = false
+patch_without_tag = true
 
 

@@ -1,9 +1,9 @@
 from setuptools import find_packages, setup
 
 NAME = "market-generic"
-VERSION = "0.0"
+__version__ = "0.0.0"
 DESCRITPION = "A Generic Python Package for Stock Market Analysis and Trading"
-URL = "https://github.com/sharmasourab93/market-gen"
+URL = "https://github.com/sharmasourab93/market-generic"
 AUTHOR = "Sourab S Sharma"
 EMAIL = "sharmasourab93@gmail.com"
 
@@ -17,7 +17,7 @@ KEYWORDS = ["Market", "Trade", "Analysis"]
 
 setup(
     name=NAME,
-    version=VERSION,
+    version=__version__,
     author=AUTHOR,
     author_email=EMAIL,
     description=DESCRITPION,
