@@ -36,6 +36,7 @@ jobs:
         
         if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
           semantic-release publish 
+          twine upload dist/* --verbose
         elif [[ ${{ github.ref }} == 'refs/heads/develop' ]]; then
           export TWINE_PASSWORD=${{ secrets.TEST_PYPI_PASSWORD }};
           twine upload --repository testpypi dist/* --verbose 
