@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 import pytest
+
 from trade.calendar.calendar_data import (
     WEEKDAY_TO_ISO,
     DateObj,

@@ -1,8 +1,8 @@
-# Trade - A Generic Python Package for Stock Market Analysis and Trading
+# market-generic - A Generic Python Package for Stock Market Analysis and Trading
 
 ### Overview
 
-Trade is a powerful and flexible Python library designed to simplify the process of working with stock market data. It provides a comprehensive set of tools and utilities to handle, analyze, and visualize stock data, enabling developers and analysts to build dynamic stock scanners, trading strategies, and other financial applications with ease.
+`market-generic` is a powerful and flexible Python library designed to simplify the process of working with stock market data. It provides a comprehensive set of tools and utilities to handle, analyze, and visualize stock data, enabling developers and analysts to build dynamic stock scanners, trading strategies, and other financial applications with ease.
 
 
 ### Key Features
@@ -24,6 +24,7 @@ pip install market-generic
 Here's a simple example of how to use the Trade package to fetch and analyze stock data:
 python
 
+`Coming Soon`
 
 
 ### Documentation
