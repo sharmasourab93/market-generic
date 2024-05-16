@@ -49,7 +49,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
 
       - name: Upload Coverage and test reports
-        uses: actions/upload-artifacts@v2
+        uses: actions/upload-artifact@v2
         with:
           name: test-reports
           path: |
