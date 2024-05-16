@@ -4,15 +4,16 @@ on:
   push:
     branches:
       - '*'
-  workflow_run:
-    workflows: ["ci-test-run.yml"]
-    types:
-      - completed
+
+  pull_request:
+    branches:
+      - '*'
+      - '!master'
+      - '!develop'
 
 jobs:
   format:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
