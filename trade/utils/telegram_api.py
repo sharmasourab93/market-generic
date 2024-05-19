@@ -2,8 +2,8 @@ import asyncio
 from datetime import datetime
 from functools import cache
 from os import getenv
-import telegram
 
+import telegram
 
 TELEGRAM_SIGNATURE = "\n Generated on {0}."
 
