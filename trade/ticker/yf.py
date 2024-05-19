@@ -31,7 +31,7 @@ class YFinance(MarketDFUtils):
         self.ticker_modifications = ticker_modifications
         self.yf = yf
 
-    def adjust_yfin_ticker_by_market(self, symbol: str, index: bool) -> str:
+    def adjust_yfin_ticker_by_market(self, symbol: str, index: bool = False) -> str:
 
         if not index:
             if self.country in YFIN_TICKER_BY_COUNTRY.keys():

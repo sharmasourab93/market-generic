@@ -160,7 +160,7 @@
                     "EQ-BHAVCOPY": {
                         "file_path": "data/input/downloaded/temp.zip",
                         "name": "EQ-BhavCopy",
-                        "url": "content/historical/EQUITIES/{0}/{3}/NSE_CM_bhavcopy_{2}{1}{0}.csv.zip"
+                        "url": "content/historical/EQUITIES/{0}/{1}/NSE_CM_bhavcopy_{2}{1}{0}.csv.zip"
                     },
                     "FO-MKLOTS": {
                         "domain": "https://archives.nseindia.com",
@@ -183,7 +183,7 @@
                         "name": "MW-SEC-FO-Index",
                         "url": "api/equity-stockIndices?csv=true&index=SECURITIES%20IN%20F%26O"
                     },
-                    "DOWNLOAD-DOMAIN": "https://archives.nseindia.com/"
+                    "DOWNLOAD-DOMAIN": "https://nsearchives.nseindia.com/"
                 },
                 "RELEASE": {
                     "date-fmt": "%d-%m-%Y",
