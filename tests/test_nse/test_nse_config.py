@@ -1,6 +1,8 @@
+from datetime import date, datetime
+
 import pytest
-from datetime import datetime, date
-from trade.nse.nse_config import NSEConfig, DATE_FMT
+
+from trade.nse.nse_config import DATE_FMT, NSEConfig
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)

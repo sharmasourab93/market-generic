@@ -11,11 +11,11 @@ def contains_sub_string(pattern: str, string: str) -> bool:
     return False
 
 
-def calculate_pct_diff(data1: Union[float, int],
-                       data2: Union[float, int],
-                       rounding: int = 2) -> Union[float, int]:
+def calculate_pct_diff(
+    data1: Union[float, int], data2: Union[float, int], rounding: int = 2
+) -> Union[float, int]:
 
-    if data2 == 0.:
+    if data2 == 0.0:
         raise ZeroDivisionError()
 
     result = ((data1 - data2) / data2) * 100

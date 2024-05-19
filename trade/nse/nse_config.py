@@ -1,17 +1,23 @@
-from pathlib import Path
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from datetime import date, datetime, time
 from functools import cached_property
 from io import BytesIO
-from yfinance import Ticker
+from pathlib import Path
+from typing import Dict, List, Optional, Union
+
 import requests
-from datetime import datetime, date, time
-from typing import Dict, List, Union, Optional
-from trade.utils import LoggingType
-from trade.utils import operations
-from trade.calendar.calendar_data import MarketHolidayType, MarketTimingType, \
-    WorkingDayDate, DateObj, MarketTimings
+from yfinance import Ticker
+
+from trade.calendar.calendar_data import (
+    DateObj,
+    MarketHolidayType,
+    MarketTimings,
+    MarketTimingType,
+    WorkingDayDate,
+)
 from trade.ticker import Exchange, ExchangeArgs
+from trade.utils import LoggingType, operations
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
@@ -21,16 +27,18 @@ NSE_START_TIME, NSE_CLOSE_TIME, TIME_CUTOFF = "0915", "1530", "1600"
 MARKET, COUNTRY = "NSE", "INDIA"
 HOLIDAYS_DONOT_EXIST = "Holiday key or holidays do not exist"
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
-TIMINGS = MarketTimings(start_time=NSE_START_TIME,
-                        close_time=NSE_CLOSE_TIME,
-                        time_zone=TZ,
-                        time_cutoff=TIME_CUTOFF)
+TIMINGS = MarketTimings(
+    start_time=NSE_START_TIME,
+    close_time=NSE_CLOSE_TIME,
+    time_zone=TZ,
+    time_cutoff=TIME_CUTOFF,
+)
 
 
 class NSEConfig(Exchange):
 
     @property
-    def advanced_header(self)-> Dict[str, str]:
+    def advanced_header(self) -> Dict[str, str]:
         return self.headers["advanced"]
 
     @property
@@ -58,8 +66,9 @@ class NSEConfig(Exchange):
 
         return content
 
-    def get_equity_quote(self, symbol: str, with_trade_info: bool = False)-> \
-            MARKET_API_QUOTE_TYPE:
+    def get_equity_quote(
+        self, symbol: str, with_trade_info: bool = False
+    ) -> MARKET_API_QUOTE_TYPE:
 
         symbol = symbol.upper()
 
@@ -87,16 +96,26 @@ class NSEConfig(Exchange):
 
         return result
 
-    def __init__(self,
-                 today: str,
-                 date_fmt: str = DATE_FMT,
-                 config: Union[Path, str] = CONFIG_FILE,
-                 market: str = MARKET,
-                 country: str = COUNTRY,
-                 market_timings:MarketTimingType = TIMINGS,
-                 ticker_mod: Optional[Dict[str, str]] = None,
-                 log_config: Optional[LoggingType] = None):
+    def __init__(
+        self,
+        today: str,
+        date_fmt: str = DATE_FMT,
+        config: Union[Path, str] = CONFIG_FILE,
+        market: str = MARKET,
+        country: str = COUNTRY,
+        market_timings: MarketTimingType = TIMINGS,
+        ticker_mod: Optional[Dict[str, str]] = None,
+        log_config: Optional[LoggingType] = None,
+    ):
 
-        super().__init__(today, date_fmt, config, market, country,
-                         self.get_market_holidays,market_timings, ticker_mod,
-                         log_config)
+        super().__init__(
+            today,
+            date_fmt,
+            config,
+            market,
+            country,
+            self.get_market_holidays,
+            market_timings,
+            ticker_mod,
+            log_config,
+        )
