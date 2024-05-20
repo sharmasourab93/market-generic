@@ -18,6 +18,8 @@ class MarketDFUtils(ABC):
         change_column: str = "pct_change",
     ) -> DataFrame:
 
-        data[change_column] = ((data[column1] - data[column2]) / data[column2]) * 100
+        data.loc[:, change_column] = (
+            (data[column1] - data[column2]) / data[column2]
+        ) * 100
 
         return data

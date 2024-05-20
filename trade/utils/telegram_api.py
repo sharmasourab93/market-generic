@@ -5,9 +5,17 @@ from os import getenv
 
 import telegram
 
-from trade.utils.meta_utils.singleton_meta import SingletonMeta
-
 TELEGRAM_SIGNATURE = "\n Generated on {0}."
+
+
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+
+        return cls._instances[cls]
 
 
 class TelegramBot(metaclass=SingletonMeta):

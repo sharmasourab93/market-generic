@@ -56,6 +56,18 @@ class DateObj:
         return self._formatted_date
 
     @property
+    def day(self) -> int:
+        return self._formatted_date.day
+
+    @property
+    def month(self) -> str:
+        return self._formatted_date.strftime("%b")
+
+    @property
+    def year(self) -> str:
+        return self._formatted_date.year
+
+    @property
     def as_str(self) -> str:
         return self.as_date.strftime(self.date_fmt)
 
@@ -70,11 +82,17 @@ class DateObj:
     def __str__(self):
         return self.as_str
 
-    def __add__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
+    def __add__(self, date_diff: Union[timedelta, BDay, int]) -> "DateObj":
+        if isinstance(date_diff, int):
+            date_diff = timedelta(date_diff)
+
         new_date = self.as_date + date_diff
         return DateObj(new_date.strftime(self.date_fmt), date_fmt=self.date_fmt)
 
-    def __sub__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
+    def __sub__(self, date_diff: Union[timedelta, BDay, int]) -> "DateObj":
+        if isinstance(date_diff, int):
+            date_diff = timedelta(date_diff)
+
         new_date = self.as_date - date_diff
         return DateObj(new_date.strftime(self.date_fmt), date_fmt=self.date_fmt)
 
@@ -276,7 +294,8 @@ class WorkingDayDate:
         return date_
 
     def __post_init__(self):
-        self.market_timings = MarketTimings(**self.market_timings)
+        if not isinstance(self.market_timings, MarketTimings):
+            self.market_timings = MarketTimings(**self.market_timings)
 
         if self.today is None:
             self.today = datetime.now(tz=self.market_timings.tz).today().date()
