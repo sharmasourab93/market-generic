@@ -82,11 +82,17 @@ class DateObj:
     def __str__(self):
         return self.as_str
 
-    def __add__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
+    def __add__(self, date_diff: Union[timedelta, BDay, int]) -> "DateObj":
+        if isinstance(date_diff, int):
+            date_diff = timedelta(date_diff)
+
         new_date = self.as_date + date_diff
         return DateObj(new_date.strftime(self.date_fmt), date_fmt=self.date_fmt)
 
-    def __sub__(self, date_diff: Union[timedelta, BDay]) -> "DateObj":
+    def __sub__(self, date_diff: Union[timedelta, BDay, int]) -> "DateObj":
+        if isinstance(date_diff, int):
+            date_diff = timedelta(date_diff)
+
         new_date = self.as_date - date_diff
         return DateObj(new_date.strftime(self.date_fmt), date_fmt=self.date_fmt)
 

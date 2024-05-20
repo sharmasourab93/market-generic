@@ -51,6 +51,8 @@ class YFinance(MarketDFUtils):
         symbol: str,
         period: str = "1mo",
         interval: str = "1d",
+        start: date = None,
+        end: date = None,
         rounding: bool = True,
         index: bool = False,
         ascending: bool = False,
@@ -59,17 +61,16 @@ class YFinance(MarketDFUtils):
         **kwargs,
     ) -> pd.DataFrame:
 
+        download_params = dict(interval=interval, rounding=rounding,
+                               auto_adjust=auto_adjust, progress=progress)
         symbol = self.adjust_yfin_ticker_by_market(symbol, index)
 
-        data = self.yf.download(
-            symbol,
-            period=period,
-            interval=interval,
-            rounding=rounding,
-            auto_adjust=auto_adjust,
-            progress=progress,
-            **kwargs,
-        )
+        if start is None and end is None:
+            download_params.update({"period": period})
+        else:
+            download_params.update({"start": start, "end": end})
+
+        data = self.yf.download(symbol,**download_params, **kwargs,)
 
         if 0 in data.shape:
             message = SYMBOL_ERROR.format(symbol)
