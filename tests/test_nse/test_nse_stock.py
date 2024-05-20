@@ -1,6 +1,8 @@
-import pytest
-import pandas as pd
 from unittest.mock import MagicMock
+
+import pandas as pd
+import pytest
+
 from trade.nse.nse_stock import NSEStock
 
 
@@ -20,7 +22,9 @@ def test_nse_stock_str(nse_stock):
 
 
 def test_nse_stock_get_meta_data(nse_stock):
-    nse_stock._nse_config.get_equity_meta = MagicMock(return_value={"name": "Apple Inc."})
+    nse_stock._nse_config.get_equity_meta = MagicMock(
+        return_value={"name": "Apple Inc."}
+    )
     assert nse_stock.get_meta_data == {"name": "Apple Inc."}
 
 

@@ -1,18 +1,20 @@
 from dataclasses import dataclass, field
+from functools import cached_property
 from typing import Dict, List, Optional, Union
 from warnings import simplefilter
-from yfinance import Ticker
-from functools import cached_property
-from trade.nse.nse_config import NSEConfig, DATE_FMT
-from trade.ticker import StockGenerics
-from trade.calendar import DateObj
-from trade.utils import operations
+
 import pandas as pd
+from yfinance import Ticker
+
+from trade.calendar import DateObj
+from trade.nse.nse_config import DATE_FMT, NSEConfig
+from trade.ticker import StockGenerics
+from trade.utils import operations
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 
-simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
-simplefilter(action='ignore', category=RuntimeWarning)
+simplefilter(action="ignore", category=pd.errors.SettingWithCopyWarning)
+simplefilter(action="ignore", category=RuntimeWarning)
 
 
 @dataclass
@@ -54,7 +56,6 @@ class NSEStock(StockGenerics):
     def __str__(self):
         return self.symbol
 
-
     def __eq__(self, other):
 
         return self.symbol == other
@@ -75,12 +76,20 @@ class NSEStock(StockGenerics):
             self.symbol,
             start=start_date.as_date,
             end=end_date.as_date,
-            interval=self.tf
+            interval=self.tf,
         )
         print(self.symbol)
         self.prev_volume = result.iloc[-2]["volume"]
-        _, self.open, self.high, self.low, self.close, self.volume, \
-            self.prev_close, self.pct_change = result.iloc[-1]
+        (
+            _,
+            self.open,
+            self.high,
+            self.low,
+            self.close,
+            self.volume,
+            self.prev_close,
+            self.pct_change,
+        ) = result.iloc[-1]
         self.volume_diff = (
             operations.calculate_pct_diff(self.volume, self.prev_volume) / 100
         )

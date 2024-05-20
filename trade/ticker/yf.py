@@ -61,8 +61,12 @@ class YFinance(MarketDFUtils):
         **kwargs,
     ) -> pd.DataFrame:
 
-        download_params = dict(interval=interval, rounding=rounding,
-                               auto_adjust=auto_adjust, progress=progress)
+        download_params = dict(
+            interval=interval,
+            rounding=rounding,
+            auto_adjust=auto_adjust,
+            progress=progress,
+        )
         symbol = self.adjust_yfin_ticker_by_market(symbol, index)
 
         if start is None and end is None:
@@ -70,7 +74,11 @@ class YFinance(MarketDFUtils):
         else:
             download_params.update({"start": start, "end": end})
 
-        data = self.yf.download(symbol,**download_params, **kwargs,)
+        data = self.yf.download(
+            symbol,
+            **download_params,
+            **kwargs,
+        )
 
         if 0 in data.shape:
             message = SYMBOL_ERROR.format(symbol)
