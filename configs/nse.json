@@ -160,7 +160,8 @@
                     "EQ-BHAVCOPY": {
                         "file_path": "data/input/downloaded/temp.zip",
                         "name": "EQ-BhavCopy",
-                        "url": "content/historical/EQUITIES/{0}/{3}/NSE_CM_bhavcopy_{2}{1}{0}.csv.zip"
+                        "url": "https://www.nseindia.com/api/reports?",
+                        "url_params": "archives=%5B%7B%22name%22%3A%22CM%20-%20Bhavcopy(csv)%22%2C%22type%22%3A%22archives%22%2C%22category%22%3A%22capital-market%22%2C%22section%22%3A%22equities%22%7D%5D&date={0}&type=equities&mode=single"
                     },
                     "FO-MKLOTS": {
                         "domain": "https://archives.nseindia.com",
@@ -183,7 +184,7 @@
                         "name": "MW-SEC-FO-Index",
                         "url": "api/equity-stockIndices?csv=true&index=SECURITIES%20IN%20F%26O"
                     },
-                    "DOWNLOAD-DOMAIN": "https://archives.nseindia.com/"
+                    "DOWNLOAD-DOMAIN": "https://nsearchives.nseindia.com/"
                 },
                 "RELEASE": {
                     "date-fmt": "%d-%m-%Y",

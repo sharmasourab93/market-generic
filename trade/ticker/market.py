@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional, Union
 
 from trade.calendar import MarketCalendar, MarketHolidayType, MarketTimingType
 from trade.ticker.api_config import APIConfig
@@ -30,7 +30,7 @@ class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
         config: str,
         market: str,
         country: str,
-        market_holidays: List[MarketHolidayType],
+        market_holidays: Union[List[MarketHolidayType], Callable],
         market_timings: List[MarketTimingType],
         ticker_mod: Optional[Dict[str, str]] = None,
         logging_config: Optional[LoggingType] = None,
@@ -38,6 +38,9 @@ class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
         super().__init__(config)
         YFinance.__init__(
             self, market, country, date_fmt, ticker_modifications=ticker_mod
+        )
+        market_holidays = (
+            market_holidays if isinstance(market_holidays, list) else market_holidays()
         )
         MarketCalendar.__init__(self, today, date_fmt, market_holidays, market_timings)
 
