@@ -1,5 +1,6 @@
 from datetime import date, datetime
-
+from pandas import DataFrame
+import requests
 import pytest
 
 from trade.nse.nse_config import DATE_FMT, NSEConfig
@@ -36,9 +37,12 @@ def test_get_equity_quote(nse_config):
     assert isinstance(quote, dict)
 
 
-def test_get_eq_bhavcopy(nse_config):
+@pytest.mark.freeze_time("2024-05-17 15:20")
+def test_get_eq_bhavcopy():
+    dated = datetime.today().date().strftime(DATE_FMT)
+    nse_config = NSEConfig(dated, market=MARKET, country=COUNTRY)
     bhavcopy = nse_config.get_eq_bhavcopy()
-    assert isinstance(bhavcopy, BytesIO)
+    assert isinstance(bhavcopy, DataFrame)
 
 
 def test_init(nse_config):
@@ -53,12 +57,12 @@ def test_get_market_holidays_key_error(nse_config):
 
 
 def test_get_equity_meta_symbol_none(nse_config):
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         nse_config.get_equity_meta(None)
 
 
 def test_get_equity_quote_symbol_none(nse_config):
-    with pytest.raises(TypeError):
+    with pytest.raises(AttributeError):
         nse_config.get_equity_quote(None)
 
 

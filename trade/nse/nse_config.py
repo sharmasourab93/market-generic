@@ -53,6 +53,14 @@ class NSEConfig(Exchange):
         if content is None:
             raise KeyError(HOLIDAYS_DONOT_EXIST)
 
+        def replace_holiday_keywords(holiday: dict):
+            holiday["trade_day"] = holiday.pop("tradingDate")
+            holiday["week_day"] = holiday.pop("weekDay")
+            _ = holiday.pop("Sr_no")
+            return holiday
+
+        content = [replace_holiday_keywords(i) for i in content]
+
         return content
 
     def get_equity_meta(self, symbol: str) -> MARKET_API_QUOTE_TYPE:
@@ -86,12 +94,10 @@ class NSEConfig(Exchange):
         return content
 
     def get_eq_bhavcopy(self) -> BytesIO:
-
-        url = self.download_domain + self.eq_bhavcopy["url"]
         headers = self.advanced_header
-        today = self.working_day
-        day, month, year = today.day, today.month.upper(), today.year
-        url = url.format(year, month, day)
+        url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
+        today = self.working_day.day.as_str
+        url = url.format(today)
         result = self.download_data(url, headers)
 
         return result

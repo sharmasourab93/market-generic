@@ -56,6 +56,10 @@ class DateObj:
         return self._formatted_date
 
     @property
+    def day(self) -> int:
+        return self._formatted_date.day
+
+    @property
     def month(self) -> str:
         return self._formatted_date.strftime("%b")
 
@@ -284,7 +288,8 @@ class WorkingDayDate:
         return date_
 
     def __post_init__(self):
-        # self.market_timings = MarketTimings(**self.market_timings)
+        if not isinstance(self.market_timings, MarketTimings):
+            self.market_timings = MarketTimings(**self.market_timings)
 
         if self.today is None:
             self.today = datetime.now(tz=self.market_timings.tz).today().date()

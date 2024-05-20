@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Optional
 from urllib.parse import urlparse
 from zipfile import ZipFile
+from urllib.error import HTTPError
 
 import requests
 from pandas import DataFrame, read_csv, read_excel
@@ -13,6 +14,27 @@ from requests.exceptions import ConnectionError, InvalidURL, ReadTimeout
 
 CHUNK_SIZE = 1024
 INVALID_URL = "URL: {0}, Status Code:{1}"
+RECEIVED_STATUS = "Status Code Received: {0}"
+
+
+def match_http(result, status_code: int, url: Optional[str] = None):
+    msg = ""
+    match status_code:
+        case 200:
+            return result
+
+        case 404:
+            raise InvalidURL(INVALID_URL.format(url, result.status_code))
+
+        case 403:
+            msg = RECEIVED_STATUS.format(status_code)
+            if url is not None:
+                msg += ". For url: {0}".format(url)
+
+            raise Exception(msg)
+
+        case _:
+            raise Exception(RECEIVED_STATUS.format(status_code))
 
 
 class DownloadTools(ABC):
@@ -36,14 +58,7 @@ class DownloadTools(ABC):
 
         cookies = self.get_cookies(url, headers)
         result = requests.get(url, headers=headers, cookies=cookies, **kwargs)
-
-        if result.status_code == 200:
-            return result
-
-        elif result.status_code == 404:
-            raise InvalidURL(INVALID_URL.format(url, result.status_code))
-
-        return self.get_request_api(url, headers, cookies)
+        return match_http(result, result.status_code, url)
 
     def extract_domain(self, url: str) -> str:
         parsed_url = urlparse(url)
@@ -51,7 +66,12 @@ class DownloadTools(ABC):
 
         return "https://" + domain
 
-    def download_data(self, url: str, headers: str) -> BytesIO:
+
+    def get_headers(self, url):
+
+        return requests.head(url)
+
+    def download_data(self, url: str, headers: Optional[str] = None) -> DataFrame:
         """
         For a given url and file name
         download data to the provided filename/path.
@@ -61,8 +81,6 @@ class DownloadTools(ABC):
         response = self.get_request_api(url, headers, cookies)
 
         bytes_obj = BytesIO(response.content)
-
-        self.logger.debug("Response received.")
 
         if self.is_zip(bytes_obj):
             bytes_obj = self.unzip(bytes_obj)

@@ -39,8 +39,10 @@ class Exchange(APIConfig, YFinance, MarketCalendar, DownloadTools):
         YFinance.__init__(
             self, market, country, date_fmt, ticker_modifications=ticker_mod
         )
+        market_holidays = market_holidays if isinstance(market_holidays, list) else \
+            market_holidays()
         MarketCalendar.__init__(
-            self, today, date_fmt, market_holidays(), market_timings
+            self, today, date_fmt, market_holidays, market_timings
         )
 
         # TODO: Identify a way to make use of metaclasses to enable, logging,
