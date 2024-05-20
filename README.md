@@ -15,7 +15,7 @@
 ### Installation
 To install the AlgoTrade package, use pip:
 
-```
+```commandline
 pip install market-generic
 ```
 
@@ -24,9 +24,47 @@ pip install market-generic
 Here's a simple example of how to use the Trade package to fetch and analyze stock data:
 python
 
-`Coming Soon`
+```python 
+>>from trade.nse import NSEStock
+>>stock = NSEStock("RELIANCE", "17-May-2024")
+>>stock.symbol == "RELIANCE"
+True 
+>>stock.curr_ohlc 
+# Will Display Reliance's latest Bhav 
+{
+"open": 2860.7,
+"low": ...,
+"high":...,
+ "close": ...,
+ "volume": ...
+ "pct_change": ...
+}
+```
+
+`AllNSEStocks` uses `NSEStock` module underneath to utilize stock functions.
+
+```python
+>>from trade.nse import AllNSEStocks
+>>all_stocks = AllNSEStocks("17-May-2024", ["RELIANCE", "SBIN"])
+>>all_stocks.symbols[0] == "RELIANCE"
+True
+>>all_stocks.symbols[1] == "SBIN"
+True 
+>>all_stocks.symbols[0].curr_ohlc
+# Will Display Reliance's latest Bhav 
+{
+"open": 2860.7,
+"low": ...,
+"high":...,
+ "close": ...,
+ "volume": ...
+ "pct_change": ...
+}
+```
 
 
 ### Documentation
 
-For detailed documentation, examples, and API reference, please visit the [Trade GitHub repository](https://github.com/sharmasourab93/Trade).
+For detailed documentation, examples, and API reference, please visit the 
+[market-generic 
+GitHub repository](https://github.com/sharmasourab93/market-generic).
