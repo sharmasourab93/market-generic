@@ -3,9 +3,9 @@ import os
 from abc import ABC
 from io import BytesIO
 from typing import Optional
+from urllib.error import HTTPError
 from urllib.parse import urlparse
 from zipfile import ZipFile
-from urllib.error import HTTPError
 
 import requests
 from pandas import DataFrame, read_csv, read_excel
@@ -65,7 +65,6 @@ class DownloadTools(ABC):
         domain = parsed_url.netloc
 
         return "https://" + domain
-
 
     def get_headers(self, url):
 
