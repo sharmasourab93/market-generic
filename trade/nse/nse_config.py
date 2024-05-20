@@ -4,6 +4,7 @@ from datetime import date, datetime, time
 from functools import cached_property
 from io import BytesIO
 from pathlib import Path
+import pandas as pd
 from typing import Dict, List, Optional, Union
 
 import requests
@@ -101,6 +102,18 @@ class NSEConfig(Exchange):
         result = self.download_data(url, headers)
 
         return result
+
+    def apply_nse_data_preprocessing(self, data) -> pd.DataFrame:
+        data = data.loc[:, ~data.columns.str.contains("^Unnamed")]
+        data.columns = [i.lower() for i in data.columns]
+        data = data.loc[data.series == 'EQ', :]
+        # TODO: NSE Market Capitalization to be applied.
+        return data
+
+    def get_eq_listed_stocks(self) -> List[str]:
+        data = self.get_eq_bhavcopy()
+        data = self.apply_nse_data_preprocessing(data)
+        return data.symbol.unique().tolist()
 
     def __init__(
         self,

@@ -16,6 +16,20 @@ simplefilter(action='ignore', category=RuntimeWarning)
 
 
 @dataclass
+class AllNSEStocks:
+
+    dated: str
+    symbols: Optional[List[str]] = None
+
+    def __post_init__(self):
+        self._nse_config = NSEConfig(self.dated)
+        if self.symbols is None:
+            self.symbols = self._nse_config.get_eq_listed_stocks()
+
+        self.symbols = [NSEStock(i, self.dated) for i in self.symbols]
+
+
+@dataclass
 class NSEStock(StockGenerics):
     symbol: str
     dated: str
@@ -40,6 +54,11 @@ class NSEStock(StockGenerics):
     def __str__(self):
         return self.symbol
 
+
+    def __eq__(self, other):
+
+        return self.symbol == other
+
     @cached_property
     def get_meta_data(self) -> MARKET_API_QUOTE_TYPE:
         return self._nse_config.get_equity_meta(self.symbol)
@@ -58,7 +77,7 @@ class NSEStock(StockGenerics):
             end=end_date.as_date,
             interval=self.tf
         )
-
+        print(self.symbol)
         self.prev_volume = result.iloc[-2]["volume"]
         _, self.open, self.high, self.low, self.close, self.volume, \
             self.prev_close, self.pct_change = result.iloc[-1]
