@@ -9,3 +9,4 @@ yfinance==0.2.38
 requests~=2.31.0
 pytz~=2024.1
 setuptools~=69.5.1
+beautifulsoup4==4.12.3

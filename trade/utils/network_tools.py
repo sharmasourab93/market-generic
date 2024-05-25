@@ -2,7 +2,7 @@ import csv
 import os
 from abc import ABC
 from io import BytesIO
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 from zipfile import ZipFile
@@ -11,6 +11,8 @@ import requests
 from pandas import DataFrame, read_csv, read_excel
 from requests import Session
 from requests.exceptions import ConnectionError, InvalidURL, ReadTimeout
+
+from trade.utils.html_parsing import HtmlParser
 
 CHUNK_SIZE = 1024
 INVALID_URL = "URL: {0}, Status Code:{1}"
@@ -38,6 +40,13 @@ def match_http(result, status_code: int, url: Optional[str] = None):
 
 
 class DownloadTools(ABC):
+
+    def parse_through_html(self, url: str, headers: dict, tags: Tuple[str]) -> str:
+
+        html_parser = HtmlParser(url, headers, tags)
+
+        return html_parser.get_latest_file()
+
     def get_cookies(self, base_url: str, headers: dict, timeout: int = 5) -> dict:
 
         url = self.extract_domain(base_url)
