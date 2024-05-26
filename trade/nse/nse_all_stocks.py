@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from heapq import nlargest, nsmallest
 from typing import Dict, List, Optional, Union
 
-from trade.nse import NSEStock
+from trade.nse.nse_stock import NSEStock
 from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
 
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
