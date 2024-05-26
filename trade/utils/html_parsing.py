@@ -30,7 +30,7 @@ class HtmlParser:
     def iterate_table(self, tables, result: list = []):
         for table in tables:
             thead = table.find('thead')
-            if self.check_for_theads_match(thead, matching_words):
+            if self.check_for_theads_match(thead, self.matching_words):
                 tbody = table.find('tbody')
                 if tbody:
                    result = self.get_table_meta_data(tbody, result)
@@ -56,8 +56,6 @@ class HtmlParser:
         # We are popping the upper-most result.
         result = self.get_table()
         return result.pop(0)[-1]
-
-
 
     def check_for_theads_match(self, theads, matching_words) -> bool:
         result = list()
