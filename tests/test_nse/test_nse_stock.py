@@ -30,4 +30,4 @@ def test_nse_stock_get_meta_data(nse_stock):
 
 def test_nse_stock_get_ticker(nse_stock):
     nse_stock._nse_config.yf.Ticker = MagicMock()
-    assert nse_stock.get_ticker
+    assert nse_stock.ticker
