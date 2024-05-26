@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Union
-from trade.nse import NSEStock
-from trade.nse.nse_config import DATE_FMT, NSEConfig, NSE_TOP
 from heapq import nlargest, nsmallest
+from typing import Dict, List, Optional, Union
 
+from trade.nse import NSEStock
+from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
 
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
-TOP_BOTTOM_TYPE = Dict[str,Dict[str, float]]
+TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
 
 
 @dataclass
@@ -30,20 +30,18 @@ class AllNSEStocks:
         index_ = self.symbols.index(item)
         return self.symbols[index_]
 
-    def get_advance_decline(self)-> ADV_DEC_TYPE:
+    def get_advance_decline(self) -> ADV_DEC_TYPE:
         return dict(Counter([i.adv_dec for i in self.symbols]))
 
     def get_top_bottom(self, nos: int = 5, nse_top: int = 200) -> TOP_BOTTOM_TYPE:
 
-        get_tops_bottoms = [(i.symbol, i.pct_change, i.diff)
-                            for i in self.symbols[:nse_top]]
+        get_tops_bottoms = [
+            (i.symbol, i.pct_change, i.diff) for i in self.symbols[:nse_top]
+        ]
 
         top_nos = nlargest(get_tops_bottoms, nos, key=lambda x: x[1])
         top_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in top_nos}
         small_nos = nsmallest(get_tops_bottoms, nos, key=lambda x: x[1])
-        small_nos = {key: {"pct_change":v1, "diff": v2} for key, v1, v2 in small_nos}
+        small_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in small_nos}
 
-        return {
-            "top": top_nos,
-            "bottom": small_nos
-        }
+        return {"top": top_nos, "bottom": small_nos}

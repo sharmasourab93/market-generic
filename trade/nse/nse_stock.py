@@ -1,20 +1,18 @@
 import json
-from dataclasses import dataclass, field
-from functools import cached_property
 from collections import Counter
+from dataclasses import dataclass, field
+from datetime import date, datetime
+from functools import cached_property
 from typing import Dict, List, Optional, Union
 from warnings import simplefilter
-from datetime import datetime, date
-
 
 import pandas as pd
 from yfinance import Ticker
 
 from trade.calendar import DateObj
-from trade.nse.nse_config import DATE_FMT, NSEConfig, NSE_TOP
+from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
 from trade.ticker import StockGenerics
 from trade.utils import operations
-
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 TICKER_MODIFICATION = {"HDFC": "HDFCBANK"}

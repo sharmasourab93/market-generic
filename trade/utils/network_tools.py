@@ -1,11 +1,12 @@
 import csv
 import os
+from abc import ABC
 from io import BytesIO
 from typing import Optional, Tuple
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 from zipfile import ZipFile
-from abc import ABC
+
 import requests
 from pandas import DataFrame, read_csv, read_excel
 from requests import Session
@@ -123,7 +124,7 @@ class DownloadTools(ABC):
     def is_xlsx(self, byte_obj: BytesIO) -> bool:
         xlsx_signature = b"PK\x03\x04"
 
-        if hasattr(byte_obj,"startswith"):
+        if hasattr(byte_obj, "startswith"):
             return byte_obj.startswith(xlsx_signature)
 
         return False

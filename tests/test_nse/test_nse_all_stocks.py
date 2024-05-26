@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from trade.nse import AllNSEStocks, NSEStock, NSE_TOP
+from trade.nse import NSE_TOP, AllNSEStocks, NSEStock
 
 
 def test_all_nse_stocks_post_init_with_symbols():
