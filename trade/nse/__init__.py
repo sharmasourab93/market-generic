@@ -1,1 +1,6 @@
-from trade.nse.nse_all_stocks import NSE_TOP, AllNSEStocks
+def initialize():
+    from trade.nse.nse_stock import NSEStock, NSE_TOP
+    from trade.nse.nse_all_stocks import AllNSEStocks
+
+
+initialize()
