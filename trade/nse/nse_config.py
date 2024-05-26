@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
-from functools import cached_property, cache
+from functools import cache, cached_property
 from io import BytesIO
 from pathlib import Path
 from typing import Dict, List, Optional, Union
@@ -136,9 +136,9 @@ class NSEConfig(Exchange):
 
         data.columns = ["sr_no", "symbol", "company_name", "market_cap"]
         data = data.loc[~data.sr_no.isna(), :]
-        data = data[pd.to_numeric(data.sr_no, errors='coerce').notnull()]
+        data = data[pd.to_numeric(data.sr_no, errors="coerce").notnull()]
         data.sr_no = data.sr_no.astype(int)
-        data.loc[:, "market_cap"] = pd.to_numeric(data.market_cap, errors='coerce')
+        data.loc[:, "market_cap"] = pd.to_numeric(data.market_cap, errors="coerce")
         data = data.loc[~data.market_cap.isna(), :]
         # Since the values are in Lakhs, we are making it to crores.
         data.loc[:, "market_cap"] = data.market_cap / 100
@@ -147,7 +147,7 @@ class NSEConfig(Exchange):
 
     def get_mcap_file_url(self) -> str:
         url = self.main_domain + self.market_cap["page"]
-        tags = tuple(self.market_cap['tags'])
+        tags = tuple(self.market_cap["tags"])
         return self.parse_through_html(url, self.advanced_header, tags)
 
     @cache
