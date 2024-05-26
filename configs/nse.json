@@ -141,6 +141,12 @@
                 },
                 "DATE-FMT": "%d-%b-%Y",
                 "DOWNLOADS": {
+                    "MARKET-CAP" : {
+                        "url": "web/sites/default/files/inline-files/MCAP{0}.xlsx",
+                        "date-fmt": "%d%m%Y",
+                        "page": "regulations/listing-compliance/nse-market-capitalisation-all-companies",
+                        "tags": ["Period", "Market Capitalization", "Download"]
+                    },
                     "52Wk-hl": {
                         "date-fmt": "%d%m%Y",
                         "file_path": "data/input/downloaded/bhav/CM_52_wk_high_low_{0}.csv",
