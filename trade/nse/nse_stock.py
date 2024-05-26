@@ -1,34 +1,25 @@
+import json
 from dataclasses import dataclass, field
 from functools import cached_property
+from collections import Counter
 from typing import Dict, List, Optional, Union
 from warnings import simplefilter
+from datetime import datetime, date
+
 
 import pandas as pd
 from yfinance import Ticker
 
 from trade.calendar import DateObj
-from trade.nse.nse_config import DATE_FMT, NSEConfig
+from trade.nse.nse_config import DATE_FMT, NSEConfig, NSE_TOP
 from trade.ticker import StockGenerics
 from trade.utils import operations
 
-MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 
+MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
+TICKER_MODIFICATION = {"HDFC": "HDFCBANK"}
 simplefilter(action="ignore", category=pd.errors.SettingWithCopyWarning)
 simplefilter(action="ignore", category=RuntimeWarning)
-
-
-@dataclass
-class AllNSEStocks:
-
-    dated: str
-    symbols: Optional[List[str]] = None
-
-    def __post_init__(self):
-        self._nse_config = NSEConfig(self.dated)
-        if self.symbols is None:
-            self.symbols = self._nse_config.get_eq_listed_stocks()
-
-        self.symbols = [NSEStock(i, self.dated) for i in self.symbols]
 
 
 @dataclass
@@ -39,13 +30,18 @@ class NSEStock(StockGenerics):
 
     def __post_init__(self):
         self._nse_config = NSEConfig(self.dated)
+
+        if self.symbol in TICKER_MODIFICATION.keys():
+            self.symbol = TICKER_MODIFICATION[self.symbol]
+
         self._yfsymbol = self._nse_config.adjust_yfin_ticker_by_market(self.symbol)
         self.get_curr_bhav()
-        self.curr_ohlc = {
+        self._curr_ohlc = {
             "open": self.open,
             "low": self.low,
             "high": self.high,
             "close": self.close,
+            "diff": self.diff,
             "prev_close": self.prev_close,
             "pct_change": self.pct_change,
             "volume": self.volume,
@@ -53,11 +49,14 @@ class NSEStock(StockGenerics):
             "volume_diff": self.volume_diff,
         }
 
+    @property
+    def ohlc(self):
+        return self._curr_ohlc
+
     def __str__(self):
         return self.symbol
 
     def __eq__(self, other):
-
         return self.symbol == other
 
     @cached_property
@@ -65,8 +64,22 @@ class NSEStock(StockGenerics):
         return self._nse_config.get_equity_meta(self.symbol)
 
     @property
-    def get_ticker(self) -> Ticker:
+    def ticker(self) -> Ticker:
         return self._nse_config.yf.Ticker(self._yfsymbol)
+
+    @property
+    def adv_dec(self):
+
+        match self.diff:
+
+            case self.diff if self.diff > 0:
+                return True
+
+            case self.diff if self.diff < 0:
+                return Fals
+
+            case _:
+                return None
 
     def get_curr_bhav(self):
         curr_date = DateObj(self.dated, date_fmt=DATE_FMT)
@@ -78,8 +91,10 @@ class NSEStock(StockGenerics):
             end=end_date.as_date,
             interval=self.tf,
         )
-        print(self.symbol)
-        self.prev_volume = result.iloc[-2]["volume"]
+        try:
+            self.prev_volume = result.iloc[-2]["volume"]
+        except IndexError:
+            print()
         (
             _,
             self.open,
@@ -93,3 +108,4 @@ class NSEStock(StockGenerics):
         self.volume_diff = (
             operations.calculate_pct_diff(self.volume, self.prev_volume) / 100
         )
+        self.diff = self.close - self.prev_close
