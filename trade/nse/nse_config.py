@@ -123,6 +123,7 @@ class NSEConfig(Exchange):
 
         return content
 
+    @cache
     def get_eq_bhavcopy(self) -> BytesIO:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
@@ -175,11 +176,13 @@ class NSEConfig(Exchange):
         data = self.apply_mcap(data)
         return data
 
+    @cache
     def get_eq_listed_stocks(self) -> List[str]:
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
         return data.symbol.unique().tolist()
 
+    @cache
     def get_eq_stocks_by_mcap(self) -> pd.DataFrame:
 
         data = self.get_eq_bhavcopy()
