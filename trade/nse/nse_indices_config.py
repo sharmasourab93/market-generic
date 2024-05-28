@@ -1,10 +1,12 @@
 import pandas as pd
 from typing import List, Dict, Optional, Literal, Union
 from trade.nse.nse_config import NSEConfig
+from functools import cache
 
 INDICES = ["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY NEXT 50", "NIFTY MIDCAP 50"]
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
-INDEX_NAME_TYPE = Union[Literal[*INDICES]]
+INDEX_NAME_TYPE = Literal[*INDICES]
+INDIA_VIX = "INDIA VIX"
 
 MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
 
@@ -55,6 +57,17 @@ class NSEIndexConfig(NSEConfig):
 
         return processed_indices
 
+    def get_sectoral_indices(self) -> pd.DataFrame:
+
+        return self.get_all_indices()["SECTORAL INDICES"]
+
+    def get_top_bottom_sectoral_indices(self):
+
+        data = self.get_sectoral_indices()
+        # TODO: return top 3 and bottom three sectoral indices.
+        # Look for a generic implementation.
+        return data
+
     def get_all_indices(self) -> Dict[str, pd.DataFrame]:
 
         url = self.main_domain + self.indices
@@ -63,9 +76,36 @@ class NSEIndexConfig(NSEConfig):
         data = self.process_all_indices_data(data)
         return data
 
-    def get_spot_indices(self) -> pd.DataFrame:
+    @cache
+    def get_vix(self) -> Dict[str, str]:
 
-        return self.get_all_indices()["SPOT"]
+        data = self.get_all_indices()["SPOT"]
+        vix = data.loc[data.symbol == INDIA_VIX, :].to_dict(orient="records").pop(0)
+
+        return vix
+
+    @cache
+    def get_index_metrics(self) -> Dict[str, Dict[str, str]]:
+        """
+        Objective is to return
+            - Price to Earning,
+            - Price to Book
+            - Dividend Yield
+        For each tradeable index as listed in INDICES.
+        """
+
+        data = self.get_all_indices()["SPOT"]
+        metrics = [data.loc[data.symbol == i,["pe", "pb", "dy"]].to_dict(orient='records')
+                           for i in INDICES]
+        metrics = [i.pop(0) if len(i) > 0 else {} for i in metrics]
+
+        return dict(zip(INDICES, metrics))
+
+
+    def get_spot_indices(self) -> pd.DataFrame:
+        data = self.get_all_indices()["SPOT"]
+        data = data.loc[data.symbol != INDIA_VIX, :]
+        return data
 
     def process_quoted_index(self, data: dict) -> MODIFIED_INDEX_QUOTE_TYPE:
         new_data = dict()
@@ -93,6 +133,7 @@ class NSEIndexConfig(NSEConfig):
 
         return new_data
 
+    @cache
     def get_quote_index(self, index: INDEX_NAME_TYPE) -> MODIFIED_INDEX_QUOTE_TYPE:
 
         index = index.upper()
@@ -101,6 +142,9 @@ class NSEIndexConfig(NSEConfig):
 
         response = self.get_request_api(url, self.advanced_header)
         response = response.json()
+
+        if response == {}:
+            return response
 
         response = self.process_quoted_index(response)
         return response

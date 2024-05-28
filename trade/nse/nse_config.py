@@ -36,6 +36,8 @@ TIMINGS = MarketTimings(
     time_zone=TZ,
     time_cutoff=TIME_CUTOFF,
 )
+TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
+ADV_DEC_TYPE = Dict[Union[bool, None], int]
 
 
 class NSEConfig(Exchange):
@@ -63,6 +65,16 @@ class NSEConfig(Exchange):
             ticker_mod,
             log_config,
         )
+
+    def get_top_bottom(self, nos: int = 5, nse_top: int = 200) -> TOP_BOTTOM_TYPE:
+        symbols = self.get_nse_stocks()
+        get_tops_bottoms = [(i.symbol, i.pct_change, i.diff) for i in symbols[:nse_top]]
+
+        top_nos = nlargest(get_tops_bottoms, nos, key=lambda x: x[1])
+        top_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in top_nos}
+        small_nos = nsmallest(get_tops_bottoms, nos, key=lambda x: x[1])
+        small_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in small_nos}
+        return {"top": top_nos, "bottom": small_nos}
 
     @property
     def advanced_header(self) -> Dict[str, str]:
@@ -190,6 +202,7 @@ class NSEConfig(Exchange):
 
         return data
 
+    @cache
     def get_nse_stocks(self, nse_top: Optional[int] = None) -> List[str]:
 
         stock_list = self.get_eq_listed_stocks()
@@ -198,3 +211,6 @@ class NSEConfig(Exchange):
             return stock_list
 
         return stock_list[:nse_top]
+
+    def get_advance_decline(self) -> ADV_DEC_TYPE:
+        return dict(Counter([i.adv_dec for i in self.symbols]))
