@@ -1,10 +1,16 @@
 from datetime import date, datetime
+
+import pandas as pd
 import pytest
 import requests
-import pandas as pd
-from trade.nse.nse_indices_config import NSEIndexConfig, INDICES, INDICES_API, INDEX_NAME_TYPE
-from trade.nse.nse_config import DATE_FMT
 
+from trade.nse.nse_config import DATE_FMT
+from trade.nse.nse_indices_config import (
+    INDEX_NAME_TYPE,
+    INDICES,
+    INDICES_API,
+    NSEIndexConfig,
+)
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)
@@ -26,8 +32,10 @@ def test_get_all_indices(index_config):
     indices = index_config.get_all_indices()
     assert isinstance(indices, dict)
     assert len(indices) > 0
-    assert all(isinstance(key, str) and isinstance(value, pd.DataFrame)
-               for key, value in indices.items())
+    assert all(
+        isinstance(key, str) and isinstance(value, pd.DataFrame)
+        for key, value in indices.items()
+    )
 
 
 def test_get_quote_index(index_config):

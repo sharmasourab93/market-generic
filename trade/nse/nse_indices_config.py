@@ -1,9 +1,17 @@
+from typing import Dict, List, Literal, Optional, Union
+
 import pandas as pd
-from typing import List, Dict, Optional, Literal, Union
+
 from trade.nse.nse_config import NSEConfig
 from functools import cache
 
-INDICES = ["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY NEXT 50", "NIFTY MIDCAP 50"]
+INDICES = [
+    "NIFTY 50",
+    "NIFTY BANK",
+    "NIFTY FINANCIAL SERVICES",
+    "NIFTY NEXT 50",
+    "NIFTY MIDCAP 50",
+]
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
 INDEX_NAME_TYPE = Literal[*INDICES]
 INDIA_VIX = "INDIA VIX"
@@ -30,30 +38,58 @@ class NSEIndexConfig(NSEConfig):
             "yearLow": "52wk_low",
             "perChange30d": "30d_change",
             "perChange365d": "1yr_change",
-            "last": "close"
+            "last": "close",
         }
 
-        data["adv-dec"] = data.advances.fillna(0).astype(str) \
-                              + "-" \
-                              + data.unchanged.fillna(0).astype(str) \
-                              + "-" \
-                              + data.declines.fillna(0).astype(str)
-        selected_cols = ["key", "index", "symbol",
-                         "open", "high", "low", "close", "prev_close",
-                         "pct_change", "30d_change", "1yr_change",
-                         "adv-dec", "pe", "pb", "dy", ]
+        data["adv-dec"] = (
+            data.advances.fillna(0).astype(str)
+            + "-"
+            + data.unchanged.fillna(0).astype(str)
+            + "-"
+            + data.declines.fillna(0).astype(str)
+        )
+        selected_cols = [
+            "key",
+            "index",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "prev_close",
+            "pct_change",
+            "30d_change",
+            "1yr_change",
+            "adv-dec",
+            "pe",
+            "pb",
+            "dy",
+        ]
         data = data.rename(columns=col_renames)
         data = data.loc[:, selected_cols].replace(str(), 0)
         processed_indices = dict()
         spot_indices_list = INDICES + ["INDIA VIX"]
         excluded_cols = ["index", "key"]
-        spot_indices = data.loc[data["index"].isin(spot_indices_list), [col for col in data.columns if col not in excluded_cols]]
+        spot_indices = data.loc[
+            data["index"].isin(spot_indices_list),
+            [col for col in data.columns if col not in excluded_cols],
+        ]
         processed_indices.update({"SPOT": spot_indices})
-        categories = ("SECTORAL INDICES", "STRATEGY INDICES", "THEMATIC INDICES",
-                      "FIXED INCOME INDICES")
-        processed_indices.update({
-            i: data.loc[data.key == i, [col for col in data.columns if col not in excluded_cols]] for i in categories
-        })
+        categories = (
+            "SECTORAL INDICES",
+            "STRATEGY INDICES",
+            "THEMATIC INDICES",
+            "FIXED INCOME INDICES",
+        )
+        processed_indices.update(
+            {
+                i: data.loc[
+                    data.key == i,
+                    [col for col in data.columns if col not in excluded_cols],
+                ]
+                for i in categories
+            }
+        )
 
         return processed_indices
 
@@ -111,11 +147,13 @@ class NSEIndexConfig(NSEConfig):
         new_data = dict()
         new_data["symbol"] = data["name"]
         advances = data["advance"]
-        new_data["adv-dec"] = str(advances["advances"]) \
-                              + "-" \
-                              + str(advances["unchanged"]) \
-                              + "-" \
-                              + str(advances["declines"])
+        new_data["adv-dec"] = (
+            str(advances["advances"])
+            + "-"
+            + str(advances["unchanged"])
+            + "-"
+            + str(advances["declines"])
+        )
         meta_data = data["metadata"]
         new_data["ohlc"] = {
             "open": meta_data["open"],
@@ -126,10 +164,10 @@ class NSEIndexConfig(NSEConfig):
             "pct_change": meta_data["percChange"],
             "52wk_high": meta_data["yearHigh"],
             "52wk_low": meta_data["yearLow"],
-            "volume": meta_data["totalTradedVolume"]
+            "volume": meta_data["totalTradedVolume"],
         }
         new_data["dated"] = data["timestamp"]
-        new_data["status"] = data['marketStatus']['marketStatus']
+        new_data["status"] = data["marketStatus"]["marketStatus"]
 
         return new_data
 
