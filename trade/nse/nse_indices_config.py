@@ -1,9 +1,9 @@
+from functools import cache
 from typing import Dict, List, Literal, Optional, Union
 
 import pandas as pd
 
 from trade.nse.nse_config import NSEConfig
-from functools import cache
 
 INDICES = [
     "NIFTY 50",
@@ -131,12 +131,13 @@ class NSEIndexConfig(NSEConfig):
         """
 
         data = self.get_all_indices()["SPOT"]
-        metrics = [data.loc[data.symbol == i,["pe", "pb", "dy"]].to_dict(orient='records')
-                           for i in INDICES]
+        metrics = [
+            data.loc[data.symbol == i, ["pe", "pb", "dy"]].to_dict(orient="records")
+            for i in INDICES
+        ]
         metrics = [i.pop(0) if len(i) > 0 else {} for i in metrics]
 
         return dict(zip(INDICES, metrics))
-
 
     def get_spot_indices(self) -> pd.DataFrame:
         data = self.get_all_indices()["SPOT"]
