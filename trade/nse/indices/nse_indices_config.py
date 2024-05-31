@@ -23,6 +23,7 @@ INDEX_NAME_TYPE = Union[
 INDIA_VIX = "INDIA VIX"
 
 MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
+INVALID_SYMBOL = "Invalid Symbol Chosen."
 
 
 class NSEIndexConfig(NSEConfig):
@@ -193,3 +194,44 @@ class NSEIndexConfig(NSEConfig):
 
         response = self.process_quoted_index(response)
         return response
+
+    @cache
+    def get_fno_stocks(self) -> List[str]:
+
+        url = self.main_domain + self.derivative_master_list
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        if response == {}:
+            return response
+
+        return response
+
+    def get_option_chain_equities(self, symbol: str):
+        symbol = symbol.upper()
+        fno_stocks = self.get_fno_stocks
+
+        if symbol not in fno_stocks:
+            raise KeyError(INVALID_SYMBOL)
+
+        url = self.main_domain + self.derivative_option_chain.format(symbol)
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data
+
+    def get_derivative_option_chain_index(self, symbol):
+        symbol = symbol.upper()
+
+        if symbol not in self.dervative_index_choice:
+            raise KeyError(INVALID_SYMBOL)
+
+        url = self.main_domain + self.derivative_option_index.format(symbol)
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data
+
+    def get_vix_history(self, start: str, end: str):
+
+        url = self.main_domain + self.vix.format(start, end)
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data
