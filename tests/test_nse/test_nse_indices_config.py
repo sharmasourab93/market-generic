@@ -1,14 +1,11 @@
-from datetime import date, datetime
+from datetime import datetime
 
 import pandas as pd
 import pytest
-import requests
 
 from trade.nse.nse_config import DATE_FMT
-from trade.nse.nse_indices_config import (
-    INDEX_NAME_TYPE,
+from trade.nse.indices.nse_indices_config import (
     INDICES,
-    INDICES_API,
     NSEIndexConfig,
 )
 
