@@ -18,7 +18,7 @@ from trade.calendar.calendar_data import (
     MarketTimingType,
     WorkingDayDate,
 )
-from trade.ticker import Exchange, ExchangeArgs
+from trade.exchange import Exchange, ExchangeArgs
 from trade.utils import LoggingType, operations
 from trade.utils.utility_enabler import UtilityEnabler
 from trade.utils.network_tools import CustomHTTPException
