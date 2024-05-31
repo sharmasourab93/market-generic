@@ -10,8 +10,8 @@ import pandas as pd
 from yfinance import Ticker
 
 from trade.calendar import DateObj
-from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
 from trade.exchange import StockGenerics
+from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
 from trade.utils import operations
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]

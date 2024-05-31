@@ -20,8 +20,8 @@ from trade.calendar.calendar_data import (
 )
 from trade.exchange import Exchange, ExchangeArgs
 from trade.utils import LoggingType, operations
-from trade.utils.utility_enabler import UtilityEnabler
 from trade.utils.network_tools import CustomHTTPException
+from trade.utils.utility_enabler import UtilityEnabler
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
