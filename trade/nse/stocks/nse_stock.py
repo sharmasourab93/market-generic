@@ -11,7 +11,6 @@ from yfinance import Ticker
 
 from trade.calendar import DateObj
 from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
-from trade.exchange import StockGenerics
 from trade.utils import operations
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
@@ -21,7 +20,7 @@ simplefilter(action="ignore", category=RuntimeWarning)
 
 
 @dataclass
-class NSEStock(StockGenerics):
+class NSEStock:
     symbol: str
     dated: str
     tf: Optional[str] = "1d"
