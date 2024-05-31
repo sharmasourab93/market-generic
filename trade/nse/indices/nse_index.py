@@ -1,7 +1,7 @@
-from dataclasses import dataclass, field
-from typing import Dict, Literal, Union
+from dataclasses import dataclass
+from typing import Literal
 
-from trade.nse.nse_indices_config import INDICES, NSEIndexConfig
+from trade.nse.indices.nse_indices_config import INDICES, NSEIndexConfig
 
 # TODO: Insert Option Chain Analysis Logic.
 

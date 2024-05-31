@@ -1,9 +1,8 @@
-from dataclasses import dataclass, field
-from heapq import nlargest, nsmallest
-from typing import Dict, List, Optional, Union
+from dataclasses import dataclass
+from typing import List, Optional
 
-from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
-from trade.nse.nse_stock import NSEStock
+from trade.nse.nse_config import NSE_TOP, NSEConfig
+from trade.nse.stocks.nse_stock import NSEStock
 
 
 @dataclass
