@@ -20,7 +20,7 @@ from trade.calendar.calendar_data import (
 )
 from trade.ticker import Exchange, ExchangeArgs
 from trade.utils import LoggingType, operations
-from trade.utils.master_meta import UtilityEnabler
+from trade.utils.utility_enabler import UtilityEnabler
 from trade.utils.network_tools import CustomHTTPException
 
 DATE_FMT = "%d-%b-%Y"
