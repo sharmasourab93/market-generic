@@ -1,3 +1,4 @@
+import os
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
@@ -20,6 +21,7 @@ from trade.calendar.calendar_data import (
 from trade.ticker import Exchange, ExchangeArgs
 from trade.utils import LoggingType, operations
 from trade.utils.network_tools import CustomHTTPException
+from trade.utils.master_meta import UtilityEnabler
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
@@ -38,9 +40,12 @@ TIMINGS = MarketTimings(
 )
 TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
+ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
+ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
 
 
 class NSEConfig(Exchange):
+    __metaclass__ = UtilityEnabler
 
     def __init__(
         self,
@@ -52,6 +57,8 @@ class NSEConfig(Exchange):
         market_timings: MarketTimingType = TIMINGS,
         ticker_mod: Optional[Dict[str, str]] = None,
         log_config: Optional[LoggingType] = None,
+        enable_time: bool = ENABLE_TIME,
+        enable_profile: bool = ENABLE_PROFILE
     ):
 
         super().__init__(
