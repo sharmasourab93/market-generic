@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from trade.nse.indices.nse_indices_config import INDICES, INDEX_NAME_TYPE, \
-    NSEIndexConfig
+from trade.nse.indices.nse_indices_config import (
+    INDEX_NAME_TYPE,
+    INDICES,
+    NSEIndexConfig,
+)
 
 # TODO: Insert Option Chain Analysis Logic.
 
