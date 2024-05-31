@@ -20,8 +20,8 @@ from trade.calendar.calendar_data import (
 )
 from trade.ticker import Exchange, ExchangeArgs
 from trade.utils import LoggingType, operations
-from trade.utils.network_tools import CustomHTTPException
 from trade.utils.master_meta import UtilityEnabler
+from trade.utils.network_tools import CustomHTTPException
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
@@ -58,7 +58,7 @@ class NSEConfig(Exchange):
         ticker_mod: Optional[Dict[str, str]] = None,
         log_config: Optional[LoggingType] = None,
         enable_time: bool = ENABLE_TIME,
-        enable_profile: bool = ENABLE_PROFILE
+        enable_profile: bool = ENABLE_PROFILE,
     ):
 
         super().__init__(
