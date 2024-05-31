@@ -1,13 +1,15 @@
 import asyncio
 import os
+from cProfile import runctx
 from functools import wraps
 from os import getenv
 from time import perf_counter
-from pandas import set_option
 from typing import Optional
-from cProfile import runctx
 
-from trade.utils.log_configurator import LoggingType, LogConfig as Logger
+from pandas import set_option
+
+from trade.utils.log_configurator import LogConfig as Logger
+from trade.utils.log_configurator import LoggingType
 
 EXECUTION_TIME_STR = "Execution time for {0} method {1}: {2}s"
 SYNC, ASYNC = "sync", "async"
@@ -15,24 +17,32 @@ SYNC, ASYNC = "sync", "async"
 
 def compute_execution_time(method):
     if not asyncio.iscoroutinefunction(method):
+
         @wraps(method)
         def sync_wrapper(self, *args, **kwargs):
             start = perf_counter()
             execution = method(self, *args, **kwargs)
             end = perf_counter()
             elapsed_time = round(end - start, 2)
-            self.logger.debug(EXECUTION_TIME_STR.format(SYNC, method.__name__, elapsed_time))
+            self.logger.debug(
+                EXECUTION_TIME_STR.format(SYNC, method.__name__, elapsed_time)
+            )
             return execution
+
         return sync_wrapper
     else:
+
         @wraps(method)
         async def async_wrapper(self, *args, **kwargs):
             start = perf_counter()
             result = await method(self, *args, **kwargs)
             end = perf_counter()
             elapsed_time = round(end - start, 2)
-            self.logger.debug(EXECUTION_TIME_STR.format(ASYNC, method.__name__, elapsed_time))
+            self.logger.debug(
+                EXECUTION_TIME_STR.format(ASYNC, method.__name__, elapsed_time)
+            )
             return result
+
         return async_wrapper
 
 
@@ -62,5 +72,8 @@ class UtilityEnabler(type):
         if not enable_profile:
             return super().__new__(mcs, name, bases, namespace, attrs)
 
-        runctx("return return super().__new__(mcs, name, bases, namespace, attrs)",
-               globals(), locals())
+        runctx(
+            "return return super().__new__(mcs, name, bases, namespace, attrs)",
+            globals(),
+            locals(),
+        )

@@ -1,9 +1,9 @@
 from datetime import date, datetime
+from pathlib import Path
 
 import pytest
 import requests
 from pandas import DataFrame
-from pathlib import Path
 
 from trade.nse.nse_config import DATE_FMT, NSEConfig
 

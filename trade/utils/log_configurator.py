@@ -68,13 +68,14 @@ class LogConfig:
     7.      logger.debug(msg) Log with level DEBUG.
 
     """
+
     LOG_LEVELS = {
         0: logging.NOTSET,
         10: logging.DEBUG,
         20: logging.INFO,
         30: logging.WARNING,
         40: logging.ERROR,
-        50: logging.CRITICAL
+        50: logging.CRITICAL,
     }
 
     @staticmethod
@@ -108,7 +109,7 @@ class LogConfig:
         if not (log_path / Path(log_dir)).exists():
             mkdir(log_path / Path(log_dir))
 
-        log_path = log_path / Path(log_dir)/ Path(f"log_{time}.log")
+        log_path = log_path / Path(log_dir) / Path(f"log_{time}.log")
 
         config["handlers"]["file_handler"]["filename"] = str(log_path)
         config["root"]["level"] = LogConfig.LOG_LEVELS[level]
