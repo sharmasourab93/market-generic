@@ -13,11 +13,13 @@ INDICES = [
     "NIFTY MIDCAP 50",
 ]
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
-INDEX_NAME_TYPE = Union[Literal["NIFTY 50"],
-                        Literal["NIFTY BANK"],
-                        Literal["NIFTY FINANCIAL SERVICES"],
-                        Literal["NIFTY NEXT 50"],
-                        Literal["NIFTY MIDCAP 50"]]
+INDEX_NAME_TYPE = Union[
+    Literal["NIFTY 50"],
+    Literal["NIFTY BANK"],
+    Literal["NIFTY FINANCIAL SERVICES"],
+    Literal["NIFTY NEXT 50"],
+    Literal["NIFTY MIDCAP 50"],
+]
 INDIA_VIX = "INDIA VIX"
 
 MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
