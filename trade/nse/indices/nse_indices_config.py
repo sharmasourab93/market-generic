@@ -13,7 +13,7 @@ INDICES = [
     "NIFTY MIDCAP 50",
 ]
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
-INDEX_NAME_TYPE = UNION[Literal["NIFTY 50"],
+INDEX_NAME_TYPE = Union[Literal["NIFTY 50"],
                         Literal["NIFTY BANK"],
                         Literal["NIFTY FINANCIAL SERVICES"],
                         Literal["NIFTY NEXT 50"],
