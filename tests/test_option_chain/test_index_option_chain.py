@@ -1,7 +1,7 @@
 import pytest
 
 from trade.nse.indices.nse_indices_config import NSEIndexConfig
-from trade.option_chain.index_option_chain_analysis import IndexOptionChainAnalysis
+from trade.option_chain.index_option_chain import IndexOptionChainAnalysis
 
 
 @pytest.fixture
