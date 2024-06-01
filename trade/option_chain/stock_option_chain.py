@@ -1,10 +1,16 @@
-from trade.option_chain.generic_option_chain import GenericOptionChain
 from trade.nse.nse_config import NSEConfig
+from trade.option_chain.generic_option_chain import GenericOptionChain
 
 
 class StockOptionChain(GenericOptionChain):
-    def __init__(self, symbol: str, oc_data: dict,
-                 dated:str, strike_multiples: dict, Config: type = NSEConfig):
+    def __init__(
+        self,
+        symbol: str,
+        oc_data: dict,
+        dated: str,
+        strike_multiples: dict,
+        Config: type = NSEConfig,
+    ):
         super().__init__(symbol, oc_data, strike_multiples)
         self._config = Config(dated)
 

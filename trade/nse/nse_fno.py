@@ -1,7 +1,6 @@
 from abc import ABC
 from functools import cache
-from typing import Dict, Union, List
-
+from typing import Dict, List, Union
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 INVALID_SYMBOL = "Invalid Symbol Chosen."
