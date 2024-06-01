@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal
+
 from trade.nse.data_generics import NSEDataGeneric
 from trade.nse.indices.nse_indices_config import (
     INDEX_NAME_TYPE,
