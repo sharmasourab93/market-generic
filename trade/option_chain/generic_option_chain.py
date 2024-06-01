@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Dict, Tuple, Union
 from pandas import DataFrame, json_normalize
 import pandas as pd
@@ -320,3 +321,8 @@ class GenericOptionChain(metaclass=UtilityEnabler):
         strike_price = ceil(underlying / multiple) * multiple
 
         return strike_price
+
+    @abstractmethod
+    def option_chain_output(self):
+
+        NotImplementedError("Yet to be implemented.")
