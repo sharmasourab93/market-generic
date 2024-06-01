@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Dict, Union
 
 from trade.nse.data_generics import NSEDataGeneric
 from trade.nse.indices.nse_indices_config import (
@@ -7,6 +7,8 @@ from trade.nse.indices.nse_indices_config import (
     INDICES,
     NSEIndexConfig,
 )
+
+OHLC_TYPE = Dict[str, Dict[str, Union[str, int]]]
 
 
 @dataclass
@@ -24,6 +26,9 @@ class NSEIndex(NSEDataGeneric):
             if key not in ("symbol", "dated"):
                 setattr(self, key, value)
 
+    def get_ohlc(self) -> OHLC_TYPE:
+
+        return {self.symbol: self.ohlc}
 
 @dataclass
 class SpotIndices:
@@ -36,3 +41,17 @@ class SpotIndices:
         self.symbols = [NSEIndex(i, self.dated) for i in INDICES]
         self.vix = self._config.get_vix()
         self.metrics = self._config.get_index_metrics()
+
+    def get_ohlc(self) -> OHLC_TYPE:
+
+        resulting_dict = dict()
+        for sym in self.symbols:
+            resulting_dict.update(sym.get_ohlc())
+
+        return resulting_dict
+
+
+if __name__ == '__main__':
+    obj = SpotIndices("31-May-2024")
+
+    print(obj)

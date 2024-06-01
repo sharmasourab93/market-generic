@@ -1,5 +1,5 @@
-from abc import abstractmethod
-from typing import Dict, Tuple, Union
+from abc import abstractmethod, ABC
+from typing import Dict, Tuple, Union, Optional, Literal
 from pandas import DataFrame, json_normalize
 import pandas as pd
 from trade.nse.nse_config import NSEConfig
@@ -39,7 +39,8 @@ QUOTE_OPTION_CHAIN_COLS = [
 ]
 
 
-class GenericOptionChain(metaclass=UtilityEnabler):
+class GenericOptionChain(ABC):
+    __metaclass__ = UtilityEnabler
 
     def __init__(self, symbol: int, oc_data: dict,
                  dated: str, strike_multiples: Optional[dict] = None):

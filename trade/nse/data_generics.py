@@ -27,7 +27,9 @@ class NSEDataGeneric:
     def option_chain_result(self, OptionChain: type):
 
         option_chain_data = self._nse_config.get_option_chain_data.get_option_chain_data(self.symbol)
-
         oc_obj = OptionChain(symbol, option_chain_data, self.dated, strike_multiples)
 
         return oc_obj.option_chain_output()
+
+    def apply_indicators(self, Indicator: type) -> None:
+        ...
