@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Union
+from typing import Dict, List, Optional, Union
 
 from trade.nse.nse_config import NSE_TOP, NSEConfig
 from trade.nse.stocks.nse_stock import NSEStock
-
 
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
 

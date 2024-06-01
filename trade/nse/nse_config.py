@@ -219,8 +219,6 @@ class NSEConfig(Exchange, NSEFNO):
 
         return stock_list[:nse_top]
 
-
-
     @cache
     def get_all_sectors_industries(self) -> pd.DataFrame:
         """A Dataframe of All stocks and its relevant sectors/industry."""

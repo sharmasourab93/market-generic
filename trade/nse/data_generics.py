@@ -33,5 +33,4 @@ class NSEDataGeneric:
 
         return oc_obj.option_chain_output()
 
-    def apply_indicators(self, Indicator: type) -> None:
-        ...
+    def apply_indicators(self, Indicator: type) -> None: ...
