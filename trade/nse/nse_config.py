@@ -40,7 +40,6 @@ TIMINGS = MarketTimings(
     time_cutoff=TIME_CUTOFF,
 )
 TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
-ADV_DEC_TYPE = Dict[Union[bool, None], int]
 ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
 ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
 
@@ -220,8 +219,7 @@ class NSEConfig(Exchange, NSEFNO):
 
         return stock_list[:nse_top]
 
-    def get_advance_decline(self) -> ADV_DEC_TYPE:
-        return dict(Counter([i.adv_dec for i in self.symbols]))
+
 
     @cache
     def get_all_sectors_industries(self) -> pd.DataFrame:

@@ -1,8 +1,11 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict, Union
 
 from trade.nse.nse_config import NSE_TOP, NSEConfig
 from trade.nse.stocks.nse_stock import NSEStock
+
+
+ADV_DEC_TYPE = Dict[Union[bool, None], int]
 
 
 @dataclass
@@ -30,3 +33,6 @@ class AllNSEStocks:
             return [self.symbols[i] for i in range(start, stop, step)]
 
         return self.symbols[index]
+
+    def get_advance_decline(self) -> ADV_DEC_TYPE:
+        return dict(Counter([i.adv_dec for i in self.symbols]))
