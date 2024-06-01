@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal, Dict, Union
+from typing import Dict, Literal, Union
 
 from trade.nse.data_generics import NSEDataGeneric
 from trade.nse.indices.nse_indices_config import (
@@ -30,6 +30,7 @@ class NSEIndex(NSEDataGeneric):
 
         return {self.symbol: self.ohlc}
 
+
 @dataclass
 class SpotIndices:
 
@@ -51,7 +52,7 @@ class SpotIndices:
         return resulting_dict
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     obj = SpotIndices("31-May-2024")
 
     print(obj)

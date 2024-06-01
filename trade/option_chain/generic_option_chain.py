@@ -1,5 +1,6 @@
-from abc import abstractmethod, ABC
-from typing import Dict, Tuple, Union, Optional, Literal
+from abc import ABC, abstractmethod
+from typing import Dict, Literal, Optional, Tuple, Union
+
 import pandas as pd
 from pandas import DataFrame, json_normalize
 
