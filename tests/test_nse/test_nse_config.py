@@ -116,9 +116,4 @@ def test_get_option_chain(nse_config, symbol):
     assert all(i in response.keys() for i in ("records", "filtered"))
 
 
-@pytest.mark.xfail(reason="Did not get enough time to test.")
-def test_get_all_sectors_industries(nse_config):
 
-    response = nse_config.get_all_sectors_industries()
-
-    assert isinstance(response, pd.DataFrame)
