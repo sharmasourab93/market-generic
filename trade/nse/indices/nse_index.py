@@ -1,22 +1,21 @@
 from dataclasses import dataclass
 from typing import Literal
-
+from trade.nse.data_generics import NSEDataGeneric
 from trade.nse.indices.nse_indices_config import (
     INDEX_NAME_TYPE,
     INDICES,
     NSEIndexConfig,
 )
 
-# TODO: Insert Option Chain Analysis Logic.
-
 
 @dataclass
-class NSEIndex:
+class NSEIndex(NSEDataGeneric):
 
     symbol: INDEX_NAME_TYPE
     dated: str
 
     def __post_init__(self):
+        self.symbol = self.symbol.upper()
         self._config = NSEIndexConfig(self.dated)
         quotes = self._config.get_quote_index(self.symbol)
 

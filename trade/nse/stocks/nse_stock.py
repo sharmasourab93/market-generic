@@ -31,6 +31,7 @@ class NSEStock:
         if self.symbol in TICKER_MODIFICATION.keys():
             self.symbol = TICKER_MODIFICATION[self.symbol]
 
+        self.symbol = self.symbol.upper()
         self._yfsymbol = self._nse_config.adjust_yfin_ticker_by_market(self.symbol)
         self.get_curr_bhav()
         self._curr_ohlc = {
@@ -110,12 +111,3 @@ class NSEStock:
             operations.calculate_pct_diff(self.volume, self.prev_volume) / 100
         )
         self.diff = self.close - self.prev_close
-
-    def option_chain(self, OptionChainType: type):
-
-        if self.is_fno:
-            option_chain_data = self._nse_config.get_option_chain(self.symbol)
-
-            return OptionChainType(option_chain_data)
-
-        return None
