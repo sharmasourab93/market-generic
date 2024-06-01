@@ -114,6 +114,3 @@ def test_get_option_chain(nse_config, symbol):
     response = nse_config.get_option_chain_data(symbol)
     assert isinstance(response, dict)
     assert all(i in response.keys() for i in ("records", "filtered"))
-
-
-
