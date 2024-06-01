@@ -102,20 +102,18 @@ def test_get_all_etfs(nse_config):
     response = nse_config.get_all_etfs()
 
     assert isinstance(response, dict)
-    assert isinstance(response['data'], list)
+    assert isinstance(response["data"], list)
     assert all(isinstance(i, dict) for i in response["data"])
-    assert len(response['data']) > 100
+    assert len(response["data"]) > 100
 
 
-@pytest.mark.parametrize("symbol", ["NIFTY",
-                                    "NIFTYNXT50",
-                                    "BANKNIFTY",
-                                    "RELIANCE",
-                                    "SBIN"])
+@pytest.mark.parametrize(
+    "symbol", ["NIFTY", "NIFTYNXT50", "BANKNIFTY", "RELIANCE", "SBIN"]
+)
 def test_get_option_chain(nse_config, symbol):
     response = nse_config.get_option_chain(symbol)
     assert isinstance(response, dict)
-    assert all(i in response.keys() for i in ('records', 'filtered'))
+    assert all(i in response.keys() for i in ("records", "filtered"))
 
 
 @pytest.mark.xfail(reason="Did not get enough time to test.")

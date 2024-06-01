@@ -232,13 +232,12 @@ class NSEConfig(Exchange):
 
     @cache
     def get_all_sectors_industries(self) -> pd.DataFrame:
-        """ A Dataframe of All stocks and its relevant sectors/industry. """
+        """A Dataframe of All stocks and its relevant sectors/industry."""
 
         sectors = self.sectoral_indices
 
         sectoral_data = {
-            sector: self.download_data(url)
-            for sector, url in sectors.items()
+            sector: self.download_data(url) for sector, url in sectors.items()
         }
 
         sectoral_list = list()
@@ -252,7 +251,7 @@ class NSEConfig(Exchange):
         return data
 
     def get_option_chain(self, symbol: str) -> MARKET_API_QUOTE_TYPE:
-        """ Based on symbol extract Option Chain data from NSE API. """
+        """Based on symbol extract Option Chain data from NSE API."""
 
         symbol = symbol.upper()
 

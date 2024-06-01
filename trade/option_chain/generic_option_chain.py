@@ -1,9 +1,9 @@
 import abc
-from typing import Dict, Union, Tuple
+from typing import Dict, Tuple, Union
+
 import pandas as pd
 
 from trade.utils.utility_enabler import UtilityEnabler
-
 
 PCR_VERDICT_RANGE = {
     (0, 0.4): "Over Sold",
@@ -23,10 +23,10 @@ class GenericOptionChain(metaclass=UtilityEnabler):
     def __init__(self, oc_data: pd.DataFrame):
         self.data = oc_data
 
-    def pcr_verdict(self,
-                    pcr: float,
-                    verdict_range: VERDICT_RANGE_TYPE = PCR_VERDICT_RANGE) -> str:
-        """ Based on the provided pcr, returns a Verdict. """
+    def pcr_verdict(
+        self, pcr: float, verdict_range: VERDICT_RANGE_TYPE = PCR_VERDICT_RANGE
+    ) -> str:
+        """Based on the provided pcr, returns a Verdict."""
 
         for limits, classification in verdict_range.items():
             lower_limit, upper_limit = limits
@@ -35,7 +35,3 @@ class GenericOptionChain(metaclass=UtilityEnabler):
                 return classification
 
         return "Invalid"
-
-    
-
-
