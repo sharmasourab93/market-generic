@@ -87,10 +87,12 @@ class NSEIndexConfig(NSEConfig):
                     data.key == i,
                     [col for col in data.columns if col not in excluded_cols],
                 ]
-                for i in ("SECTORAL INDICES",
-                          "STRATEGY INDICES",
-                          "THEMATIC INDICES",
-                          "FIXED INCOME INDICES")
+                for i in (
+                    "SECTORAL INDICES",
+                    "STRATEGY INDICES",
+                    "THEMATIC INDICES",
+                    "FIXED INCOME INDICES",
+                )
             }
         )
 
@@ -192,11 +194,11 @@ class NSEIndexConfig(NSEConfig):
         return response
 
     def get_vix_history(self, start: str, end: str):
-        """ This method gets you history of INDIA VIX from x1 date to x2 date.
-            Expecting params
-            : start:
-            : end:
-            to be in %d-%m-%Y format.
+        """This method gets you history of INDIA VIX from x1 date to x2 date.
+        Expecting params
+        : start:
+        : end:
+        to be in %d-%m-%Y format.
         """
 
         url = self.main_domain + self.vix.format(start, end)
