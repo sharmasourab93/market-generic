@@ -1,9 +1,11 @@
 from abc import abstractmethod
 from typing import Dict, Tuple, Union
-from pandas import DataFrame, json_normalize
+
 import pandas as pd
-from trade.nse.nse_config import NSEConfig
+from pandas import DataFrame, json_normalize
+
 from trade.nse.indices.nse_indices_config import NSEIndexConfig
+from trade.nse.nse_config import NSEConfig
 from trade.utils.utility_enabler import UtilityEnabler
 
 PCR_VERDICT_RANGE = {
@@ -41,8 +43,13 @@ QUOTE_OPTION_CHAIN_COLS = [
 
 class GenericOptionChain(metaclass=UtilityEnabler):
 
-    def __init__(self, symbol: int, oc_data: dict,
-                 dated: str, strike_multiples: Optional[dict] = None):
+    def __init__(
+        self,
+        symbol: int,
+        oc_data: dict,
+        dated: str,
+        strike_multiples: Optional[dict] = None,
+    ):
         self.data = oc_data
 
         if strike_multiples is None:

@@ -1,4 +1,5 @@
 from typing import Literal, Optional, TypeVar
+
 from trade.option_chain.index_option_chain import IndexOptionChainAnalysis
 from trade.option_chain.stock_option_chain import StockOptionChain
 
@@ -16,9 +17,7 @@ class NSEDataGeneric:
 
             case "equity":
                 return (
-                    self.option_chain_result(StockOptionChain)
-                    if self.is_fno
-                    else None
+                    self.option_chain_result(StockOptionChain) if self.is_fno else None
                 )
 
             case _:
@@ -26,7 +25,9 @@ class NSEDataGeneric:
 
     def option_chain_result(self, OptionChain: type):
 
-        option_chain_data = self._nse_config.get_option_chain_data.get_option_chain_data(self.symbol)
+        option_chain_data = (
+            self._nse_config.get_option_chain_data.get_option_chain_data(self.symbol)
+        )
 
         oc_obj = OptionChain(symbol, option_chain_data, self.dated, strike_multiples)
 

@@ -1,10 +1,8 @@
+from trade.nse.indices.nse_indices_config import INDICES, NSEIndexConfig
 from trade.option_chain.generic_option_chain import GenericOptionChain
-from trade.nse.indices.nse_indices_config import NSEIndexConfig, INDICES
 
-WEEKLY_EXPIRY = (3, 2, 1, int("inf"),0)
-INDICES_WEEKLY_EXPIRY = {
-    index: expiry for index, expiry in zip(INDICES, WEEKLY_EXPIRY)
-}
+WEEKLY_EXPIRY = (3, 2, 1, int("inf"), 0)
+INDICES_WEEKLY_EXPIRY = {index: expiry for index, expiry in zip(INDICES, WEEKLY_EXPIRY)}
 INDICES_FREQUENCY = {
     i: ("Weekly" if INDICES != "NIFTY NEXT 50" else "Monthly", INDICES_WEEKLY_EXPIRY[i])
     for i in INDICES
@@ -13,8 +11,14 @@ INDICES_FREQUENCY = {
 
 class IndexOptionChainAnalysis(GenericOptionChain):
 
-    def __init__(self, symbol: str, oc_data: dict,
-                 dated:str, strike_multiples: dict, Config: type = NSEIndexConfig):
+    def __init__(
+        self,
+        symbol: str,
+        oc_data: dict,
+        dated: str,
+        strike_multiples: dict,
+        Config: type = NSEIndexConfig,
+    ):
 
         super().__init__(symbol, oc_data, strike_multiples)
         self._config = Config(dated)
