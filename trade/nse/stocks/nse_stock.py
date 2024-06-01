@@ -56,6 +56,10 @@ class NSEStock:
     def __eq__(self, other):
         return self.symbol == other
 
+    @property
+    def is_fno(self) -> bool:
+        return self.symbol in self.get_fno_stocks
+
     @cached_property
     def get_meta_data(self) -> MARKET_API_QUOTE_TYPE:
         return self._nse_config.get_equity_meta(self.symbol)
@@ -106,3 +110,12 @@ class NSEStock:
             operations.calculate_pct_diff(self.volume, self.prev_volume) / 100
         )
         self.diff = self.close - self.prev_close
+
+    def option_chain(self, OptionChainType: type):
+
+        if self.is_fno:
+            option_chain_data = self._nse_config.get_option_chain(self.symbol)
+
+            return OptionChainType(option_chain_data)
+
+        return None

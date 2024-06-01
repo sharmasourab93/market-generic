@@ -44,3 +44,18 @@ def test_get_quote_index(index_config):
 def test_get_quote_index_invalid_input(index_config):
     with pytest.raises(AttributeError):
         index_config.get_quote_index(None)
+
+
+def test_get_index_metrics(index_config):
+
+    response = index_config.get_index_metrics()
+
+    assert isinstance(response, dict)
+    assert all(i in INDICES for i in response.keys())
+
+
+def test_get_vix_history(index_config):
+    start, end = "01-05-2024", "01-06-2024"
+    response = index_config.get_vix_history(start, end)
+
+    assert isinstance(response, dict)

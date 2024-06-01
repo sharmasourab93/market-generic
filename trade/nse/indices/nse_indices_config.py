@@ -21,9 +21,8 @@ INDEX_NAME_TYPE = Union[
     Literal["NIFTY MIDCAP 50"],
 ]
 INDIA_VIX = "INDIA VIX"
-
-MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
 INVALID_SYMBOL = "Invalid Symbol Chosen."
+MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
 
 
 class NSEIndexConfig(NSEConfig):
@@ -82,19 +81,16 @@ class NSEIndexConfig(NSEConfig):
             [col for col in data.columns if col not in excluded_cols],
         ]
         processed_indices.update({"SPOT": spot_indices})
-        categories = (
-            "SECTORAL INDICES",
-            "STRATEGY INDICES",
-            "THEMATIC INDICES",
-            "FIXED INCOME INDICES",
-        )
         processed_indices.update(
             {
                 i: data.loc[
                     data.key == i,
                     [col for col in data.columns if col not in excluded_cols],
                 ]
-                for i in categories
+                for i in ("SECTORAL INDICES",
+                          "STRATEGY INDICES",
+                          "THEMATIC INDICES",
+                          "FIXED INCOME INDICES")
             }
         )
 
@@ -195,41 +191,13 @@ class NSEIndexConfig(NSEConfig):
         response = self.process_quoted_index(response)
         return response
 
-    @cache
-    def get_fno_stocks(self) -> List[str]:
-
-        url = self.main_domain + self.derivative_master_list
-        data = self.get_request_api(url, self.advanced_header).json()
-
-        if response == {}:
-            return response
-
-        return response
-
-    def get_option_chain_equities(self, symbol: str):
-        symbol = symbol.upper()
-        fno_stocks = self.get_fno_stocks
-
-        if symbol not in fno_stocks:
-            raise KeyError(INVALID_SYMBOL)
-
-        url = self.main_domain + self.derivative_option_chain.format(symbol)
-        data = self.get_request_api(url, self.advanced_header).json()
-
-        return data
-
-    def get_derivative_option_chain_index(self, symbol):
-        symbol = symbol.upper()
-
-        if symbol not in self.dervative_index_choice:
-            raise KeyError(INVALID_SYMBOL)
-
-        url = self.main_domain + self.derivative_option_index.format(symbol)
-        data = self.get_request_api(url, self.advanced_header).json()
-
-        return data
-
     def get_vix_history(self, start: str, end: str):
+        """ This method gets you history of INDIA VIX from x1 date to x2 date.
+            Expecting params
+            : start:
+            : end:
+            to be in %d-%m-%Y format.
+        """
 
         url = self.main_domain + self.vix.format(start, end)
         data = self.get_request_api(url, self.advanced_header).json()

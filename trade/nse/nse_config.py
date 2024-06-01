@@ -42,6 +42,7 @@ TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
 ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
 ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
+INVALID_SYMBOL = "Invalid Symbol Chosen."
 
 
 class NSEConfig(Exchange):
@@ -221,3 +222,62 @@ class NSEConfig(Exchange):
 
     def get_advance_decline(self) -> ADV_DEC_TYPE:
         return dict(Counter([i.adv_dec for i in self.symbols]))
+
+    @cache
+    def get_fno_stocks(self) -> List[str]:
+
+        url = self.main_domain + self.derivative_master_list
+        data = self.get_request_api(url, self.advanced_header).json()
+        return data
+
+    @cache
+    def get_all_sectors_industries(self) -> pd.DataFrame:
+        """ A Dataframe of All stocks and its relevant sectors/industry. """
+
+        sectors = self.sectoral_indices
+
+        sectoral_data = {
+            sector: self.download_data(url)
+            for sector, url in sectors.items()
+        }
+
+        sectoral_list = list()
+
+        for sector, data in sectoral_data.items():
+            data["index"] = sector
+            sectoral_list.append(data)
+
+        data = pd.concat(sectoral_list)
+
+        return data
+
+    def get_option_chain(self, symbol: str) -> MARKET_API_QUOTE_TYPE:
+        """ Based on symbol extract Option Chain data from NSE API. """
+
+        symbol = symbol.upper()
+
+        if symbol in self.derivative_index_choice:
+            url = self.get_option_chain_index(symbol)
+
+        elif symbol in self.get_fno_stocks():
+            url = self.get_option_chain_equities(symbol)
+
+        else:
+            raise KeyError(INVALID_SYMBOL)
+
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data
+
+    def get_option_chain_equities(self, symbol: str) -> str:
+        return self.main_domain + self.derivative_option_chain.format(symbol)
+
+    def get_option_chain_index(self, symbol: str) -> str:
+        return self.main_domain + self.derivative_option_index.format(symbol)
+
+    def get_all_etfs(self):
+
+        url = self.main_domain + self.etf_all
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data

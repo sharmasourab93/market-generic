@@ -95,3 +95,32 @@ def test_if_logger_exists_after_config(nse_config_with_log_config):
     log_file_path = Path(__file__).parent.parent.parent / Path("log")
     assert does_logger_exists
     assert log_file_path.exists()
+
+
+def test_get_all_etfs(nse_config):
+
+    response = nse_config.get_all_etfs()
+
+    assert isinstance(response, dict)
+    assert isinstance(response['data'], list)
+    assert all(isinstance(i, dict) for i in response["data"])
+    assert len(response['data']) > 100
+
+
+@pytest.mark.parametrize("symbol", ["NIFTY",
+                                    "NIFTYNXT50",
+                                    "BANKNIFTY",
+                                    "RELIANCE",
+                                    "SBIN"])
+def test_get_option_chain(nse_config, symbol):
+    response = nse_config.get_option_chain(symbol)
+    assert isinstance(response, dict)
+    assert all(i in response.keys() for i in ('records', 'filtered'))
+
+
+@pytest.mark.xfail(reason="Did not get enough time to test.")
+def test_get_all_sectors_industries(nse_config):
+
+    response = nse_config.get_all_sectors_industries()
+
+    assert isinstance(response, pd.DataFrame)
