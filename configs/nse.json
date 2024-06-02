@@ -78,9 +78,9 @@
                         "YFIN-NSE-SYMBOLS": {
                             "NIFTY 50": "^NSEI",
                             "NIFTY BANK": "^NSEBANK",
-                            "NIFTY FINANCIAL SERVICES": "^NIFTY_FIN_SERVICE.NS",
+                            "NIFTY FINANCIAL SERVICES": "NIFTY_FIN_SERVICE.NS",
                             "NIFTY NEXT 50": "^NSMIDCP",
-                            "NIFTY MIDCAP 50": "NSEMDCP50"
+                            "NIFTY MIDCAP 50": "^NSEMDCP50"
                         },
                         "NSE-API-SYMBOLS": {
                             "NIFTY 50": "NIFTY",

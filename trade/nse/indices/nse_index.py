@@ -26,6 +26,8 @@ class NSEIndex(NSEDataGeneric):
             if key not in ("symbol", "dated"):
                 setattr(self, key, value)
 
+        self.indicators = self.apply_indicators()
+
     def get_ohlc(self) -> OHLC_TYPE:
 
         return {self.symbol: self.ohlc}
@@ -39,14 +41,17 @@ class SpotIndices:
     def __post_init__(self):
 
         self._config = NSEIndexConfig(self.dated)
-        self.symbols = [NSEIndex(i, self.dated) for i in INDICES]
+        self.symbols = {i: NSEIndex(i, self.dated) for i in INDICES}
         self.vix = self._config.get_vix()
         self.metrics = self._config.get_index_metrics()
+
+    def __getitem__(self, item: str) -> NSEIndex | None:
+        return self.symbols.get(item, None)
 
     def get_ohlc(self) -> OHLC_TYPE:
 
         resulting_dict = dict()
-        for sym in self.symbols:
+        for sym in self.symbols.values():
             resulting_dict.update(sym.get_ohlc())
 
         return resulting_dict
