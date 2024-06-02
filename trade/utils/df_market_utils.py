@@ -1,6 +1,8 @@
 from abc import ABC
 
-from pandas import DataFrame
+from pandas import DataFrame, set_option
+
+set_option("mode.chained_assignment", None)
 
 
 class MarketDFUtils(ABC):

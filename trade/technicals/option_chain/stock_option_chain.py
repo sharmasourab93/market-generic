@@ -1,8 +1,8 @@
 from trade.nse.nse_config import NSEConfig
-from trade.option_chain.generic_option_chain import GenericOptionChain
+from trade.technicals.option_chain.generic_option_chain import GenericOptionChain
 
 
-class StockOptionChain(GenericOptionChain):
+class StockOptionChainAnalysis(GenericOptionChain):
     def __init__(
         self,
         symbol: str,

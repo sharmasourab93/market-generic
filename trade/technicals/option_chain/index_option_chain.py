@@ -1,5 +1,5 @@
 from trade.nse.indices.nse_indices_config import INDICES, NSEIndexConfig
-from trade.option_chain.generic_option_chain import GenericOptionChain
+from trade.technicals.option_chain.generic_option_chain import GenericOptionChain
 
 WEEKLY_EXPIRY = (3, 2, 1, 9999, 0)
 INDICES_WEEKLY_EXPIRY = {index: expiry for index, expiry in zip(INDICES, WEEKLY_EXPIRY)}
