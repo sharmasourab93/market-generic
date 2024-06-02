@@ -1,9 +1,10 @@
-from typing import Union, Literal, Tuple, List, Optional
+from typing import List, Literal, Optional, Tuple, Union
 
 import pandas as pd
-from pandas import DataFrame
-from numpy import select
 import pandas_ta as ta
+from numpy import select
+from pandas import DataFrame
+
 from trade.technicals.indicators.generic_indicator import GenericIndicator
 
 MOVING_AVERAGE_INTS_TYPE = Union[Tuple[int], List[int]]
@@ -16,11 +17,13 @@ CROSSOVERS = ("Upside", "Downside", "No Crossover")
 class MovingAverages(GenericIndicator):
     __name__ = "Moving Averages"
 
-    def __init__(self,
-                 data: Union[dict, DataFrame],
-                 ma: MOVING_AVERAGES,
-                 on_col: str,
-                 ma_range: MOVING_AVERAGE_INTS_TYPE):
+    def __init__(
+        self,
+        data: Union[dict, DataFrame],
+        ma: MOVING_AVERAGES,
+        on_col: str,
+        ma_range: MOVING_AVERAGE_INTS_TYPE,
+    ):
 
         super().__init__(data)
         self.data = data
@@ -77,10 +80,11 @@ class MovingAverages(GenericIndicator):
         return tuple(data.iloc[-1].iloc[-2:].values.tolist())
 
     @classmethod
-    def apply_indicator(cls,
-                        data: pd.DataFrame,
-                        ma: MOVING_AVERAGES,
-                        on_col: str,
-                        ma_range: Optional[MOVING_AVERAGE_INTS_TYPE] =
-                        TYPICAL_MOVING_AVERAGES) -> DataFrame:
+    def apply_indicator(
+        cls,
+        data: pd.DataFrame,
+        ma: MOVING_AVERAGES,
+        on_col: str,
+        ma_range: Optional[MOVING_AVERAGE_INTS_TYPE] = TYPICAL_MOVING_AVERAGES,
+    ) -> DataFrame:
         return cls(data, ma, on_col, ma_range).add_moving_averages()

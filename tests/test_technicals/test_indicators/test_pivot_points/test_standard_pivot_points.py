@@ -1,6 +1,9 @@
-import pytest
 import pandas as pd
-from trade.technicals.indicators.pivot_points.standard_pivot_points import StandardPivotPoints
+import pytest
+
+from trade.technicals.indicators.pivot_points.standard_pivot_points import (
+    StandardPivotPoints,
+)
 
 
 def test_standard_pivot_points_properties():
@@ -8,12 +11,12 @@ def test_standard_pivot_points_properties():
         "open": [10.0, 11.0, 12.0, 13.0, 14.0],
         "high": [11.0, 12.0, 13.0, 14.0, 15.0],
         "low": [9.0, 10.0, 11.0, 12.0, 13.0],
-        "close": [10.5, 11.5, 12.5, 13.5, 14.5]
+        "close": [10.5, 11.5, 12.5, 13.5, 14.5],
     }
     df = pd.DataFrame(data)
-    pivot_points = StandardPivotPoints.apply_pivot_points(df["open"], df["high"],
-                                                          df["low"],
-                                          df["close"])
+    pivot_points = StandardPivotPoints.apply_pivot_points(
+        df["open"], df["high"], df["low"], df["close"]
+    )
     assert pivot_points.pivot is not None
     assert pivot_points.bcpr is not None
     assert pivot_points.tcpr is not None
@@ -28,7 +31,7 @@ def test_standard_pivot_points_consolidate():
         "open": [10.0, 11.0, 12.0, 13.0, 14.0],
         "high": [11.0, 12.0, 13.0, 14.0, 15.0],
         "low": [9.0, 10.0, 11.0, 12.0, 13.0],
-        "close": [10.5, 11.5, 12.5, 13.5, 14.5]
+        "close": [10.5, 11.5, 12.5, 13.5, 14.5],
     }
     df = pd.DataFrame(data)
     pivot_points = StandardPivotPoints(df["open"], df["high"], df["low"], df["close"])
