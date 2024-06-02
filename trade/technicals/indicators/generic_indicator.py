@@ -1,5 +1,6 @@
-import pandas as pd
 from abc import ABC, abstractmethod
+
+import pandas as pd
 
 INDICATOR_MANDATE_KEYS = ("open", "high", "low", "close", "volume")
 INVALID_DATA_FORMAT = "Invalid Data Format provided for Indicator"
