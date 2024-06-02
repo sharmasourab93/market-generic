@@ -1,0 +1,1 @@
+from trade.technicals.indicators.generic_indicator import GenericIndicator

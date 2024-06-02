@@ -1,7 +1,7 @@
-from typing import Literal, Optional, TypeVar
+from typing import Literal
 
-from trade.option_chain.index_option_chain import IndexOptionChainAnalysis
-from trade.option_chain.stock_option_chain import StockOptionChain
+from trade.technicals.option_chain import IndexOptionChainAnalysis
+from trade.technicals.option_chain import StockOptionChain
 
 
 class NSEDataGeneric:
