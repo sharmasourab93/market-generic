@@ -22,5 +22,5 @@ class GenericIndicator(ABC):
             raise ValueError(INVALID_DATA_FORMAT)
 
     @abstractmethod
-    def apply_indicator(self):
+    def apply_indicator(self, *args, **kwargs):
         ...
