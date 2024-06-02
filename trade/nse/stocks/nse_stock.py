@@ -11,7 +11,6 @@ from yfinance import Ticker
 
 from trade.calendar import DateObj
 from trade.nse.nse_config import DATE_FMT, NSE_TOP, NSEConfig
-from trade.ticker import StockGenerics
 from trade.utils import operations
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
@@ -21,7 +20,7 @@ simplefilter(action="ignore", category=RuntimeWarning)
 
 
 @dataclass
-class NSEStock(StockGenerics):
+class NSEStock:
     symbol: str
     dated: str
     tf: Optional[str] = "1d"
@@ -32,6 +31,7 @@ class NSEStock(StockGenerics):
         if self.symbol in TICKER_MODIFICATION.keys():
             self.symbol = TICKER_MODIFICATION[self.symbol]
 
+        self.symbol = self.symbol.upper()
         self._yfsymbol = self._nse_config.adjust_yfin_ticker_by_market(self.symbol)
         self.get_curr_bhav()
         self._curr_ohlc = {
@@ -56,6 +56,10 @@ class NSEStock(StockGenerics):
 
     def __eq__(self, other):
         return self.symbol == other
+
+    @property
+    def is_fno(self) -> bool:
+        return self.symbol in self.get_fno_stocks
 
     @cached_property
     def get_meta_data(self) -> MARKET_API_QUOTE_TYPE:

@@ -1,9 +1,8 @@
 from unittest.mock import MagicMock
 
-import pandas as pd
 import pytest
 
-from trade.nse.nse_stock import NSEStock
+from trade.nse.stocks.nse_stock import NSEStock
 
 
 @pytest.fixture

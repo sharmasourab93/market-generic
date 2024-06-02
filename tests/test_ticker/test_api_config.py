@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from trade.ticker.api_config import APIConfig
+from trade.exchange.api_config import APIConfig
 
 
 @pytest.fixture(scope="function")
