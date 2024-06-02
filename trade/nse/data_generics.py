@@ -1,6 +1,7 @@
-from typing import Literal
-
-from trade.technicals.option_chain import IndexOptionChainAnalysis, StockOptionChain
+from typing import Literal, Dict, Tuple
+from trade.technicals.indicators import PivotPoints, MovingAverages
+from trade.technicals.option_chain import \
+    IndexOptionChainAnalysis, StockOptionChainAnalysis
 
 
 class NSEDataGeneric:
@@ -32,4 +33,18 @@ class NSEDataGeneric:
 
         return oc_obj.option_chain_output()
 
-    def apply_indicators(self, Indicator: type) -> None: ...
+    def get_history_data(self, period: str, interval: str) -> None:
+        # Assuming this to be at daily Timeframe.
+        symbol = self._config.yfin_nse_symbols[self.symbol]
+        self._history= self._config.get_period_data(symbol, period=period,
+                                                interval=interval, index=True)[::-1]
+
+    def apply_indicators(self) -> Dict[str, Dict[str, float]]:
+
+        self.get_history_data('1y', '1d')
+        gen_indicators = {"ma": MovingAverages, "pivots": PivotPoints}
+        result = {}
+        for key, Indicators in gen_indicators.items():
+            self._history = Indicators.apply_indicator(self._history)
+            result.update({key: Indicators.get_df_top_values(self._history)})
+        return result

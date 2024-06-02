@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Tuple, Union
+from typing import List, Literal, Optional, Tuple, Union, Dict
 
 import pandas as pd
 import pandas_ta as ta
@@ -34,7 +34,7 @@ class MovingAverages(GenericIndicator):
     def ema(self) -> DataFrame:
         for i in self.ma_range:
             col = f"{self.ma}{i}"
-            self.data[col] = ta.ema(self.data[self.on_col], window=i)
+            self.data[col] = self.data[self.on_col].ewm(span=i, adjust=True).mean()
 
         return self.data
 
@@ -83,8 +83,19 @@ class MovingAverages(GenericIndicator):
     def apply_indicator(
         cls,
         data: pd.DataFrame,
-        ma: MOVING_AVERAGES,
-        on_col: str,
+        ma: MOVING_AVERAGES = "EMA",
+        on_col: str = 'close',
         ma_range: Optional[MOVING_AVERAGE_INTS_TYPE] = TYPICAL_MOVING_AVERAGES,
     ) -> DataFrame:
-        return cls(data, ma, on_col, ma_range).add_moving_averages()
+        return cls(data, ma, on_col, ma_range).add_moving_averages()[::-1]
+
+    @staticmethod
+    def get_df_top_values(data: DataFrame,
+                          ma:str = 'EMA',
+                          ma_range: Optional[MOVING_AVERAGE_INTS_TYPE] =
+                          TYPICAL_MOVING_AVERAGES) -> Dict[str, float]:
+        cols_ = [f"{ma}{i}" for i in ma_range]
+        try:
+            return data.loc[:, cols_].to_dict(orient='records').pop(0)
+        except IndexError:
+            return None
