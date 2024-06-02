@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional, Union
 
 from trade.calendar import MarketCalendar, MarketHolidayType, MarketTimingType
-from trade.ticker.api_config import APIConfig
-from trade.ticker.yf import YFinance
+from trade.exchange.api_config import APIConfig
+from trade.exchange.yf import YFinance
 from trade.utils import DownloadTools, Logger, LoggingType
 
 

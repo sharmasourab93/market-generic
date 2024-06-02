@@ -1,9 +1,10 @@
-name: Lint with Black & Format with isort and Push
+name: Run Format & Lint
+
 
 on:
   push:
     branches:
-      - '*'
+      - "*"
 
 jobs:
   format:

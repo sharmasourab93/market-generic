@@ -1,3 +1,4 @@
+import os
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
@@ -17,9 +18,11 @@ from trade.calendar.calendar_data import (
     MarketTimingType,
     WorkingDayDate,
 )
-from trade.ticker import Exchange, ExchangeArgs
+from trade.exchange import Exchange, ExchangeArgs
+from trade.nse.nse_fno import NSEFNO
 from trade.utils import LoggingType, operations
 from trade.utils.network_tools import CustomHTTPException
+from trade.utils.utility_enabler import UtilityEnabler
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
@@ -36,9 +39,13 @@ TIMINGS = MarketTimings(
     time_zone=TZ,
     time_cutoff=TIME_CUTOFF,
 )
+TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
+ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
+ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
 
 
-class NSEConfig(Exchange):
+class NSEConfig(Exchange, NSEFNO):
+    __metaclass__ = UtilityEnabler
 
     def __init__(
         self,
@@ -50,6 +57,8 @@ class NSEConfig(Exchange):
         market_timings: MarketTimingType = TIMINGS,
         ticker_mod: Optional[Dict[str, str]] = None,
         log_config: Optional[LoggingType] = None,
+        enable_time: bool = ENABLE_TIME,
+        enable_profile: bool = ENABLE_PROFILE,
     ):
 
         super().__init__(
@@ -63,6 +72,16 @@ class NSEConfig(Exchange):
             ticker_mod,
             log_config,
         )
+
+    def get_top_bottom(self, nos: int = 5, nse_top: int = 200) -> TOP_BOTTOM_TYPE:
+        symbols = self.get_nse_stocks()
+        get_tops_bottoms = [(i.symbol, i.pct_change, i.diff) for i in symbols[:nse_top]]
+
+        top_nos = nlargest(get_tops_bottoms, nos, key=lambda x: x[1])
+        top_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in top_nos}
+        small_nos = nsmallest(get_tops_bottoms, nos, key=lambda x: x[1])
+        small_nos = {key: {"pct_change": v1, "diff": v2} for key, v1, v2 in small_nos}
+        return {"top": top_nos, "bottom": small_nos}
 
     @property
     def advanced_header(self) -> Dict[str, str]:
@@ -123,6 +142,7 @@ class NSEConfig(Exchange):
 
         return content
 
+    @cache
     def get_eq_bhavcopy(self) -> BytesIO:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
@@ -175,11 +195,13 @@ class NSEConfig(Exchange):
         data = self.apply_mcap(data)
         return data
 
+    @cache
     def get_eq_listed_stocks(self) -> List[str]:
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
         return data.symbol.unique().tolist()
 
+    @cache
     def get_eq_stocks_by_mcap(self) -> pd.DataFrame:
 
         data = self.get_eq_bhavcopy()
@@ -187,6 +209,7 @@ class NSEConfig(Exchange):
 
         return data
 
+    @cache
     def get_nse_stocks(self, nse_top: Optional[int] = None) -> List[str]:
 
         stock_list = self.get_eq_listed_stocks()
@@ -195,3 +218,30 @@ class NSEConfig(Exchange):
             return stock_list
 
         return stock_list[:nse_top]
+
+    @cache
+    def get_all_sectors_industries(self) -> pd.DataFrame:
+        """A Dataframe of All stocks and its relevant sectors/industry."""
+
+        sectors = self.sectoral_indices
+
+        sectoral_data = {
+            sector: self.download_data(url) for sector, url in sectors.items()
+        }
+
+        sectoral_list = list()
+
+        for sector, data in sectoral_data.items():
+            data["index"] = sector
+            sectoral_list.append(data)
+
+        data = pd.concat(sectoral_list)
+
+        return data
+
+    def get_all_etfs(self):
+
+        url = self.main_domain + self.etf_all
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data

@@ -4,7 +4,7 @@ from datetime import datetime
 from logging import config as log_conf
 from os import mkdir, path
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Optional, Union
 
 LOG_MAP = {
     "version": 1,
@@ -37,8 +37,8 @@ LOG_MAP = {
 class LoggingType:
     date_fmt: str
     log_path: str
-    config_path: str
     level: Literal[0, 10, 20, 30, 40, 50]
+    config_path: Optional[str] = None
     to_log: bool = True
     to_console: bool = True
 
@@ -69,10 +69,19 @@ class LogConfig:
 
     """
 
+    LOG_LEVELS = {
+        0: logging.NOTSET,
+        10: logging.DEBUG,
+        20: logging.INFO,
+        30: logging.WARNING,
+        40: logging.ERROR,
+        50: logging.CRITICAL,
+    }
+
     @staticmethod
     def setup_logging(
         date_fmt: str,
-        log_path=None,
+        log_path: Union[Path, str],
         config_path: str = None,
         level=logging.INFO,
         to_log=True,
@@ -95,21 +104,15 @@ class LogConfig:
             raise NotImplementedError("Yet to implement Loading Config files.")
 
         time = datetime.now().strftime(date_fmt)
+        log_dir = "log"
 
-        if not log_path or not path.exists(path.abspath(log_path)):
-            log_folder = log_path.lower()
-            log_dir = (
-                path.join(path.abspath(log_path), log_folder)
-                if log_folder
-                else path.abspath(log_path)
-            )
-            mkdir(Path(log_dir) / Path("log"))
-            log_path = path.join(
-                log_dir, f"{log_folder}_{time}.log" if log_folder else f"log_{time}.log"
-            )
+        if not (log_path / Path(log_dir)).exists():
+            mkdir(log_path / Path(log_dir))
 
-        config["handlers"]["file_handler"]["filename"] = log_path
-        config["root"]["level"] = level
+        log_path = log_path / Path(log_dir) / Path(f"log_{time}.log")
+
+        config["handlers"]["file_handler"]["filename"] = str(log_path)
+        config["root"]["level"] = LogConfig.LOG_LEVELS[level]
 
         if not to_log:
             config["root"]["handlers"].pop(-1)

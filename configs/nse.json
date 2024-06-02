@@ -57,7 +57,7 @@
                         "DERIVATIVE-MASTER-LIST": "api/master-quote",
                         "DERIVATIVE-OPTION-CHAIN": "api/option-chain-equities?symbol={0}",
                         "DERIVATIVE-OPTION-INDEX": "api/option-chain-indices?symbol={0}",
-                        "DERIVATIVE-QUOTE": "api/quote-derivative?symbol={0}"
+                        "DERIVATIVE-INDEX-CHOICE": ["NIFTYNXT50", "FINNIFTY", "MIDCPNIFTY", "BANKNIFTY", "NIFTY"]
                     },
                     "EQUITY": {
                         "EQUITY-META": "api/equity-meta-info?symbol={0}",
@@ -74,6 +74,21 @@
                         "TRADING": "api/holiday-master?type=trading"
                     },
                     "INDEX": {
+                        "NSE-GENERAL-SYMBOLS": ["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY NEXT 50", "NIFTY MIDCAP 50"],
+                        "YFIN-NSE-SYMBOLS": {
+                            "NIFTY 50": "^NSEI",
+                            "NIFTY BANK": "^NSEBANK",
+                            "NIFTY FINANCIAL SERVICES": "^NIFTY_FIN_SERVICE.NS",
+                            "NIFTY NEXT 50": "^NSMIDCP",
+                            "NIFTY MIDCAP 50": "NSEMDCP50"
+                        },
+                        "NSE-API-SYMBOLS": {
+                            "NIFTY 50": "NIFTY",
+                            "NIFTY NEXT 50": "NIFTYNXT50",
+                            "NIFTY FINANCIAL SERVICES": "FINNIFTY",
+                            "NIFTY MIDCAP 50": "MIDCPNIFTY",
+                            "NIFTY BANK": "BANKNIFTY"
+                        },
                         "EQUITY-MASTER": "api/equity-master",
                         "INDEX-NAMES": "api/index-names",
                         "INDICES": "api/allIndices",

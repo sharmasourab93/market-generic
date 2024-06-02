@@ -1,6 +1,6 @@
 import pytest
 
-from trade.ticker.yf import YFinance
+from trade.exchange.yf import YFinance
 
 
 @pytest.fixture
