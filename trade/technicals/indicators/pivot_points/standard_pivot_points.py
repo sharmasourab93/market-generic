@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import Union, Dict
-from pandas import DataFrame, Series
-import pandas as pd
-from numpy import searchsorted, array, inf, int64, float64
+from typing import Dict, Union
 
+import pandas as pd
+from numpy import array, float64, inf, int64, searchsorted
+from pandas import DataFrame, Series
 
 PIVOT_POINT_TYPE = Dict[str, float]
 INVALID_SUPPORTS = "Invalid Support levels. Support level range(1, 5)"
@@ -25,7 +25,7 @@ class StandardPivotPoints:
 
     @property
     def pivot(self) -> PIVOT_ARG_TYPE:
-        return (self.high + self.low + self.close)/3
+        return (self.high + self.low + self.close) / 3
 
     @property
     def bcpr(self) -> PIVOT_ARG_TYPE:
@@ -41,7 +41,7 @@ class StandardPivotPoints:
 
     @property
     def cpr_width(self) -> float:
-        cpr_width = round((abs(self.tcpr - self.bcpr) / self.pivot) * 100,2)
+        cpr_width = round((abs(self.tcpr - self.bcpr) / self.pivot) * 100, 2)
         x_factor = self._apply_xfactor(self.close)
 
         if isinstance(x_factor, float64) or isinstance(x_factor, int64):
@@ -51,8 +51,8 @@ class StandardPivotPoints:
 
     def _cpr_classifications_series(self, cpr_width: float):
 
-        for i in range(len(PIVOT_BINS) -1):
-            if PIVOT_BINS[i] <= cpr_width <= PIVOT_BINS[i+1]:
+        for i in range(len(PIVOT_BINS) - 1):
+            if PIVOT_BINS[i] <= cpr_width <= PIVOT_BINS[i + 1]:
                 return PIVOT_LABELS[i]
 
         return PIVOT_LABELS[-1]
@@ -107,11 +107,11 @@ class StandardPivotPoints:
 
     @property
     def resistances(self) -> Dict[str, float]:
-        return {f'r{i}': self._calculate_resistances(i) for i in range(1, 6)}
+        return {f"r{i}": self._calculate_resistances(i) for i in range(1, 6)}
 
     @property
     def supports(self) -> Dict[str, float]:
-        return {f's{i}': self._calculate_support(i) for i in range(1, 6)}
+        return {f"s{i}": self._calculate_support(i) for i in range(1, 6)}
 
     def consolidate(self) -> Dict[str, PIVOT_ARG_TYPE]:
         result = {
@@ -125,20 +125,23 @@ class StandardPivotPoints:
             "resistances": self.resistances,
             "supports": self.supports,
             "cpr_width": self.cpr_width,
-            "cpr": self.cpr_classification
+            "cpr": self.cpr_classification,
         }
 
         if not any(isinstance(val, Series) for val in result.values()):
             return result
 
-        result_to_dict = {i: j for i, j in result.items() if i not in("resistances",
-                                                                   "supports")}
+        result_to_dict = {
+            i: j for i, j in result.items() if i not in ("resistances", "supports")
+        }
         result_to_dict.update(result["resistances"])
         result_to_dict.update(result["supports"])
 
         return pd.DataFrame(result_to_dict)
 
     @classmethod
-    def apply_pivot_points(cls, open, high, low, close) -> Dict[str, Union[DataFrame,float]]:
+    def apply_pivot_points(
+        cls, open, high, low, close
+    ) -> Dict[str, Union[DataFrame, float]]:
 
         return cls(open, high, low, close).consolidate()

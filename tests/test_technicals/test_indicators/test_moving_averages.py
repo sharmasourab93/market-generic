@@ -1,24 +1,26 @@
-import pytest
 import pandas as pd
-from pandas import DataFrame
 import pandas_ta as ta
+import pytest
+from pandas import DataFrame
 
 from trade.technicals.indicators.moving_averges import (
-    MovingAverages,
+    CROSSOVERS,
+    INVALID_MOVING_AVERAGES,
     MOVING_AVERAGE_INTS_TYPE,
     MOVING_AVERAGES,
     TYPICAL_MOVING_AVERAGES,
-    INVALID_MOVING_AVERAGES,
-    CROSSOVERS,
+    MovingAverages,
 )
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def sample_data():
-    data = {'open': [10, 12, 11, 13, 14, 15, 16, 17, 18, 19],
-            'high': [12, 14, 13, 15, 16, 17, 18, 19, 20, 21],
-            'low': [9, 11, 10, 12, 13, 14, 15, 16, 17, 18],
-            'close': [11, 13, 12, 14, 15, 16, 17, 18, 19, 20]}
+    data = {
+        "open": [10, 12, 11, 13, 14, 15, 16, 17, 18, 19],
+        "high": [12, 14, 13, 15, 16, 17, 18, 19, 20, 21],
+        "low": [9, 11, 10, 12, 13, 14, 15, 16, 17, 18],
+        "close": [11, 13, 12, 14, 15, 16, 17, 18, 19, 20],
+    }
     return pd.DataFrame(data)
 
 
