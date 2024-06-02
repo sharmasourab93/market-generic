@@ -45,7 +45,7 @@ class SpotIndices:
         self.vix = self._config.get_vix()
         self.metrics = self._config.get_index_metrics()
 
-    def __getitem__(self, item: str) -> NSEIndex| None:
+    def __getitem__(self, item: str) -> NSEIndex | None:
         return self.symbols.get(item, None)
 
     def get_ohlc(self) -> OHLC_TYPE:

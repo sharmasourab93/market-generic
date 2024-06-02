@@ -34,10 +34,20 @@ class PivotPoints(GenericIndicator):
 
     @staticmethod
     def get_df_top_values(data: DataFrame):
-        cols_ = ("pivot", "bcpr", "tcpr",
-                 "r1", "r2", "r3", "s1", "s2", "s3",
-                 "cpr_width", "cpr")
+        cols_ = (
+            "pivot",
+            "bcpr",
+            "tcpr",
+            "r1",
+            "r2",
+            "r3",
+            "s1",
+            "s2",
+            "s3",
+            "cpr_width",
+            "cpr",
+        )
         try:
-            return data.loc[:, cols_].to_dict(orient='records').pop(0)
+            return data.loc[:, cols_].to_dict(orient="records").pop(0)
         except IndexError:
             return None
