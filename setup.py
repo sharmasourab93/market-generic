@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 NAME = "market-generic"
-__version__ = "0.2.1"
+__version__ = "0.2.3"
 DESCRITPION = "A Generic Python Package for Stock Market Analysis and Trading"
 URL = "https://github.com/sharmasourab93/market-generic"
 AUTHOR = "Sourab S Sharma"
@@ -25,6 +25,7 @@ setup(
     long_description_content_type="text/markdown",
     url=URL,
     packages=find_packages(exclude=["tests", ".github"]),
+    include_package_data=True,
     package_data={"market-generic": ["configs/nse.json"]},
     setup_requires=["wheel"],
     install_requires=INSTALL_REQUIRES,
