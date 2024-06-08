@@ -39,24 +39,30 @@ class NSEFNO(ABC):
     def get_option_chain_index(self, symbol: str) -> str:
         return self.main_domain + self.derivative_option_index.format(symbol)
 
-    def process_downloaded_mklots(self, data: pd.DataFrame) -> Dict[str, Dict[str, str]]:
+    def process_downloaded_mklots(
+        self, data: pd.DataFrame
+    ) -> Dict[str, Dict[str, str]]:
         data.columns = data.columns.str.strip()
         data.columns = data.columns.str.capitalize()
-        data = data.loc[~data.Underlying.str.contains("Derivatives"),
-                        ~data.columns.isin(["Underlying"])]
+        data = data.loc[
+            ~data.Underlying.str.contains("Derivatives"),
+            ~data.columns.isin(["Underlying"]),
+        ]
         data = data.apply(lambda x: x.str.strip())
 
-        resulting_dict = {data_value['Symbol']:
-                              {k: v for k, v in data_value.to_dict().items()
-                                  if v!=str()}
-                          for iter, data_value in data.iterrows()}
+        resulting_dict = {
+            data_value["Symbol"]: {
+                k: v for k, v in data_value.to_dict().items() if v != str()
+            }
+            for iter, data_value in data.iterrows()
+        }
 
         return resulting_dict
 
     @cached_property
     def get_fo_mktlots(self) -> Dict[str, Dict[str, str]]:
 
-        data = self.get_request_api(self.fo_mklots['url'], self.simple_headers).content
+        data = self.get_request_api(self.fo_mklots["url"], self.simple_headers).content
 
         # Since data is a csv object, we read the bytes into a dataframe.
         data = pd.read_csv(BytesIO(data))
