@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from functools import cache, cached_property
-from io import BytesIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
@@ -245,3 +245,38 @@ class NSEConfig(Exchange, NSEFNO):
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data
+
+    def process_downloaded_mklots(self, data: pd.DataFrame) -> Dict[str, Dict[str, str]]:
+        data.columns = data.columns.str.strip()
+        data.columns = data.columns.str.capitalize()
+        data = data.loc[~data.Underlying.str.contains("Derivatives"),
+                        ~data.columns.isin(["Underlying"])]
+        data = data.apply(lambda x: x.str.strip())
+
+        resulting_dict = {data_value['Symbol']:
+                              {k: v for k, v in data_value.to_dict().items()
+                                  if v!=str()}
+                          for iter, data_value in data.iterrows()}
+
+        return resulting_dict
+
+    @cached_property
+    def get_fo_mktlots(self) -> Dict[str, Dict[str, str]]:
+
+        data = self.get_request_api(self.fo_mklots['url'], self.simple_headers).content
+
+        # Since data is a csv object, we read the bytes into a dataframe.
+        data = pd.read_csv(BytesIO(data))
+        data = self.process_downloaded_mklots(data)
+
+        return data
+
+    def get_ticker_folots(self, ticker: str, month: str) -> int:
+
+        if ticker in self.get_fo_mktlots.keys():
+            data = self.get_fo_mktlots[ticker]
+
+            if month in data.keys():
+                return int(data[month])
+
+        raise KeyError(f"{ticker} or {month} not in NSE FO Lots List.")
