@@ -52,3 +52,8 @@ class NSEDataGeneric:
             self._history = Indicators.apply_indicator(self._history)
             result.update({key: Indicators.get_df_top_values(self._history)})
         return result
+
+    @property
+    def lot_size(self) -> int:
+        month_year = self._config.working_day.as_month_year
+        return self._config.get_ticker_folots(self.symbol, month_year)

@@ -61,6 +61,14 @@ class NSEStock:
     def is_fno(self) -> bool:
         return self.symbol in self.get_fno_stocks
 
+    @property
+    def lot_size(self) -> Optional[int]:
+        if self.is_fno:
+            month_year = self._nse_config.working_day.as_month_year
+            return self._nse_config.get_ticker_folots(self.symbol, month_year)
+
+        return None
+
     @cached_property
     def get_meta_data(self) -> MARKET_API_QUOTE_TYPE:
         return self._nse_config.get_equity_meta(self.symbol)
