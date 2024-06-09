@@ -13,6 +13,10 @@ from requests import Session
 from requests.exceptions import ConnectionError, InvalidURL, ReadTimeout
 
 from trade.utils.html_parsing import HtmlParser
+import warnings
+
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 CHUNK_SIZE = 1024
 INVALID_URL = "URL: {0}, Status Code:{1}"
