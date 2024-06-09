@@ -143,7 +143,7 @@ class NSEConfig(Exchange, NSEFNO):
         return content
 
     @cache
-    def get_eq_bhavcopy(self) -> BytesIO:
+    def get_eq_bhavcopy(self) -> pd.DataFrame:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
         today = self.working_day.day.as_str
@@ -206,7 +206,14 @@ class NSEConfig(Exchange, NSEFNO):
 
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
-
+        data = data.rename(columns={"tottrdqty": "volume", "prevclose": "prev_close"})
+        data["pct_change"] = round((data.close - data.prev_close) / data.prev_close, 2)
+        data = data.loc[:, ["sr_no", "symbol", "company_name", "market_cap",
+                            "open", "high", "low", "close", "prev_close",
+                            "volume", "pct_change"]]
+        filter_out = data.open.isna() | data.close.isna() | data.high.isna() | \
+                     data.low.isna()
+        data = data.loc[~filter_out, :]
         return data
 
     @cache

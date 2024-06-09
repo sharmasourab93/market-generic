@@ -1,3 +1,4 @@
+from abc import ABC
 from typing import Dict, Literal, Tuple
 
 from trade.technicals.indicators import MovingAverages, PivotPoints
@@ -7,7 +8,7 @@ from trade.technicals.option_chain import (
 )
 
 
-class NSEDataGeneric:
+class NSEDataGeneric(ABC):
 
     def get_option_chain_analysis(
         self, oc_type: Literal["index", "equity"]
@@ -29,7 +30,7 @@ class NSEDataGeneric:
     def option_chain_result(self, OptionChain: type):
 
         option_chain_data = (
-            self._nse_config.get_option_chain_data.get_option_chain_data(self.symbol)
+            self._nse_config.get_option_chain_data(self.symbol)
         )
 
         oc_obj = OptionChain(symbol, option_chain_data, self.dated, strike_multiples)
@@ -57,3 +58,12 @@ class NSEDataGeneric:
     def lot_size(self) -> int:
         month_year = self._config.working_day.as_month_year
         return self._config.get_ticker_folots(self.symbol, month_year)
+
+    def next_expiry(self):
+        count_index = 0
+        yield self.get_expiries[count_index]
+
+        if count_index < self.get_expiries:
+            count_index += 1
+        else:
+            count_index = 0
