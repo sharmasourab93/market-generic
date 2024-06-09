@@ -1,6 +1,7 @@
+import sys
 from functools import cache
 from typing import Dict, List, Literal, Optional, Union
-
+from trade.utils.op_utils import find_least_difference_strike
 import pandas as pd
 
 from trade.nse.nse_config import NSEConfig
@@ -205,3 +206,26 @@ class NSEIndexConfig(NSEConfig):
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data
+
+    def strike_multiples(self) -> Dict[str, int]:
+        strike_muls = dict()
+
+        for index in INDICES_API:
+            strike_price = sorted(list(set(self.get_derivative_quote(index)[
+                                           "strikePrices"])))
+            strike_price.remove(0)
+
+            strike_muls.update({index: find_least_difference_strike(strike_price)})
+
+        return strike_muls
+
+    def get_expiries(self) -> Dict[str, Dict[str, str]]:
+        expiries = dict()
+        for symbol in INDICES_API:
+            symbol_expiry = self.get_derivative_quote(symbol)["expiryDatesByInstrument"]
+            symbol_expiry["fut_expiry"] = symbol_expiry.pop("Index Futures")
+            symbol_expiry["opt_expiry"] = symbol_expiry.pop("Index Options")
+
+            expiries.update({symbol: symbol_expiry})
+
+        return expiries

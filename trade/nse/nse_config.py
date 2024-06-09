@@ -245,3 +245,12 @@ class NSEConfig(Exchange, NSEFNO):
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data
+
+
+if __name__ == '__main__':
+    obj = NSEConfig("07-Jun-2024")
+
+    result1 = obj.get_strike_mul_by_symbol("NIFTY")
+    result2 = obj.get_expiries()
+
+    print(result2, result1)

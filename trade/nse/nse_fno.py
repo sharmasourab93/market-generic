@@ -1,6 +1,8 @@
 from abc import ABC
 from functools import cache, cached_property
 from typing import Dict, List, Union
+import pandas as pd
+from trade.utils.op_utils import timed_lru_cache, find_least_difference_strike
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 INVALID_SYMBOL = "Invalid Symbol Chosen."
@@ -73,3 +75,64 @@ class NSEFNO(ABC):
                 return int(data[month])
 
         raise KeyError(f"{ticker} or {month} not in NSE FO Lots List.")
+
+    @timed_lru_cache(seconds=300)
+    def get_derivative_quote(self, symbol: str) -> dict:
+
+        url = self.main_domain + self.quote_derivative.format(symbol)
+
+        response = self.get_request_api(url, self.advanced_header).json()
+
+        return response
+
+    def strike_multiples(self) -> Dict[str, int]:
+        strike_muls = dict()
+        for stocks in self.get_fno_stocks():
+            strike_price = sorted(list(set(self.get_derivative_quote(stocks)[
+                                           "strikePrices"])))
+            strike_muls.update({stocks: find_least_difference_strike(strike_price)})
+
+        return strike_muls
+
+    def get_expiries(self) -> Dict[str, Dict[str, str]]:
+
+        expiries = dict()
+
+        for symbol in self.get_fno_stocks():
+            symbol_expiry = self.get_derivative_quote(symbol)["expiryDatesByInstrument"]
+            symbol_expiry["fut_expiry"] = symbol_expiry.pop("Stock Futures")
+            symbol_expiry["opt_expiry"] = symbol_expiry.pop("Stock Options")
+
+            expiries.update({symbol: symbol_expiry})
+
+        return expiries
+
+    def get_strike_mul_by_symbol(self, symbol: str,
+                                 symbol_list: List[str] = None) -> Dict[str, int]:
+
+        if symbol_list is None:
+            symbol_list = self.get_fno_stocks()
+
+        if symbol in symbol_list:
+            strike_price = sorted(list(set(self.get_derivative_quote(symbol)[
+                                               "strikePrices"])))
+            return {symbol: find_least_difference_strike(strike_price)}
+
+        raise KeyError("Invalid Symbol not found.")
+
+    def get_expiry_by_symbol(self, symbol: str, symbol_list: List[str] = None) -> Dict[str, Dict[str, str]]:
+
+        if symbol_list is None:
+            symbol_list = self.get_fno_stocks()
+            key = "Stock"
+        else:
+            key = "Index"
+
+        if symbol in symbol_list:
+            expiries = self.get_derivative_quote(symbol)["expiryDatesByInstrument"]
+            expiries["fut_expiry"] = expiries.pop(f"{key} Futures")
+            expiries["opt_expiry"] = expiries.pop(f"{key} Options")
+
+            return {symbol: expiries}
+
+        raise KeyError("Invalid symbol not found.")
