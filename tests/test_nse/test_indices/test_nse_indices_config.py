@@ -1,10 +1,11 @@
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import pytest
-from pathlib import Path
-from trade.nse.nse_configs.nse_indices_config import INDICES, NSEIndexConfig
+
 from trade.nse.nse_configs.nse_config import DATE_FMT
+from trade.nse.nse_configs.nse_indices_config import INDICES, NSEIndexConfig
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)

@@ -1,19 +1,25 @@
-from yfinance import Ticker
 from abc import ABC, abstractproperty
-import pandas as pd
 from typing import Dict, Union
-from trade.technicals.indicators import GenericIndicator
-from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
+
+import pandas as pd
+from yfinance import Ticker
+
 from trade.calendar import DateObj
 from trade.nse.nse_configs.nse_config import DATE_FMT, NSEConfig
-
+from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
+from trade.technicals.indicators import GenericIndicator
 
 INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
 OHLC_TYPE = Dict[str, Dict[str, Union[str, int]]]
 DEFAULT_PRICES = {
-    "open": 0., "high": 0., "low": 0., "close": 0.,
-    "volume": 0.,"prev_volume": 0., "prev_close": 0.,
-    "pct_change": 0.
+    "open": 0.0,
+    "high": 0.0,
+    "low": 0.0,
+    "close": 0.0,
+    "volume": 0.0,
+    "prev_volume": 0.0,
+    "prev_close": 0.0,
+    "pct_change": 0.0,
 }
 
 
@@ -45,27 +51,27 @@ class NSEDataGeneric(ABC):
                 raise KeyError("Undefined NSE Class.")
 
     @abstractproperty
-    def lot_size(self):
-        ...
+    def lot_size(self): ...
 
     @abstractproperty
-    def strike_multiples(self):
-        ...
+    def strike_multiples(self): ...
 
     @abstractproperty
-    def expiries(self):
-        ...
+    def expiries(self): ...
 
     @property
     def volume_diff(self) -> float:
-        if self.prev_volume == 0.:
-            return 0.
+        if self.prev_volume == 0.0:
+            return 0.0
 
-        return round(self.volume/self.prev_volume, 2)
+        return round(self.volume / self.prev_volume, 2)
 
     def yfin_symbol(self) -> str:
-        return self.symbol if self.symbol not in self._config.yfin_nse_symbols.keys()\
+        return (
+            self.symbol
+            if self.symbol not in self._config.yfin_nse_symbols.keys()
             else self._config.yfin_nse_symbols[self.symbol]
+        )
 
     @property
     def price_diff(self) -> float:
@@ -83,7 +89,7 @@ class NSEDataGeneric(ABC):
             "pct_change": float(self.pct_change),
             "volume": int(self.volume),
             "prev_volume": int(self.prev_volume),
-            "volume_diff": float(self.volume_diff)
+            "volume_diff": float(self.volume_diff),
         }
 
     def get_ohlc(self) -> OHLC_TYPE:
@@ -101,13 +107,15 @@ class NSEDataGeneric(ABC):
         # Assuming this to be at daily Timeframe.
         symbol = self._config.yfin_nse_symbols[self.symbol]
         return self._config.get_period_data(
-                            symbol, period=period,
-                            interval=interval, index=True)[::-1]
+            symbol, period=period, interval=interval, index=True
+        )[::-1]
 
-    def apply_indicators(self,
-                         gen_indicators: INDICATOR_IMPLIED_TYPE,
-                         period: str = "1y",
-                         interval: str = "1d") -> Dict[str, Dict[str, float]]:
+    def apply_indicators(
+        self,
+        gen_indicators: INDICATOR_IMPLIED_TYPE,
+        period: str = "1y",
+        interval: str = "1d",
+    ) -> Dict[str, Dict[str, float]]:
 
         data = self.get_history_data(period, interval)
 
@@ -118,10 +126,12 @@ class NSEDataGeneric(ABC):
 
         return result
 
-    def with_indicators(self,
-                        gen_indicators: INDICATOR_IMPLIED_TYPE,
-                        period: str = "1y",
-                        interval: str = "1d") -> Dict[str, Union[float, str]]:
+    def with_indicators(
+        self,
+        gen_indicators: INDICATOR_IMPLIED_TYPE,
+        period: str = "1y",
+        interval: str = "1d",
+    ) -> Dict[str, Union[float, str]]:
 
         data = self.as_dict
         indicators = self.apply_indicators(gen_indicators, period, interval)

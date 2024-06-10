@@ -1,9 +1,10 @@
 from functools import cache
 from typing import Dict, List, Literal, Union
-from trade.utils.op_utils import find_least_difference_strike
+
 import pandas as pd
 
 from trade.nse.nse_configs.nse_config import NSEConfig
+from trade.utils.op_utils import find_least_difference_strike
 
 INDICES = [
     "NIFTY 50",
@@ -17,7 +18,7 @@ INDICES_MAPPING = {
     "NIFTY BANK": "BANKNIFTY",
     "NIFTY FINANCIAL SERVICES": "FINNIFTY",
     "NIFTY NEXT 50": "NIFTYNXT50",
-    "NIFTY MIDCAP 50": "MIDCPNIFTY"
+    "NIFTY MIDCAP 50": "MIDCPNIFTY",
 }
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
 INDEX_NAME_TYPE = Union[
@@ -213,8 +214,9 @@ class NSEIndexConfig(NSEConfig):
         strike_muls = dict()
 
         for index in INDICES_API:
-            strike_price = sorted(list(set(self.get_derivative_quote(index)[
-                                           "strikePrices"])))
+            strike_price = sorted(
+                list(set(self.get_derivative_quote(index)["strikePrices"]))
+            )
             strike_price.remove(0)
 
             strike_muls.update({index: find_least_difference_strike(strike_price)})

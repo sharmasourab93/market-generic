@@ -1,16 +1,18 @@
 from abc import ABC
 from typing import Dict, Union
-from trade.nse.nse_configs.nse_config import NSEConfig
-from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
-from trade.technicals.indicators import GenericIndicator
-from trade.nse.nse_generics.data_generics import OHLC_TYPE
 
 import pandas as pd
 
+from trade.nse.nse_configs.nse_config import NSEConfig
+from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
+from trade.nse.nse_generics.data_generics import OHLC_TYPE
+from trade.technicals.indicators import GenericIndicator
+
 INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
-INDICATOR_NOT_ALLOWED = "Cannot apply indicators to stocks. " \
-                        "Only permissible for index."
+INDICATOR_NOT_ALLOWED = (
+    "Cannot apply indicators to stocks. " "Only permissible for index."
+)
 
 
 class AllDataGenerics(ABC):
@@ -26,8 +28,9 @@ class AllDataGenerics(ABC):
                 raise KeyError("Undefined All NSE Data class.")
 
     def get_ohlc(self) -> OHLC_TYPE:
-        symbols = self.symbols.values() if isinstance(self.symbols, dict) \
-            else self.symbols
+        symbols = (
+            self.symbols.values() if isinstance(self.symbols, dict) else self.symbols
+        )
         resulting_dict = dict()
 
         for sym in symbols:
@@ -42,13 +45,18 @@ class AllDataGenerics(ABC):
         else:
             return pd.DataFrame([i.as_dict for i in self.symbols.values()])
 
-    def apply_indicators(self,
-                         gen_indicators: INDICATOR_IMPLIED_TYPE,
-                         period: str = "1y",
-                         interval: str = "1d") -> Dict[str, Dict[str, float]]:
+    def apply_indicators(
+        self,
+        gen_indicators: INDICATOR_IMPLIED_TYPE,
+        period: str = "1y",
+        interval: str = "1d",
+    ) -> Dict[str, Dict[str, float]]:
         if self._all_ticker_type == "index":
-            symbols = list(self.symbols.values()) if self._all_ticker_type == "index" \
+            symbols = (
+                list(self.symbols.values())
+                if self._all_ticker_type == "index"
                 else self.symbols
+            )
             result = dict()
 
             for symbol in symbols:

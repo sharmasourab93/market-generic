@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from trade.nse.nse_configs.nse_config import NSE_TOP
-from trade.nse.stocks.nse_stock import NSEStock
 from trade.nse.nse_generics.all_data_generics import AllDataGenerics
+from trade.nse.stocks.nse_stock import NSEStock
 
 
 @dataclass
