@@ -1,10 +1,9 @@
-import sys
 from functools import cache
-from typing import Dict, List, Literal, Optional, Union
+from typing import Dict, List, Literal, Union
 from trade.utils.op_utils import find_least_difference_strike
 import pandas as pd
 
-from trade.nse.nse_config import NSEConfig
+from trade.nse.nse_configs.nse_config import NSEConfig
 
 INDICES = [
     "NIFTY 50",
@@ -13,6 +12,13 @@ INDICES = [
     "NIFTY NEXT 50",
     "NIFTY MIDCAP 50",
 ]
+INDICES_MAPPING = {
+    "NIFTY 50": "NIFTY",
+    "NIFTY BANK": "BANKNIFTY",
+    "NIFTY FINANCIAL SERVICES": "FINNIFTY",
+    "NIFTY NEXT 50": "NIFTYNXT50",
+    "NIFTY MIDCAP 50": "MIDCPNIFTY"
+}
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
 INDEX_NAME_TYPE = Union[
     Literal["NIFTY 50"],
@@ -29,10 +35,8 @@ MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
 class NSEIndexConfig(NSEConfig):
 
     def get_fii_dii_report(self) -> List[Dict[str, str]]:
-
         url = self.main_domain + self.fii_dii_report
         response = self.get_request_api(url, self.advanced_header)
-        # TODO: Handle Exception when Report not updated.
         return self.match_http(response.json(), response.status_code)
 
     def process_all_indices_data(self, data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
@@ -120,10 +124,8 @@ class NSEIndexConfig(NSEConfig):
 
     @cache
     def get_vix(self) -> Dict[str, str]:
-
         data = self.get_all_indices()["SPOT"]
         vix = data.loc[data.symbol == INDIA_VIX, :].to_dict(orient="records").pop(0)
-
         return vix
 
     @cache
@@ -229,3 +231,12 @@ class NSEIndexConfig(NSEConfig):
             expiries.update({symbol: symbol_expiry})
 
         return expiries
+
+
+if __name__ == '__main__':
+    obj = NSEConfig("07-Jun-2024")
+
+    # result1 = obj.get_strike_mul_by_symbol("NIFTY")
+    result2 = obj.get_expiry_by_symbol("NIFTY", INDICES_API)
+
+    print(result2)

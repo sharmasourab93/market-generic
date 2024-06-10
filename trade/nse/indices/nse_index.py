@@ -1,14 +1,13 @@
 from dataclasses import dataclass
-from typing import Dict, Literal, Union
 
-from trade.nse.data_generics import NSEDataGeneric
-from trade.nse.indices.nse_indices_config import (
+from trade.nse.nse_generics.data_generics import NSEDataGeneric
+from trade.nse.nse_configs.nse_indices_config import (
     INDEX_NAME_TYPE,
     INDICES,
+    INDICES_API,
     NSEIndexConfig,
+    INDICES_MAPPING
 )
-
-OHLC_TYPE = Dict[str, Dict[str, Union[str, int]]]
 
 
 @dataclass
@@ -16,10 +15,12 @@ class NSEIndex(NSEDataGeneric):
 
     symbol: INDEX_NAME_TYPE
     dated: str
+    _ticker_type: str = "index"
 
     def __post_init__(self):
+        self.set_config()
         self.symbol = self.symbol.upper()
-        self._config = NSEIndexConfig(self.dated)
+        self._yfsymbol = self.yfin_symbol()
         quotes = self._config.get_quote_index(self.symbol)
 
         for key, value in quotes.items():
@@ -28,15 +29,28 @@ class NSEIndex(NSEDataGeneric):
 
         self.indicators = self.apply_indicators()
 
-    def get_ohlc(self) -> OHLC_TYPE:
+    @property
+    def lot_size(self) -> int:
+        return self._config.indices_lot_size[self.symbol]
 
-        return {self.symbol: self.ohlc}
+    @property
+    def strike_multiples(self):
+        mapped_symbol = INDICES_MAPPING[self.symbol]
+        return self._config.get_strike_mul_by_symbol(mapped_symbol,
+                                                     INDICES_API)[mapped_symbol]
+
+    @property
+    def expiries(self):
+        mapped_symbol = INDICES_MAPPING[self.symbol]
+        return self._config.get_expiry_by_symbol(mapped_symbol,
+                                                 INDICES_API)[mapped_symbol]
 
 
 @dataclass
 class SpotIndices:
 
     dated: str
+    _all_ticker_type: str = "index"
 
     def __post_init__(self):
 
@@ -55,9 +69,3 @@ class SpotIndices:
             resulting_dict.update(sym.get_ohlc())
 
         return resulting_dict
-
-
-if __name__ == "__main__":
-    obj = SpotIndices("31-May-2024")
-
-    print(obj)

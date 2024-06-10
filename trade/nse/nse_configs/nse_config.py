@@ -1,26 +1,19 @@
 import os
-from collections.abc import Sequence
-from dataclasses import dataclass, field
-from datetime import date, datetime, time
-from functools import cache, cached_property
-from io import BytesIO, StringIO
+from datetime import datetime
+from functools import cache
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-import requests
-from yfinance import Ticker
 
 from trade.calendar.calendar_data import (
-    DateObj,
     MarketHolidayType,
     MarketTimings,
     MarketTimingType,
-    WorkingDayDate,
 )
-from trade.exchange import Exchange, ExchangeArgs
-from trade.nse.nse_fno import NSEFNO
-from trade.utils import LoggingType, operations
+from trade.exchange import Exchange
+from trade.nse.nse_configs.nse_fno import NSEFNO
+from trade.utils import LoggingType
 from trade.utils.network_tools import CustomHTTPException
 from trade.utils.utility_enabler import UtilityEnabler
 
@@ -212,7 +205,7 @@ class NSEConfig(Exchange, NSEFNO):
                             "open", "high", "low", "close", "prev_close",
                             "volume", "pct_change"]]
         filter_out = data.open.isna() | data.close.isna() | data.high.isna() | \
-                     data.low.isna()
+                     data.low.isna() | data.volume.isna()
         data = data.loc[~filter_out, :]
         return data
 
@@ -252,12 +245,3 @@ class NSEConfig(Exchange, NSEFNO):
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data
-
-
-if __name__ == '__main__':
-    obj = NSEConfig("07-Jun-2024")
-
-    result1 = obj.get_strike_mul_by_symbol("NIFTY")
-    result2 = obj.get_expiries()
-
-    print(result2, result1)

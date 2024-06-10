@@ -1,4 +1,5 @@
 from abc import ABC
+from io import BytesIO
 from functools import cache, cached_property
 from typing import Dict, List, Union
 import pandas as pd
