@@ -20,7 +20,7 @@ from trade.utils.utility_enabler import UtilityEnabler
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
 TZ = "Asia/Kolkata"
-CONFIG_FILE = Path(__file__).parent.parent.parent / Path("configs/nse.json")
+CONFIG_FILE = Path(__file__).parent.parent.parent.parent / Path("configs/nse.json")
 NSE_START_TIME, NSE_CLOSE_TIME, TIME_CUTOFF = "0915", "1530", "1600"
 MARKET, COUNTRY = "NSE", "INDIA"
 HOLIDAYS_DONOT_EXIST = "Holiday key or holidays do not exist"

@@ -3,6 +3,8 @@ from typing import Dict, Union
 from trade.nse.nse_configs.nse_config import NSEConfig
 from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
 from trade.technicals.indicators import GenericIndicator
+from trade.nse.nse_generics.data_generics import OHLC_TYPE
+
 import pandas as pd
 
 INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
@@ -23,9 +25,22 @@ class AllDataGenerics(ABC):
             case _:
                 raise KeyError("Undefined All NSE Data class.")
 
+    def get_ohlc(self) -> OHLC_TYPE:
+        symbols = self.symbols.values() if isinstance(self.symbols, dict) \
+            else self.symbols
+        resulting_dict = dict()
+
+        for sym in symbols:
+            resulting_dict.update(sym.get_ohlc())
+
+        return resulting_dict
+
     @property
     def as_dataframe(self):
-        return pd.DataFrame([i.as_dict for i in self.symbols])
+        if self._all_ticker_type == "stock":
+            return pd.DataFrame([i.as_dict for i in self.symbols])
+        else:
+            return pd.DataFrame([i.as_dict for i in self.symbols.values()])
 
     def apply_indicators(self,
                          gen_indicators: INDICATOR_IMPLIED_TYPE,
@@ -45,7 +60,7 @@ class AllDataGenerics(ABC):
             raise IOError(INDICATOR_NOT_ALLOWED)
 
     @property
-    def adv_dev(self) -> Dict[str, int]:
+    def adv_dev(self) -> Dict[str, int] | None:
         if self._all_ticker_type == "stock":
             return self._get_advance_decline()
         return None

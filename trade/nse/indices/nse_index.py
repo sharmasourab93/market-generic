@@ -22,12 +22,10 @@ class NSEIndex(NSEDataGeneric):
         self.symbol = self.symbol.upper()
         self._yfsymbol = self.yfin_symbol()
         quotes = self._config.get_quote_index(self.symbol)
-
-        for key, value in quotes.items():
-            if key not in ("symbol", "dated"):
-                setattr(self, key, value)
-
-        self.indicators = self.apply_indicators()
+        ohlc = quotes.pop("ohlc")
+        ohlc.update({"prev_volume": 0.})
+        self._set_attributes(ohlc)
+        self._set_attributes(quotes)
 
     @property
     def lot_size(self) -> int:
@@ -43,29 +41,4 @@ class NSEIndex(NSEDataGeneric):
     def expiries(self):
         mapped_symbol = INDICES_MAPPING[self.symbol]
         return self._config.get_expiry_by_symbol(mapped_symbol,
-                                                 INDICES_API)[mapped_symbol]
-
-
-@dataclass
-class SpotIndices:
-
-    dated: str
-    _all_ticker_type: str = "index"
-
-    def __post_init__(self):
-
-        self._config = NSEIndexConfig(self.dated)
-        self.symbols = {i: NSEIndex(i, self.dated) for i in INDICES}
-        self.vix = self._config.get_vix()
-        self.metrics = self._config.get_index_metrics()
-
-    def __getitem__(self, item: str) -> NSEIndex | None:
-        return self.symbols.get(item, None)
-
-    def get_ohlc(self) -> OHLC_TYPE:
-
-        resulting_dict = dict()
-        for sym in self.symbols.values():
-            resulting_dict.update(sym.get_ohlc())
-
-        return resulting_dict
+                                                 INDICES_API)

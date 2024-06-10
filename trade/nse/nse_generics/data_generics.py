@@ -25,6 +25,14 @@ class NSEDataGeneric(ABC):
     def __eq__(self, other):
         return self.symbol == other
 
+    def _set_attributes(self, dict_obj: dict, exceptions: tuple = None):
+        for key, value in dict_obj.items():
+            if exceptions is not None:
+                if key not in exceptions:
+                    setattr(self, key, value)
+            else:
+                setattr(self, key, value)
+
     def set_config(self) -> None:
         match self._ticker_type:
             case "stock":
