@@ -32,8 +32,3 @@ class AllNSEStocks(AllDataGenerics):
             return [self.symbols[i] for i in range(start, stop, step)]
 
         return self.symbols[index - 1]
-
-
-if __name__ == '__main__':
-    obj = AllNSEStocks("07-Jun-2024", nse_top=100)
-    result = obj.get_bhavcopy()

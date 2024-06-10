@@ -231,12 +231,3 @@ class NSEIndexConfig(NSEConfig):
             expiries.update({symbol: symbol_expiry})
 
         return expiries
-
-
-if __name__ == '__main__':
-    obj = NSEConfig("07-Jun-2024")
-
-    # result1 = obj.get_strike_mul_by_symbol("NIFTY")
-    result2 = obj.get_expiry_by_symbol("NIFTY", INDICES_API)
-
-    print(result2)
