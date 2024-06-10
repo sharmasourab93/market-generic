@@ -2,17 +2,22 @@ from datetime import datetime
 
 import pandas as pd
 import pytest
-
-from trade.nse.indices.nse_indices_config import INDICES, NSEIndexConfig
-from trade.nse.nse_config import DATE_FMT
+from pathlib import Path
+from trade.nse.nse_configs.nse_indices_config import INDICES, NSEIndexConfig
+from trade.nse.nse_configs.nse_config import DATE_FMT
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)
+CONFIG_FILE = Path(__file__).resolve().parents[3] / Path("configs/nse.json")
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def index_config():
-    return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY)
+    try:
+        return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY, config=CONFIG_FILE)
+    except FileNotFoundError:
+        config_file = Path(__file__).resolve().parents[4] / Path("configs/nse.json")
+        return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY, config=config_file)
 
 
 def test_get_fii_dii(index_config):

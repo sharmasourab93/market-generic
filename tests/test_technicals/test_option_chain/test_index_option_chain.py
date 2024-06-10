@@ -1,6 +1,6 @@
 import pytest
 
-from trade.nse.indices.nse_indices_config import NSEIndexConfig
+from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
 from trade.technicals.option_chain import IndexOptionChainAnalysis
 
 

@@ -1,19 +1,20 @@
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 
 import pytest
 import requests
 from pandas import DataFrame
 
-from trade.nse.nse_config import DATE_FMT, NSEConfig
+from trade.nse.nse_configs.nse_config import DATE_FMT, NSEConfig
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)
+CONFIG_FILE = Path(__file__).resolve().parents[2] / Path("configs/nse.json")
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def nse_config():
-    return NSEConfig(DATED, market=MARKET, country=COUNTRY)
+    return NSEConfig(DATED, market=MARKET, country=COUNTRY, config=CONFIG_FILE)
 
 
 @pytest.fixture
