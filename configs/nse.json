@@ -75,13 +75,21 @@
                         "TRADING": "api/holiday-master?type=trading"
                     },
                     "INDEX": {
+                        "INDICES-LOT-SIZE": {
+                            "NIFTY 50": 25,
+                            "NIFTY BANK": 15,
+                            "NIFTY FINANCIAL SERVICES": 40,
+                            "NIFTY MIDCAP 50": 75,
+                            "NIFTY NEXT 50": 10
+                        },
                         "NSE-GENERAL-SYMBOLS": ["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY NEXT 50", "NIFTY MIDCAP 50"],
                         "YFIN-NSE-SYMBOLS": {
                             "NIFTY 50": "^NSEI",
                             "NIFTY BANK": "^NSEBANK",
                             "NIFTY FINANCIAL SERVICES": "NIFTY_FIN_SERVICE.NS",
                             "NIFTY NEXT 50": "^NSMIDCP",
-                            "NIFTY MIDCAP 50": "^NSEMDCP50"
+                            "NIFTY MIDCAP 50": "^NSEMDCP50",
+                            "HDFC": "HDFCBANK"
                         },
                         "NSE-API-SYMBOLS": {
                             "NIFTY 50": "NIFTY",
