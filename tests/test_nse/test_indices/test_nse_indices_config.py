@@ -8,16 +8,11 @@ from trade.nse.nse_configs.nse_config import DATE_FMT
 
 MARKET, COUNTRY = "NSE", "INDIA"
 DATED = datetime.today().strftime(DATE_FMT)
-CONFIG_FILE = Path(__file__).resolve().parents[3] / Path("configs/nse.json")
 
 
 @pytest.fixture(scope="function")
 def index_config():
-    try:
-        return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY, config=CONFIG_FILE)
-    except FileNotFoundError:
-        config_file = Path(__file__).resolve().parents[4] / Path("configs/nse.json")
-        return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY, config=config_file)
+    return NSEIndexConfig(DATED, market=MARKET, country=COUNTRY)
 
 
 def test_get_fii_dii(index_config):
