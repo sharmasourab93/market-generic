@@ -7,7 +7,6 @@ import pandas as pd
 
 from trade.nse.nse_generics.data_generics import NSEDataGeneric
 
-
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 simplefilter(action="ignore", category=pd.errors.SettingWithCopyWarning)
 simplefilter(action="ignore", category=RuntimeWarning)

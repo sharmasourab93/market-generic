@@ -21,9 +21,7 @@ def test_nse_stock_str(nse_stock):
 
 
 def test_nse_stock_get_meta_data(nse_stock):
-    nse_stock._config.get_equity_meta = MagicMock(
-        return_value={"name": "Apple Inc."}
-    )
+    nse_stock._config.get_equity_meta = MagicMock(return_value={"name": "Apple Inc."})
     assert nse_stock.get_meta_data == {"name": "Apple Inc."}
 
 

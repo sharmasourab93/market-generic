@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from trade.nse.nse_generics.all_data_generics import AllDataGenerics
+
+from trade.nse.indices.nse_index import INDICES, NSEIndex
 from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
-from trade.nse.indices.nse_index import NSEIndex, INDICES
+from trade.nse.nse_generics.all_data_generics import AllDataGenerics
 
 
 @dataclass

@@ -1,9 +1,11 @@
 from abc import ABC
-from io import BytesIO
 from functools import cache, cached_property
+from io import BytesIO
 from typing import Dict, List, Union
+
 import pandas as pd
-from trade.utils.op_utils import timed_lru_cache, find_least_difference_strike
+
+from trade.utils.op_utils import find_least_difference_strike, timed_lru_cache
 
 MARKET_API_QUOTE_TYPE = Dict[str, Union[list, str, bool]]
 INVALID_SYMBOL = "Invalid Symbol Chosen."
@@ -95,8 +97,9 @@ class NSEFNO(ABC):
     def strike_multiples(self) -> Dict[str, int]:
         strike_muls = dict()
         for stocks in self.get_fno_stocks():
-            strike_price = sorted(list(set(self.get_derivative_quote(stocks)[
-                                           "strikePrices"])))
+            strike_price = sorted(
+                list(set(self.get_derivative_quote(stocks)["strikePrices"]))
+            )
             strike_muls.update({stocks: find_least_difference_strike(strike_price)})
 
         return strike_muls
@@ -114,20 +117,24 @@ class NSEFNO(ABC):
 
         return expiries
 
-    def get_strike_mul_by_symbol(self, symbol: str,
-                                 symbol_list: List[str] = None) -> Dict[str, int]:
+    def get_strike_mul_by_symbol(
+        self, symbol: str, symbol_list: List[str] = None
+    ) -> Dict[str, int]:
 
         if symbol_list is None:
             symbol_list = self.get_fno_stocks()
 
         if symbol in symbol_list:
-            strike_price = sorted(list(set(self.get_derivative_quote(symbol)[
-                                               "strikePrices"])))
+            strike_price = sorted(
+                list(set(self.get_derivative_quote(symbol)["strikePrices"]))
+            )
             return {symbol: find_least_difference_strike(strike_price)}
 
         raise KeyError("Invalid Symbol not found.")
 
-    def get_expiry_by_symbol(self, symbol: str, symbol_list: List[str] = None) -> Dict[str, Dict[str, str]]:
+    def get_expiry_by_symbol(
+        self, symbol: str, symbol_list: List[str] = None
+    ) -> Dict[str, Dict[str, str]]:
 
         if symbol_list is None:
             symbol_list = self.get_fno_stocks()

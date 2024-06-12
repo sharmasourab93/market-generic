@@ -1,7 +1,7 @@
-from re import compile, search
-from typing import Union, List
 from functools import lru_cache, wraps
+from re import compile, search
 from time import monotonic_ns
+from typing import List, Union
 
 
 def timed_lru_cache(seconds: int = 60, max_size: int = 128, typed: bool = False):
@@ -21,6 +21,7 @@ def timed_lru_cache(seconds: int = 60, max_size: int = 128, typed: bool = False)
         wrapper_f.cache_info = f.cache_info
         wrapper_f.cache_clear = f.cache_clear
         return wrapper_f
+
     return wrapper_cache
 
 
@@ -28,8 +29,8 @@ def find_least_difference_strike(strikes: List[int]):
 
     min_diff = float("inf")
 
-    for i in range(len(strikes) -1):
-        diff = abs(strikes[i] - strikes[i+1])
+    for i in range(len(strikes) - 1):
+        diff = abs(strikes[i] - strikes[i + 1])
 
         if diff < min_diff:
             min_diff = diff
