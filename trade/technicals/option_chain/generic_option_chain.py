@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Literal, Optional, Tuple, Union
-
+from math import ceil
 import pandas as pd
+from numpy import inf
 from pandas import DataFrame, json_normalize
 
-from trade.nse.indices.nse_indices_config import NSEIndexConfig
-from trade.nse.nse_config import NSEConfig
 from trade.utils.utility_enabler import UtilityEnabler
 
 PCR_VERDICT_RANGE = {
@@ -18,6 +17,7 @@ PCR_VERDICT_RANGE = {
     (1.5, float("inf")): "Over Bought",
 }
 
+STRIKE_TYPE = Union[float, int]
 STRIKE_MULTIPLES_NOT_SET = "Strike Multiples  NOTSET."
 VERDICT_RANGE_TYPE = Dict[Tuple[float, float], str]
 OPTION_ANALYSIS_FOR = "Option Chain Analysis for {0}"
@@ -39,24 +39,67 @@ QUOTE_OPTION_CHAIN_COLS = [
     "askQty",
     "askPrice",
 ]
+OPTION_CHAIN_OUTPUT = Dict[str, Union[Dict[str, Union[str, int, float]], str, int,
+float]]
 
 
 class GenericOptionChain(ABC):
     __metaclass__ = UtilityEnabler
 
+    @classmethod
+    def analyze_option_chain(cls, *args, **kwargs):
+        return cls(*args, **kwargs)
+
     def __init__(
         self,
         symbol: int,
-        oc_data: dict,
         dated: str,
-        strike_multiples: Optional[dict] = None,
+        oc_data: dict,
+        lot_size: int,
+        strike_multiple: Union[float, int],
+        expiry: Literal[0, 1] = 0,
+        delta: int = 5
     ):
-        self.data = oc_data
+        self.symbol = symbol
+        self.dated = dated
+        self.records = oc_data["records"]
+        self.filtered = oc_data["filtered"]
+        self.lot_size = lot_size
+        self.underlying = self.records.pop("underlyingValue")
+        self.last_updated = self.records.pop("timestamp")
+        self.delta = delta
+        self.net_oi = {"CE": self.filtered.pop("CE"),
+                       "PE": self.filtered.pop("PE")}
+        self._extract_data(oc_data, expiry)
+        self._get_strike_multiples(strike_multiple)
 
-        if strike_multiples is None:
+    def _get_strike_multiples(self, strike_multiple) -> None:
+        if strike_multiple is None:
             raise ValueError(STRIKE_MULTIPLES_NOT_SET)
+        self.strike_multiple = strike_multiple
 
-        self.strike_multiples = strike_multiples
+    def _all_expiry_dates(self, oc_data) -> None:
+        self.expiry = oc_data["records"].get("expiryDates", None)
+
+        if self.expiry is None:
+            raise ValueError("Expiry not found.")
+
+    def _curr_expiry(self, oc_data, expiry) -> None:
+        self._all_expiry_dates(oc_data)
+        self._curr_expiry = self.expiry[expiry]
+
+    def _extract_data(self, oc_data, expiry) -> None:
+        self._curr_expiry(oc_data, expiry)
+        data = oc_data["records"].get("data")
+        data = DataFrame(json_normalize(data))
+        self.data = data.loc[(data.expiryDate == self._curr_expiry), :]
+        self.data.set_index("strikePrice", inplace=True)
+
+        if self.data.empty:
+            raise ValueError(f"No Data for found for Expiry: {self._curr_expiry}.")
+
+    def _available_strikes(self, oc_data) -> None:
+        self.available_strikes = oc_data["records"].get("strikePrices")
 
     def pcr_verdict(
         self, pcr: float, verdict_range: VERDICT_RANGE_TYPE = PCR_VERDICT_RANGE
@@ -74,55 +117,26 @@ class GenericOptionChain(ABC):
     def _maintain_calls_puts(self, df, prefix: Literal["CE", "PE"]):
         df = df.loc[:, df.columns.str.match(f"^({prefix}|expiryDate)")]
         df.columns = df.columns.str.replace(rf"{prefix}.", "")
-        df = df[columns].round(2)
-        df.columns = "{0}_{1}".format(prefix, df.columns)
+        df = df[QUOTE_OPTION_CHAIN_COLS].round(2)
+        df.columns = ["{0}_{1}".format(prefix, cols) for cols in df.columns]
         df.reset_index(inplace=True)
         return df
 
-    def get_option_chain(self) -> Union[dict, None]:
+    def get_processed_option_chain(self) -> Union[dict, None]:
         """
         Method to process Option Chain for a select symbol and
         selected expiry into algo_trade module consumable format.
         The Data Structure has hard coded values as in the data received
         from NSE officially.
         """
-        data = self.data
-        records = data["records"]
-        filtered = data["filtered"]
-        all_expiries: list = records["expiryDates"]
-        last_updated: str = records["timestamp"]
-        strike_prices: list = records["strikePrices"]
-        underlying: float = records["underlyingValue"]
-
-        # Creating A Respone
-        response = dict()
-        response.update(
-            {
-                "symbol": symbol,
-                "selected_expiry": expiry,
-                "all_expiries": all_expiries,
-                "last_updated": last_updated,
-                "strikes": strike_prices,
-                "underlying_value": underlying,
-            }
-        )
-
-        # DataFrame Operations Section.
-        df = DataFrame(json_normalize(data["records"]["data"]))
-        df = df.loc[(df.expiryDate == expiry), :]
-
-        if 0 in df.shape:
-            return None
-
-        df.set_index("strikePrice", inplace=True)
-
+        df = self.data
         # Common Columns
         columns = QUOTE_OPTION_CHAIN_COLS
 
         options = ["Calls", "Puts"]
 
-        ce_data = self._maintain_calls_puts(ce_data, "CE")
-        pe_data = self._maintain_calls_puts(pe_data, "PE")
+        ce_data = self._maintain_calls_puts(df, "CE")
+        pe_data = self._maintain_calls_puts(df, "PE")
 
         # Merge Call & Put data.
         merged_call_put = pd.merge(ce_data, pe_data, on="strikePrice", how="left")
@@ -133,20 +147,12 @@ class GenericOptionChain(ABC):
         )
         merged_call_put["pcr_oi"] = merged_call_put.pcr_oi.replace(inf, 10.0)
         merged_call_put.loc[merged_call_put.pcr_oi >= 10, "pcr_oi"] = 10.0
-        overall_pcr = round((filtered["PE"]["totOI"] / filtered["CE"]["totOI"]), 2)
-        pcr_verdict = self.pcr_verdict(overall_pcr)
 
-        # Updating the final response.
-        response.update(
-            {
-                "OptionChain": merged_call_put.round(2),
-                "ResponseGenerateTime": datetime.now(tz=TIME_ZONE),
-                "overall_pcr": overall_pcr,
-                "pcr_verdict": pcr_verdict,
-            }
-        )
+        return merged_call_put.round(2)
 
-        return response
+    @property
+    def overall_pcr(self) -> float:
+        return round(self.net_oi["PE"]["totOI"] / self.net_oi["CE"]["totOI"], 2)
 
     def get_support_or_resistance(
         self, call_put_max, min_max_pcr, strike_price
@@ -233,9 +239,9 @@ class GenericOptionChain(ABC):
 
             return {
                 "Max Put OI": call_put_max[0]["strikePrice"],
-                "PCR": call_put_max[0]["pcr_oi"],
+                "PCR at Max": call_put_max[0]["pcr_oi"],
                 "Max Call OI": call_put_max[1]["strikePrice"],
-                "Max PCR OI": call_put_max[1]["pcr_oi"],
+                "PCR at Min": call_put_max[1]["pcr_oi"],
             }
 
         else:
@@ -323,14 +329,85 @@ class GenericOptionChain(ABC):
 
         return ""
 
-    def get_strike_price(self, symbol: str, underlying: float) -> int:
-        # TODO: Needs to be extended for stock prices of varying range.
-        multiple = self.strike_multiples[symbol]
-        strike_price = ceil(underlying / multiple) * multiple
+    @property
+    def strike_price(self) -> STRIKE_TYPE:
+        return ceil(self.underlying / self.strike_multiple) * self.strike_multiple
 
-        return strike_price
+    @property
+    def strike_min(self) -> STRIKE_TYPE:
+        return self.strike_price - (self.strike_multiple * self.delta)
 
-    @abstractmethod
-    def option_chain_output(self):
+    @property
+    def strike_max(self) -> STRIKE_TYPE:
+        return self.strike_price + (self.strike_multiple * self.delta) + self.strike_multiple
 
-        NotImplementedError("Yet to be implemented.")
+    @property
+    def strike_range(self) -> range:
+        return range(self.strike_min, self.strike_max, self.strike_multiple)
+
+    def extract_data_near_strike(self, data: pd.DataFrame) -> dict:
+        result = {}
+        data = data.loc[data.strikePrice.isin(self.strike_range), :]
+        for i, j in data.iterrows():
+            sub_result = {
+                "puts_oi": int(j["PE_openInterest"]),
+                "calls_oi": int(j["CE_openInterest"]),
+                "pcr": float(j["pcr_oi"]),
+                "ce_ltp":float(j["CE_lastPrice"]),
+                "pe_ltp": float(j["PE_lastPrice"])
+            }
+            result.update({j["strikePrice"]: sub_result})
+
+        return result
+
+    def option_chain_output(self) -> OPTION_CHAIN_OUTPUT:
+        oc_df = self.get_processed_option_chain()
+        analysis_range = self.strike_multiple * self.delta
+
+        analysis_range = list(
+            range(
+                int(self.strike_price - analysis_range),
+                int(self.strike_price + analysis_range),
+                int(analysis_range / self.delta),
+            )
+        )
+
+        # Identify Max Call & Put OI. Can give 2 records or give 1 record.
+        call_put_max = oc_df.loc[
+                       (oc_df.CE_openInterest == oc_df.CE_openInterest.max())
+                       | (oc_df.PE_openInterest == oc_df.PE_openInterest.max()),
+                       :,
+                       ].to_dict(orient="records")
+
+        # This section only covers most liquid and actively trade options in
+        # the option chain. The OI values are roughly between 0.1 and 10.
+        around_strike = self.extract_data_near_strike(oc_df)
+        min_max_pcr = oc_df.loc[(0.1 <= oc_df.pcr_oi) & (oc_df.pcr_oi < 10), :]
+
+        avg_pe_volume = round(float(min_max_pcr.PE_openInterest.mean()), 2)
+        avg_ce_volume = round(float(min_max_pcr.CE_openInterest.mean()), 2)
+
+        result_dict = {"symbol": self.symbol, "Expiry": self._curr_expiry}
+
+        # If we have 2 items in the Option chain with Max Calls and Max Puts.
+        # We will have two strikes to identify and also mention Supports and
+        # lower levels and resistances at higher levels.
+        # Else:
+        # We have situation where there are enough straddles to be looked at
+        # with very little resistance and support within active/liquid strikes.
+        result_dict.update(self.get_max_put_call_oi(call_put_max))
+        result_dict.update(
+            self.get_support_or_resistance(call_put_max, min_max_pcr, self.strike_price)
+        )
+        result_dict.update(
+            {
+                "near_strike_info": around_strike,
+                "Straddle": self.conditional_straddle_identification(
+                    call_put_max, avg_ce_volume, avg_pe_volume
+                ),
+                "Overall PCR": self.overall_pcr,
+                "Verdict": self.pcr_verdict(self.overall_pcr),
+            }
+        )
+
+        return result_dict
