@@ -64,11 +64,15 @@ def test_overall_pcr(index_option_chain):
 
 def test_strikes(index_option_chain):
     for oc_obj in index_option_chain:
-        assert isinstance(oc_obj.strike_price, int) or isinstance(oc_obj.strike_price, float)
-        assert isinstance(oc_obj.strike_min, int) or isinstance(oc_obj.strike_min,
-                                                              float)
-        assert isinstance(oc_obj.strike_max, int) or isinstance(oc_obj.strike_max,
-                                                              float)
+        assert isinstance(oc_obj.strike_price, int) or isinstance(
+            oc_obj.strike_price, float
+        )
+        assert isinstance(oc_obj.strike_min, int) or isinstance(
+            oc_obj.strike_min, float
+        )
+        assert isinstance(oc_obj.strike_max, int) or isinstance(
+            oc_obj.strike_max, float
+        )
         assert isinstance(oc_obj.strike_range, range)
 
 
