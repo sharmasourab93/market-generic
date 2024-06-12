@@ -1,6 +1,8 @@
-import pytest
 from datetime import datetime
-from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig, INDICES_MAPPING
+
+import pytest
+
+from trade.nse.nse_configs.nse_indices_config import INDICES_MAPPING, NSEIndexConfig
 from trade.technicals.option_chain import OptionChain
 from trade.technicals.option_chain.index_option_chain import IndexOptionChainAnalysis
 
@@ -27,8 +29,9 @@ def index_option_chain(dated, config, as_month):
         oc_data = config.get_option_chain_data(value)
         strike_multiples = config.strike_multiples()
         lot_size = config.get_ticker_folots(value, as_month)
-        oc_obj = OptionChain.analyze_option_chain(key, dated, oc_data, lot_size,
-                                                  strike_multiples[value])
+        oc_obj = OptionChain.analyze_option_chain(
+            key, dated, oc_data, lot_size, strike_multiples[value]
+        )
         option_chain.append(oc_obj)
 
     return option_chain

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Literal, Optional, Tuple, Union
 from math import ceil
+from typing import Dict, Literal, Optional, Tuple, Union
+
 import pandas as pd
 from numpy import inf
 from pandas import DataFrame, json_normalize
@@ -39,8 +40,9 @@ QUOTE_OPTION_CHAIN_COLS = [
     "askQty",
     "askPrice",
 ]
-OPTION_CHAIN_OUTPUT = Dict[str, Union[Dict[str, Union[str, int, float]], str, int,
-float]]
+OPTION_CHAIN_OUTPUT = Dict[
+    str, Union[Dict[str, Union[str, int, float]], str, int, float]
+]
 
 
 class GenericOptionChain(ABC):
@@ -58,7 +60,7 @@ class GenericOptionChain(ABC):
         lot_size: int,
         strike_multiple: Union[float, int],
         expiry: Literal[0, 1] = 0,
-        delta: int = 5
+        delta: int = 5,
     ):
         self.symbol = symbol
         self.dated = dated
@@ -68,8 +70,7 @@ class GenericOptionChain(ABC):
         self.underlying = self.records.pop("underlyingValue")
         self.last_updated = self.records.pop("timestamp")
         self.delta = delta
-        self.net_oi = {"CE": self.filtered.pop("CE"),
-                       "PE": self.filtered.pop("PE")}
+        self.net_oi = {"CE": self.filtered.pop("CE"), "PE": self.filtered.pop("PE")}
         self._extract_data(oc_data, expiry)
         self._get_strike_multiples(strike_multiple)
 
@@ -339,7 +340,11 @@ class GenericOptionChain(ABC):
 
     @property
     def strike_max(self) -> STRIKE_TYPE:
-        return self.strike_price + (self.strike_multiple * self.delta) + self.strike_multiple
+        return (
+            self.strike_price
+            + (self.strike_multiple * self.delta)
+            + self.strike_multiple
+        )
 
     @property
     def strike_range(self) -> range:
@@ -353,8 +358,8 @@ class GenericOptionChain(ABC):
                 "puts_oi": int(j["PE_openInterest"]),
                 "calls_oi": int(j["CE_openInterest"]),
                 "pcr": float(j["pcr_oi"]),
-                "ce_ltp":float(j["CE_lastPrice"]),
-                "pe_ltp": float(j["PE_lastPrice"])
+                "ce_ltp": float(j["CE_lastPrice"]),
+                "pe_ltp": float(j["PE_lastPrice"]),
             }
             result.update({j["strikePrice"]: sub_result})
 
@@ -374,10 +379,10 @@ class GenericOptionChain(ABC):
 
         # Identify Max Call & Put OI. Can give 2 records or give 1 record.
         call_put_max = oc_df.loc[
-                       (oc_df.CE_openInterest == oc_df.CE_openInterest.max())
-                       | (oc_df.PE_openInterest == oc_df.PE_openInterest.max()),
-                       :,
-                       ].to_dict(orient="records")
+            (oc_df.CE_openInterest == oc_df.CE_openInterest.max())
+            | (oc_df.PE_openInterest == oc_df.PE_openInterest.max()),
+            :,
+        ].to_dict(orient="records")
 
         # This section only covers most liquid and actively trade options in
         # the option chain. The OI values are roughly between 0.1 and 10.
