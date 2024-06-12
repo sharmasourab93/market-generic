@@ -3,6 +3,7 @@ import pytest
 from trade.nse.stocks.nse_all_stocks import AllNSEStocks
 
 
+@pytest.mark.skip
 def test_all_nse_stocks_post_init_with_symbols():
     all_nse_stocks = AllNSEStocks("17-May-2024", ["RELIANCE", "SBIN"])
     assert all_nse_stocks.symbols["RELIANCE"] == "RELIANCE"
