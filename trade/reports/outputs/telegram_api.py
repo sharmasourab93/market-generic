@@ -1,11 +1,13 @@
-from trade.reports.outputs.output_generics import OutputGenerics
-from typing import Union, Dict, Any
 import asyncio
 from datetime import datetime
 from functools import cache
 from os import getenv
-from pandas import DataFrame
+from typing import Any, Dict, Union
+
 import telegram
+from pandas import DataFrame
+
+from trade.reports.outputs.output_generics import OutputGenerics
 
 
 def textualize_data(telegram_method):
@@ -56,35 +58,42 @@ class TelegramBot(OutputGenerics):
     """
 
     @classmethod
-    def communicate_data(cls,
-                         data: Union[Dict[Any, Any], str],
-                         chat_id:str,
-                         telegram_token:str,
-                         telegram_bot_enabled: bool,
-                         telegram_signature: str,
-                         *,
-                         additional_text: str = None,
-                         order: str = "Top",
-                         cols: list = None,
-                         index: bool = False,
-                         tablefmt: str = "rst",
-                         stralign: str = "center",
-                         date_format: str = "%d-%b-%Y %H:%M"
-                         ) -> None:
+    def communicate_data(
+        cls,
+        data: Union[Dict[Any, Any], str],
+        chat_id: str,
+        telegram_token: str,
+        telegram_bot_enabled: bool,
+        telegram_signature: str,
+        *,
+        additional_text: str = None,
+        order: str = "Top",
+        cols: list = None,
+        index: bool = False,
+        tablefmt: str = "rst",
+        stralign: str = "center",
+        date_format: str = "%d-%b-%Y %H:%M",
+    ) -> None:
 
-        obj = cls(telegram_bot_enabled, chat_id,
-            telegram_token, telegram_signature)
-        obj.send_message(data,
-                         additional_text=additional_text,
-                         order=order,
-                         cols=cols,
-                         index=index,
-                         tablefmt=tablefmt,
-                         stralign=stralign,
-                         date_format=date_format)
+        obj = cls(telegram_bot_enabled, chat_id, telegram_token, telegram_signature)
+        obj.send_message(
+            data,
+            additional_text=additional_text,
+            order=order,
+            cols=cols,
+            index=index,
+            tablefmt=tablefmt,
+            stralign=stralign,
+            date_format=date_format,
+        )
 
-    def __init__(self,telegram_bot_enabled: bool,chat_id: str,
-                 telegram_token:str, telegram_sign: str):
+    def __init__(
+        self,
+        telegram_bot_enabled: bool,
+        chat_id: str,
+        telegram_token: str,
+        telegram_sign: str,
+    ):
         self.telegram_enabled = telegram_bot_enabled
         self.chat_id = chat_id
         self.telegram_sign = telegram_sign
