@@ -4,10 +4,47 @@ import asyncio
 from datetime import datetime
 from functools import cache
 from os import getenv
-
+from pandas import DataFrame
 import telegram
 
-TELEGRAM_SIGNATURE = "\n Generated on {0}."
+
+def textualize_data(telegram_method):
+    def execute_method(
+        self,
+        data: Union[DataFrame, str],
+        *,
+        additional_text: str = None,
+        order: str = "Top",
+        cols: list = None,
+        index: bool = False,
+        tablefmt: str = "rst",
+        stralign: str = "center",
+        date_format: str = "%d-%b-%Y %H:%M",
+    ):
+        if isinstance(data, DataFrame):
+            if cols is None:
+                cols = data.columns.tolist()
+
+            data = tabulate(
+                data[cols],
+                headers="keys",
+                showindex=index,
+                tablefmt=tablefmt,
+                stralign=stralign,
+            )
+
+            if additional_text is not None:
+                additional_text = "**" + additional_text + "**"
+
+                if order.capitalize() == "Top":
+                    data = additional_text + "\n" + data
+
+                else:
+                    data += "\n" + additional_text
+
+        telegram_method(self, data, date_format)
+
+    return execute_method
 
 
 class TelegramBot(OutputGenerics):
@@ -21,20 +58,38 @@ class TelegramBot(OutputGenerics):
     @classmethod
     def communicate_data(cls,
                          data: Union[Dict[Any, Any], str],
-                         telegram_bot_enabled: bool = False,
-                         chat_id:str = getenv("CHAT_ID", None),
-                         telegram_signature: str = TELEGRAM_SIGNATURE) -> None:
+                         chat_id:str,
+                         telegram_token:str,
+                         telegram_bot_enabled: bool,
+                         telegram_signature: str,
+                         *,
+                         additional_text: str = None,
+                         order: str = "Top",
+                         cols: list = None,
+                         index: bool = False,
+                         tablefmt: str = "rst",
+                         stralign: str = "center",
+                         date_format: str = "%d-%b-%Y %H:%M"
+                         ) -> None:
 
-        cls(telegram_bot_enabled, chat_id, telegram_signature).send_message(data)
+        obj = cls(telegram_bot_enabled, chat_id,
+            telegram_token, telegram_signature)
+        obj.send_message(data,
+                         additional_text=additional_text,
+                         order=order,
+                         cols=cols,
+                         index=index,
+                         tablefmt=tablefmt,
+                         stralign=stralign,
+                         date_format=date_format)
 
-    def __init__(self,telegram_bot_enabled: bool,chat_id: str,telegram_sign: str):
+    def __init__(self,telegram_bot_enabled: bool,chat_id: str,
+                 telegram_token:str, telegram_sign: str):
         self.telegram_enabled = telegram_bot_enabled
         self.chat_id = chat_id
         self.telegram_sign = telegram_sign
 
         if self.telegram_enabled:
-            self.telegram_token = getenv("TELEGRAM_TOKEN", None)
-
             if self.telegram_token is None:
                 logger_msg = "TELEGRAM_TOKEN Key not set."
                 raise KeyError(logger_msg)
@@ -58,6 +113,7 @@ class TelegramBot(OutputGenerics):
 
         return self.chat_id
 
+    @textualize_data
     def send_message(self, text: str, date_format: str = "%d-%b-%Y %H:%M"):
         """
         If the Telegram_enabled bool is True, we send a message

@@ -4,6 +4,8 @@ import gspread
 
 from trade.reports.outputs.output_generics import OutputGenerics
 
+CREDS_NOT_SET = "Credentials and Credetial key for Google Sheet notset."
+
 
 class GoogleSheetBot(OutputGenerics):
 
@@ -11,11 +13,14 @@ class GoogleSheetBot(OutputGenerics):
     def communicate_data(cls,
                          index_report: dict,
                          analysis_date: str,
-                         sheet_key: str = "index",
+                         sheet_key: str,
                          credentials: str = os.getenv("GSHEET_CRED", None),
                          cred_key: str = os.getenv("GSHEET_KEY", None)):
 
         gsheet_obj = cls(credentials, sheet_key)
+
+        if credentials and cred_key:
+            raise ValueError(CREDS_NOT_SET)
 
         match sheet_key:
             case "index":
