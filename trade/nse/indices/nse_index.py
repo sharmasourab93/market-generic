@@ -21,6 +21,7 @@ class NSEIndex(NSEDataGeneric):
         self.set_config()
         self.symbol = self.symbol.upper()
         self._yfsymbol = self.yfin_symbol()
+        self._apisymbol = INDICES_MAPPING[self.symbol]
         quotes = self._config.get_quote_index(self.symbol)
         ohlc = quotes.pop("ohlc")
         ohlc.update({"prev_volume": 0.0})
