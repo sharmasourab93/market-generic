@@ -1,7 +1,9 @@
-from typing import Union, Dict
+from abc import ABC, abstractmethod
+from typing import Dict, Union
+
 import pandas as pd
 from pandas import DataFrame
-from abc import ABC, abstractmethod
+
 from trade.technicals.indicators.generic_indicator import GenericIndicator
 
 

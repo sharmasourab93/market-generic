@@ -1,7 +1,9 @@
-import pytest
-import pandas as pd
-from trade.technicals.indicators.rsi import RSI
 from random import uniform
+
+import pandas as pd
+import pytest
+
+from trade.technicals.indicators.rsi import RSI
 
 
 @pytest.fixture(scope="function")
