@@ -1,5 +1,6 @@
 import json
 import os
+
 import gspread
 
 from trade.reports.outputs.output_generics import OutputGenerics
@@ -10,12 +11,14 @@ CREDS_NOT_SET = "Credentials and Credetial key for Google Sheet notset."
 class GoogleSheetBot(OutputGenerics):
 
     @classmethod
-    def communicate_data(cls,
-                         index_report: dict,
-                         analysis_date: str,
-                         sheet_key: str,
-                         credentials: str = os.getenv("GSHEET_CRED", None),
-                         cred_key: str = os.getenv("GSHEET_KEY", None)):
+    def communicate_data(
+        cls,
+        index_report: dict,
+        analysis_date: str,
+        sheet_key: str,
+        credentials: str = os.getenv("GSHEET_CRED", None),
+        cred_key: str = os.getenv("GSHEET_KEY", None),
+    ):
 
         gsheet_obj = cls(credentials, sheet_key)
 
@@ -24,8 +27,7 @@ class GoogleSheetBot(OutputGenerics):
 
         match sheet_key:
             case "index":
-                gsheet_obj.update_index_analysis_from_dict(index_report,
-                                                           analysis_date)
+                gsheet_obj.update_index_analysis_from_dict(index_report, analysis_date)
             case _:
                 raise ValueError(f"Invalid Key selection. - {sheet_key}")
 

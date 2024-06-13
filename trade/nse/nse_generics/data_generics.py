@@ -10,7 +10,6 @@ from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
 from trade.technicals.indicators import GenericIndicator
 from trade.technicals.option_chain import OptionChain
 
-
 INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
 OHLC_TYPE = Dict[str, Dict[str, Union[str, int]]]
 DEFAULT_PRICES = {
@@ -197,8 +196,8 @@ class NSEDataGeneric(ABC):
         month_year = self._config.working_day.as_month_year
         lot_size = self.lot_size
         strike_multiple = self.strike_multiples[self.symbol]
-        oc_obj = OptionChain.analyze_option_chain(self.symbol, self.dated,
-                                                       oc_data, lot_size,
-                                                       strike_multiple)
+        oc_obj = OptionChain.analyze_option_chain(
+            self.symbol, self.dated, oc_data, lot_size, strike_multiple
+        )
         self._oc_analysis = oc_obj.option_chain_output()
         return self._oc_analysis
