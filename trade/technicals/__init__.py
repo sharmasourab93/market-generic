@@ -1,1 +1,1 @@
-from trade.technicals import indicators, option_chain, strategies
+from trade.technicals import indicators, option_chain
