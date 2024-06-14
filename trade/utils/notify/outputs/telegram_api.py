@@ -1,13 +1,12 @@
 import asyncio
 from datetime import datetime
 from functools import cache
-from os import getenv
 from typing import Any, Dict, Union
 
 import telegram
 from pandas import DataFrame
 
-from trade.notify.outputs.output_generics import OutputGenerics
+from trade.utils.notify.outputs.output_generics import OutputGenerics
 
 
 def textualize_data(telegram_method):

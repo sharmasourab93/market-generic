@@ -1,7 +1,7 @@
 from os import getenv
 from typing import Any
 
-from trade.notify.outputs import GoogleSheetBot, TelegramBot
+from trade.utils.notify.outputs import GoogleSheetBot, TelegramBot
 
 TELEGRAM_SIGNATURE = "\n Generated on {0}."
 
