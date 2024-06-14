@@ -44,7 +44,7 @@ class NSEConfig(Exchange, NSEFNO):
         self,
         today: str,
         date_fmt: str = DATE_FMT,
-        config: Union[Path, str] = CONFIG_FILE,
+        config: Union[Path, str] = os.getenv("CONFIG_FILE", CONFIG_FILE),
         market: str = MARKET,
         country: str = COUNTRY,
         market_timings: MarketTimingType = TIMINGS,
