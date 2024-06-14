@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Dict, Union
+from typing import Dict, Union, List, Tuple
 
 import pandas as pd
 
@@ -10,6 +10,7 @@ from trade.technicals.indicators import GenericIndicator
 
 INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
+DATA_HISTORY_DATAFRAMES = Union[Tuple[pd.DataFrame], List[pd.DataFrame]]
 INDICATOR_NOT_ALLOWED = (
     "Cannot apply indicators to stocks. " "Only permissible for index."
 )
@@ -37,6 +38,12 @@ class AllDataGenerics(ABC):
             resulting_dict.update(sym.get_ohlc())
 
         return resulting_dict
+
+    def get_history_data(self, period: str, interval: str) -> DATA_HISTORY_DATAFRAMES:
+        return {
+            str(symbol): symbol.get_history_data(period, interval)
+            for symbol in self.symbols
+        }
 
     @property
     def as_dataframe(self):
