@@ -7,7 +7,7 @@ from typing import Any, Dict, Union
 import telegram
 from pandas import DataFrame
 
-from trade.reports.outputs.output_generics import OutputGenerics
+from trade.notify.outputs.output_generics import OutputGenerics
 
 
 def textualize_data(telegram_method):

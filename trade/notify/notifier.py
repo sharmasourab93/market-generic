@@ -1,12 +1,12 @@
 from os import getenv
 from typing import Any
 
-from trade.reports.outputs import GoogleSheetBot, TelegramBot
+from trade.notify.outputs import GoogleSheetBot, TelegramBot
 
 TELEGRAM_SIGNATURE = "\n Generated on {0}."
 
 
-class Reporter:
+class Notifier:
 
     @classmethod
     def to_telegram(cls,

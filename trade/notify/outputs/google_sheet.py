@@ -3,7 +3,7 @@ import os
 
 import gspread
 
-from trade.reports.outputs.output_generics import OutputGenerics
+from trade.notify.outputs.output_generics import OutputGenerics
 
 CREDS_NOT_SET = "Credentials and Credetial key for Google Sheet notset."
 
