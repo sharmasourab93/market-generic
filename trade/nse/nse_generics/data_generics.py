@@ -29,8 +29,21 @@ class NSEDataGeneric(ABC):
     def __str__(self):
         return self.symbol
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.symbol == other
+
+    def __gt__(self, other) -> bool:
+
+        return self.symbol.pct_change >= other
+
+    def __gte__(self, other) -> bool:
+        return self.__gt__(other)
+
+    def __lt__(self, other) -> bool:
+        return self.symbol.pct_change <= other
+
+    def __lte__(self, other) -> bool:
+        return self.__lt__(other)
 
     def _set_attributes(self, dict_obj: dict, exceptions: tuple = None):
         for key, value in dict_obj.items():
