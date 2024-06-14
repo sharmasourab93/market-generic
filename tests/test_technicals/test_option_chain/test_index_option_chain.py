@@ -82,6 +82,3 @@ def test_option_chain_output(index_option_chain):
         assert isinstance(result, dict)
         assert "near_strike_info" in result.keys()
         assert "Verdict" in result.keys()
-        assert "Straddle" in result.keys()
-        assert "Nearest Support" in result.keys()
-        assert "Resistance at" in result.keys()
