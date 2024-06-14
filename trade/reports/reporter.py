@@ -8,7 +8,8 @@ TELEGRAM_SIGNATURE = "\n Generated on {0}."
 
 class Reporter:
 
-    def to_telegram(self,
+    @classmethod
+    def to_telegram(cls,
                     data: Any,
                     telegram_signature: str = TELEGRAM_SIGNATURE,
                     chat_id: str = getenv("TELEGRAM_CHATID", None),
@@ -18,8 +19,9 @@ class Reporter:
                                      telegram_signature, **kwargs
         )
 
+    @classmethod
     def to_gsheet_for_index(
-        self,
+        cls,
         index_report: dict,
         analysis_date,
         sheet_key: str = "index",
