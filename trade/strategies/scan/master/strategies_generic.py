@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal, Tuple, TypeVar
 from abc import ABC, abstractmethod, abstractclassmethod
 
@@ -15,7 +16,7 @@ Indicators = TypeVar("Indicators")
 INDICATORS = Union[List[Indicators], Tuple[Indicators]]
 
 
-class StockStrategyMaster(ABC):
+class StockScanMaster(ABC):
     def __init__(self,
                  strategy_name:str,
                  strategy_type: STRATEGY_TYPE,
@@ -25,6 +26,11 @@ class StockStrategyMaster(ABC):
         self.__name__ = strategy_name
         self.__type__ = strategy_type
         self.stocks = AllNSEStocks(dated, nse_top=top)
+
+
+    def pct_criteria(self):
+
+
 
     def historical_data(self, period: str, interval:str) -> HISTORICAL_DATA_SET:
 
@@ -55,3 +61,8 @@ class StockStrategyMaster(ABC):
     @abstractmethod
     def strategy_output(self):
         raise NotImplemented()
+
+    @property
+    def strategy_from_file_name(self) -> str:
+
+        return Path(__file__).name.replace("_", " ").capitalize()
