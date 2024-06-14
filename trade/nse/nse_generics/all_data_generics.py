@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Dict, Union, List, Tuple, Any
+from typing import Any, Dict, List, Tuple, Union
 
 import pandas as pd
 
