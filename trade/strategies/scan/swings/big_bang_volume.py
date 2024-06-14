@@ -1,6 +1,6 @@
-from typing import TypeVar, List
-from trade.strategies.scan.master import StockSwingScanMaster
+from typing import List, TypeVar
 
+from trade.strategies.scan.master import StockSwingScanMaster
 
 Stocks = TypeVar("NSEStocks")
 STOCK_LISTS = List[Stocks]
@@ -32,10 +32,10 @@ class BigBangVolume(StockSwingScanMaster):
         min_pct_change = 5 / 100
         compare = "gt"
         min_volume_diff = 10.0
-        _strategy_data = self.filter_by_pct_change(min_pct_change,
-                                                   compare)
-        filtered_result = [i for i in _strategy_data
-                            if i.volume_diff >= min_volume_diff]
+        _strategy_data = self.filter_by_pct_change(min_pct_change, compare)
+        filtered_result = [
+            i for i in _strategy_data if i.volume_diff >= min_volume_diff
+        ]
 
         return filtered_result
 

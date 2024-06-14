@@ -9,14 +9,16 @@ TELEGRAM_SIGNATURE = "\n Generated on {0}."
 class Notifier:
 
     @classmethod
-    def to_telegram(cls,
-                    data: Any,
-                    telegram_signature: str = TELEGRAM_SIGNATURE,
-                    chat_id: str = getenv("TELEGRAM_CHATID", None),
-                    telegram_token: str = getenv("GSHEET_KEY", None),
-                    **kwargs) -> None:
-        TelegramBot.communicate_data(data, chat_id, telegram_token, True,
-                                     telegram_signature, **kwargs
+    def to_telegram(
+        cls,
+        data: Any,
+        telegram_signature: str = TELEGRAM_SIGNATURE,
+        chat_id: str = getenv("TELEGRAM_CHATID", None),
+        telegram_token: str = getenv("GSHEET_KEY", None),
+        **kwargs,
+    ) -> None:
+        TelegramBot.communicate_data(
+            data, chat_id, telegram_token, True, telegram_signature, **kwargs
         )
 
     @classmethod
