@@ -28,6 +28,7 @@ class MarketCalendar:
             market_timings=market_timings,
             date_fmt=date_fmt,
         )
+        self.date_fmt = date_fmt
 
     @property
     def prev_day(self) -> DateObj:
