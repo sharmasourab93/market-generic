@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Literal, Tuple, TypeVar
+from typing import Literal, Tuple, TypeVar, Union, List
 from abc import ABC, abstractmethod, abstractclassmethod
 
 import pandas as pd
@@ -27,10 +27,18 @@ class StockScanMaster(ABC):
         self.__type__ = strategy_type
         self.stocks = AllNSEStocks(dated, nse_top=top)
 
+    def filter_by_pct_change(self, pct_change: Union[float, int], compare: str =
+    Literal["gt", "lt"]):
 
-    def pct_criteria(self):
+        match compare:
+            case "gt":
+                return self.stocks > pct_change
 
+            case "lt":
+                return self.stocks < pct_change
 
+            case _:
+                raise KeyError("Invalid comparator")
 
     def historical_data(self, period: str, interval:str) -> HISTORICAL_DATA_SET:
 
