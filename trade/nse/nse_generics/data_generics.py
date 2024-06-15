@@ -22,7 +22,7 @@ DEFAULT_PRICES = {
     "prev_close": 0.0,
     "pct_change": 0.0,
     "prev_high": 0.0,
-    "prev_low": 0.0
+    "prev_low": 0.0,
 }
 
 

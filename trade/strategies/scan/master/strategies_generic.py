@@ -1,12 +1,11 @@
 from abc import ABC, abstractclassmethod, abstractmethod
 from pathlib import Path
-from typing import Literal, Tuple, TypeVar, Union, List, Dict
-from abc import ABC, abstractmethod, abstractclassmethod
+from typing import Dict, List, Literal, Tuple, TypeVar, Union
 
 import pandas as pd
 
-from trade.nse.stocks import AllNSEStocks
 from trade.calendar import WorkingDayDate
+from trade.nse.stocks import AllNSEStocks
 
 STRATEGY_TYPE = Literal[
     "Intraday", "BTST", "Weekly", "Swing", "Positional", "Short-term", "Long-Term"
