@@ -21,6 +21,8 @@ DEFAULT_PRICES = {
     "prev_volume": 0.0,
     "prev_close": 0.0,
     "pct_change": 0.0,
+    "prev_high": 0.0,
+    "prev_low": 0.0
 }
 
 
@@ -176,6 +178,8 @@ class NSEDataGeneric(ABC):
         if len(result) > 1:
             try:
                 self.prev_volume = int(result.iloc[-2]["volume"])
+                self.prev_high = int(result.iloc[-2]["high"])
+                self.prev_low = int(result.iloc[-2]["low"])
             except IndexError:
                 self.prev_volume = 0
 
@@ -194,6 +198,14 @@ class NSEDataGeneric(ABC):
             for key, value in DEFAULT_PRICES.items():
                 if not hasattr(self, key):
                     setattr(self, key, value)
+
+    @property
+    def is_gapup(self) -> bool:
+        return self.close > self.prev_high and self.low > self.prev_high
+
+    @property
+    def is_gapdown(self) -> bool:
+        return self.close < self.prev_low and self.high < self.prev_low
 
     def get_option_chain_analysis(self) -> Dict[str, Union[str, int, float]]:
         if hasattr(self, "_oc_analysis"):
