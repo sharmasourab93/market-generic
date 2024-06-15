@@ -19,6 +19,7 @@ class AllNSEStocks(AllDataGenerics):
 
     def __post_init__(self):
         self.set_config()
+        self.dated = self._config.working_day.day.as_str
         if self.symbols is None:
             self.symbols = self._config.get_nse_stocks(self.nse_top)
 

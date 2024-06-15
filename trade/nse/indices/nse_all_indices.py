@@ -14,6 +14,7 @@ class SpotIndices(AllDataGenerics):
     def __post_init__(self):
 
         self._config = NSEIndexConfig(self.dated)
+        self.dated = self._config.working_day.day.as_str
         self.symbols = {i: NSEIndex(i, self.dated) for i in INDICES}
         self.vix = self._config.get_vix()
         self.metrics = self._config.get_index_metrics()
