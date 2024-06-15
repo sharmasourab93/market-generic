@@ -1,10 +1,12 @@
 from abc import ABC, abstractclassmethod, abstractmethod
 from pathlib import Path
-from typing import List, Literal, Tuple, TypeVar, Union
+from typing import Literal, Tuple, TypeVar, Union, List, Dict
+from abc import ABC, abstractmethod, abstractclassmethod
 
 import pandas as pd
 
 from trade.nse.stocks import AllNSEStocks
+from trade.calendar import WorkingDayDate
 
 STRATEGY_TYPE = Literal[
     "Intraday", "BTST", "Weekly", "Swing", "Positional", "Short-term", "Long-Term"
@@ -37,7 +39,7 @@ class StockScanMaster(ABC):
             case _:
                 raise KeyError("Invalid comparator")
 
-    def historical_data(self, period: str, interval: str) -> HISTORICAL_DATA_SET:
+    def historical_data(self, period: str, interval: str) -> HISTORICAL_DATASET:
 
         return self.stocks.get_history_data(period, interval)
 

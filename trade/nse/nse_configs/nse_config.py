@@ -139,7 +139,7 @@ class NSEConfig(Exchange, NSEFNO):
     def get_eq_bhavcopy(self) -> pd.DataFrame:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
-        today = self.working_day.day.as_str
+        today = self.working_day.previous_business_day.as_str
         url = url.format(today)
         result = self.download_data(url, headers)
 

@@ -89,7 +89,8 @@
                             "NIFTY FINANCIAL SERVICES": "NIFTY_FIN_SERVICE.NS",
                             "NIFTY NEXT 50": "^NSMIDCP",
                             "NIFTY MIDCAP 50": "^NSEMDCP50",
-                            "HDFC": "HDFCBANK"
+                            "HDFC": "HDFCBANK",
+                            "UJJIVAN": "UJJIVANSFB"
                         },
                         "NSE-API-SYMBOLS": {
                             "NIFTY 50": "NIFTY",

@@ -18,11 +18,19 @@ INDICATOR_NOT_ALLOWED = (
 
 class AllDataGenerics(ABC):
 
+    def __contains__(self, item: str) -> bool:
+        if self._all_ticker_type == "stock":
+            symbols = [i.symbol for i in self.symbols]
+        else:
+            symbols = self.symbols.keys()
+
+        return item.upper() in symbols
+
     def __gt__(self, other: Any) -> list:
-        return [i for i in self.symbols if i >= other]
+        return [i for i in self.symbols if i.pct_change >= other]
 
     def __lt__(self, other: Any) -> list:
-        return [i for i in self.symbols if i <= other]
+        return [i for i in self.symbols if i.pct_change <= other]
 
     def __lte__(self, other: Any) -> list:
         return self.__lt__(other)

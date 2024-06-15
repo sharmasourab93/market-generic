@@ -19,7 +19,7 @@ class AllNSEStocks(AllDataGenerics):
 
     def __post_init__(self):
         self.set_config()
-        self.dated = self._config.working_day.day.as_str
+        self.dated = self._config.working_day.previous_business_day.as_str
         if self.symbols is None:
             self.symbols = self._config.get_nse_stocks(self.nse_top)
 
@@ -32,4 +32,4 @@ class AllNSEStocks(AllDataGenerics):
             step = index.step if index.step is not None else 1
             return [self.symbols[i] for i in range(start, stop, step)]
 
-        return self.symbols[index - 1]
+        return self.symbols[index]

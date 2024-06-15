@@ -34,19 +34,6 @@ class NSEDataGeneric(ABC):
     def __eq__(self, other) -> bool:
         return self.symbol == other
 
-    def __gt__(self, other) -> bool:
-
-        return self.symbol.pct_change >= other
-
-    def __gte__(self, other) -> bool:
-        return self.__gt__(other)
-
-    def __lt__(self, other) -> bool:
-        return self.symbol.pct_change <= other
-
-    def __lte__(self, other) -> bool:
-        return self.__lt__(other)
-
     def _set_attributes(self, dict_obj: dict, exceptions: tuple = None):
         for key, value in dict_obj.items():
             if exceptions is not None:
@@ -177,11 +164,13 @@ class NSEDataGeneric(ABC):
     def _set_values(self, result):
         if len(result) > 1:
             try:
-                self.prev_volume = int(result.iloc[-2]["volume"])
-                self.prev_high = int(result.iloc[-2]["high"])
-                self.prev_low = int(result.iloc[-2]["low"])
+                self.prev_volume = int(result.iloc[1]["volume"])
+                self.prev_high = int(result.iloc[1]["high"])
+                self.prev_low = int(result.iloc[1]["low"])
             except IndexError:
                 self.prev_volume = 0
+                self.prev_high = 0
+                self.prev_low = 0
 
             (
                 _,
@@ -192,7 +181,7 @@ class NSEDataGeneric(ABC):
                 self.volume,
                 self.prev_close,
                 self.pct_change,
-            ) = result.iloc[-1]
+            ) = result.iloc[0]
 
         else:
             for key, value in DEFAULT_PRICES.items():
