@@ -1,33 +1,26 @@
 import os
-from collections.abc import Sequence
-from dataclasses import dataclass, field
-from datetime import date, datetime, time
-from functools import cache, cached_property
-from io import BytesIO
+from datetime import datetime
+from functools import cache
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 import pandas as pd
-import requests
-from yfinance import Ticker
 
 from trade.calendar.calendar_data import (
-    DateObj,
     MarketHolidayType,
     MarketTimings,
     MarketTimingType,
-    WorkingDayDate,
 )
-from trade.exchange import Exchange, ExchangeArgs
-from trade.nse.nse_fno import NSEFNO
-from trade.utils import LoggingType, operations
+from trade.exchange import Exchange
+from trade.nse.nse_configs.nse_fno import NSEFNO
+from trade.utils import LoggingType
 from trade.utils.network_tools import CustomHTTPException
 from trade.utils.utility_enabler import UtilityEnabler
 
 DATE_FMT = "%d-%b-%Y"
 TODAY = datetime.today().date().strftime(DATE_FMT)
 TZ = "Asia/Kolkata"
-CONFIG_FILE = Path(__file__).parent.parent.parent / Path("configs/nse.json")
+CONFIG_FILE = Path(__file__).parent.parent.parent.parent / Path("configs/nse.json")
 NSE_START_TIME, NSE_CLOSE_TIME, TIME_CUTOFF = "0915", "1530", "1600"
 MARKET, COUNTRY = "NSE", "INDIA"
 HOLIDAYS_DONOT_EXIST = "Holiday key or holidays do not exist"
@@ -51,7 +44,7 @@ class NSEConfig(Exchange, NSEFNO):
         self,
         today: str,
         date_fmt: str = DATE_FMT,
-        config: Union[Path, str] = CONFIG_FILE,
+        config: Union[Path, str] = os.getenv("CONFIG_FILE", CONFIG_FILE),
         market: str = MARKET,
         country: str = COUNTRY,
         market_timings: MarketTimingType = TIMINGS,
@@ -143,10 +136,10 @@ class NSEConfig(Exchange, NSEFNO):
         return content
 
     @cache
-    def get_eq_bhavcopy(self) -> BytesIO:
+    def get_eq_bhavcopy(self) -> pd.DataFrame:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
-        today = self.working_day.day.as_str
+        today = self.working_day.previous_business_day.as_str
         url = url.format(today)
         result = self.download_data(url, headers)
 
@@ -206,7 +199,32 @@ class NSEConfig(Exchange, NSEFNO):
 
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
-
+        data = data.rename(columns={"tottrdqty": "volume", "prevclose": "prev_close"})
+        data["pct_change"] = round((data.close - data.prev_close) / data.prev_close, 2)
+        data = data.loc[
+            :,
+            [
+                "sr_no",
+                "symbol",
+                "company_name",
+                "market_cap",
+                "open",
+                "high",
+                "low",
+                "close",
+                "prev_close",
+                "volume",
+                "pct_change",
+            ],
+        ]
+        filter_out = (
+            data.open.isna()
+            | data.close.isna()
+            | data.high.isna()
+            | data.low.isna()
+            | data.volume.isna()
+        )
+        data = data.loc[~filter_out, :]
         return data
 
     @cache

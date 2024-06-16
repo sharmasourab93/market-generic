@@ -55,6 +55,7 @@
                     },
                     "DERIVATIVE": {
                         "DERIVATIVE-MASTER-LIST": "api/master-quote",
+                        "QUOTE-DERIVATIVE": "api/quote-derivative?symbol={0}",
                         "DERIVATIVE-OPTION-CHAIN": "api/option-chain-equities?symbol={0}",
                         "DERIVATIVE-OPTION-INDEX": "api/option-chain-indices?symbol={0}",
                         "DERIVATIVE-INDEX-CHOICE": ["NIFTYNXT50", "FINNIFTY", "MIDCPNIFTY", "BANKNIFTY", "NIFTY"]
@@ -74,13 +75,22 @@
                         "TRADING": "api/holiday-master?type=trading"
                     },
                     "INDEX": {
+                        "INDICES-LOT-SIZE": {
+                            "NIFTY 50": 25,
+                            "NIFTY BANK": 15,
+                            "NIFTY FINANCIAL SERVICES": 40,
+                            "NIFTY MIDCAP 50": 75,
+                            "NIFTY NEXT 50": 10
+                        },
                         "NSE-GENERAL-SYMBOLS": ["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY NEXT 50", "NIFTY MIDCAP 50"],
                         "YFIN-NSE-SYMBOLS": {
                             "NIFTY 50": "^NSEI",
                             "NIFTY BANK": "^NSEBANK",
                             "NIFTY FINANCIAL SERVICES": "NIFTY_FIN_SERVICE.NS",
                             "NIFTY NEXT 50": "^NSMIDCP",
-                            "NIFTY MIDCAP 50": "^NSEMDCP50"
+                            "NIFTY MIDCAP 50": "^NSEMDCP50",
+                            "HDFC": "HDFCBANK",
+                            "UJJIVAN": "UJJIVANSFB"
                         },
                         "NSE-API-SYMBOLS": {
                             "NIFTY 50": "NIFTY",
@@ -185,10 +195,10 @@
                         "url_params": "archives=%5B%7B%22name%22%3A%22CM%20-%20Bhavcopy(csv)%22%2C%22type%22%3A%22archives%22%2C%22category%22%3A%22capital-market%22%2C%22section%22%3A%22equities%22%7D%5D&date={0}&type=equities&mode=single"
                     },
                     "FO-MKLOTS": {
-                        "domain": "https://archives.nseindia.com",
+                        "domain": "https://nsearchives.nseindia.com",
                         "file_path": "data/input/downloaded/fo/fo_mktlots.csv",
                         "name": "mkt_lots",
-                        "url": "https://archives.nseindia.com/content/fo/fo_mktlots.csv"
+                        "url": "https://nsearchives.nseindia.com/content/fo/fo_mktlots.csv"
                     },
                     "FO-BHAVCOPY": {
                         "file_path": "data/input/downloaded/fo/temp.zip",
