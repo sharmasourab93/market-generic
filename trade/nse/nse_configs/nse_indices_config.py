@@ -1,24 +1,26 @@
 from functools import cache
-from typing import Dict, List, Literal, Optional, Union
+from typing import Dict, List, Literal, Union
 
 import pandas as pd
 
-from trade.nse.nse_config import NSEConfig
+from trade.nse.nse_configs.nse_config import NSEConfig
+from trade.utils.op_utils import find_least_difference_strike
 
 INDICES = [
     "NIFTY 50",
     "NIFTY BANK",
     "NIFTY FINANCIAL SERVICES",
-    "NIFTY NEXT 50",
     "NIFTY MIDCAP 50",
 ]
+INDICES_MAPPING = {
+    "NIFTY 50": "NIFTY",
+    "NIFTY BANK": "BANKNIFTY",
+    "NIFTY FINANCIAL SERVICES": "FINNIFTY",
+    "NIFTY MIDCAP 50": "MIDCPNIFTY",
+}
 INDICES_API = ["NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY"]
 INDEX_NAME_TYPE = Union[
-    Literal["NIFTY 50"],
-    Literal["NIFTY BANK"],
-    Literal["NIFTY FINANCIAL SERVICES"],
-    Literal["NIFTY NEXT 50"],
-    Literal["NIFTY MIDCAP 50"],
+    Literal["NIFTY 50", "NIFTY BANK", "NIFTY FINANCIAL SERVICES", "NIFTY MIDCAP 50"],
 ]
 INDIA_VIX = "INDIA VIX"
 INVALID_SYMBOL = "Invalid Symbol Chosen."
@@ -28,10 +30,8 @@ MODIFIED_INDEX_QUOTE_TYPE = Dict[str, Union[str, Dict[str, str]]]
 class NSEIndexConfig(NSEConfig):
 
     def get_fii_dii_report(self) -> List[Dict[str, str]]:
-
         url = self.main_domain + self.fii_dii_report
         response = self.get_request_api(url, self.advanced_header)
-        # TODO: Handle Exception when Report not updated.
         return self.match_http(response.json(), response.status_code)
 
     def process_all_indices_data(self, data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
@@ -119,10 +119,8 @@ class NSEIndexConfig(NSEConfig):
 
     @cache
     def get_vix(self) -> Dict[str, str]:
-
         data = self.get_all_indices()["SPOT"]
         vix = data.loc[data.symbol == INDIA_VIX, :].to_dict(orient="records").pop(0)
-
         return vix
 
     @cache
@@ -205,3 +203,27 @@ class NSEIndexConfig(NSEConfig):
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data
+
+    def strike_multiples(self) -> Dict[str, int]:
+        strike_muls = dict()
+
+        for index in INDICES_API:
+            strike_price = sorted(
+                list(set(self.get_derivative_quote(index)["strikePrices"]))
+            )
+            strike_price.remove(0)
+
+            strike_muls.update({index: find_least_difference_strike(strike_price)})
+
+        return strike_muls
+
+    def get_expiries(self) -> Dict[str, Dict[str, str]]:
+        expiries = dict()
+        for symbol in INDICES_API:
+            symbol_expiry = self.get_derivative_quote(symbol)["expiryDatesByInstrument"]
+            symbol_expiry["fut_expiry"] = symbol_expiry.pop("Index Futures")
+            symbol_expiry["opt_expiry"] = symbol_expiry.pop("Index Options")
+
+            expiries.update({symbol: symbol_expiry})
+
+        return expiries

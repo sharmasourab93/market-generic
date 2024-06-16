@@ -259,6 +259,10 @@ class WorkingDayDate:
     def day(self):
         return self.working_day
 
+    @property
+    def as_month_year(self) -> str:
+        return self.day.as_date.strftime("%b-%y")
+
     def compare_time_cutoff(self) -> DateObj:
         date_ = DateObj(self.given_date, date_fmt=self.date_fmt)
         tomorrow: DateObj = date_ + BDay()
