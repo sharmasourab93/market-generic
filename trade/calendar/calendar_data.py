@@ -320,6 +320,13 @@ class WorkingDayDate:
             )
 
     @property
+    def curr_bday(self) -> DateObj:
+
+        return WorkingDayDate(self.next_business_day.as_str,
+                              self.market_holidays, market_timings=self.market_timings,
+                              date_fmt=self.date_fmt).previous_business_day
+
+    @property
     def next_business_day(self) -> DateObj:
 
         today = self.day
