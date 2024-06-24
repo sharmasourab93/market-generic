@@ -61,7 +61,7 @@ class YFinance(MarketDFUtils):
         progress: bool = False,
         **kwargs,
     ) -> pd.DataFrame:
-        
+
         download_params = dict(
             interval=interval,
             rounding=rounding,
