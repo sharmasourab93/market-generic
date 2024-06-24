@@ -68,6 +68,7 @@ def concurrent_execution(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if kwargs.get('concurrent', False):
+            _ = kwargs.pop("concurrent") if "concurrent" in kwargs.keys() else None
             with ThreadPoolExecutor(max_workers=1000) as executor:
                 return executor.submit(func, self, *args, **kwargs).result()
 
