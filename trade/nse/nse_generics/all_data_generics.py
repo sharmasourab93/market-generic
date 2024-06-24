@@ -19,7 +19,7 @@ INDICATOR_NOT_ALLOWED = (
 class AllDataGenerics(ABC):
 
     def __contains__(self, item: str) -> bool:
-        if self._all_ticker_type == "stock":
+        if isinstance(self.symbols, list):
             symbols = [i.symbol for i in self.symbols]
         else:
             symbols = self.symbols.keys()
@@ -65,7 +65,7 @@ class AllDataGenerics(ABC):
             for symbol in self.symbols
         }
 
-    @property
+    # @property
     def as_dataframe(self):
         if self._all_ticker_type == "stock":
             return pd.DataFrame([i.as_dict for i in self.symbols])
@@ -94,7 +94,7 @@ class AllDataGenerics(ABC):
         else:
             raise IOError(INDICATOR_NOT_ALLOWED)
 
-    @property
+    # @property
     def adv_dev(self) -> Dict[str, int] | None:
         if self._all_ticker_type == "stock":
             return self._get_advance_decline()

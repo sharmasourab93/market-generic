@@ -80,23 +80,23 @@ class NSEDataGeneric(ABC):
     def price_diff(self) -> float:
         return self.close - self.prev_close
 
-    @property
-    def ohlc(self):
-        return {
-            "open": float(self.open),
-            "low": float(self.low),
-            "high": float(self.high),
-            "close": float(self.close),
-            "price_diff": float(self.price_diff),
-            "prev_close": float(self.prev_close),
-            "pct_change": float(self.pct_change),
-            "volume": int(self.volume),
-            "prev_volume": int(self.prev_volume),
-            "volume_diff": float(self.volume_diff),
-        }
-
-    def get_ohlc(self) -> OHLC_TYPE:
-        return {self.symbol: self.ohlc}
+    # @property
+    # def ohlc(self):
+    #     return {
+    #         "open": float(self.open),
+    #         "low": float(self.low),
+    #         "high": float(self.high),
+    #         "close": float(self.close),
+    #         "price_diff": float(self.price_diff),
+    #         "prev_close": float(self.prev_close),
+    #         "pct_change": float(self.pct_change),
+    #         "volume": int(self.volume),
+    #         "prev_volume": int(self.prev_volume),
+    #         "volume_diff": float(self.volume_diff),
+    #     }
+    #
+    # def get_ohlc(self) -> OHLC_TYPE:
+    #     return {self.symbol: self.ohlc}
 
     @property
     def as_dict(self):
@@ -148,14 +148,21 @@ class NSEDataGeneric(ABC):
             start=start_date.as_date,
             end=end_date.as_date,
             interval=self.tf,
+            threads=True,
+            concurrent=True,
         )
 
     def get_curr_bhav(self):
         curr_date = DateObj(self.dated, date_fmt=DATE_FMT)
-        start_date = curr_date - 4
+        start_date = curr_date - 365
         end_date = curr_date + 1
         result = self._get_result_data(start_date, end_date)
+        self._history = result
         self._set_values(result)
+
+    @property
+    def history(self) -> pd.DataFrame:
+        return self._history
 
     @property
     def ticker(self) -> Ticker:
