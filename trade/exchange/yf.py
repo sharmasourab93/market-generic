@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-from trade.utils import Logger, MarketDFUtils
+from trade.utils import Logger, MarketDFUtils, op_utils
 
 SYMBOL_ERROR = "Error Incurred for symbol: {0}"
 YFIN_TICKER_BY_COUNTRY = {
@@ -46,6 +46,7 @@ class YFinance(MarketDFUtils):
         if hasattr(self, "logger"):
             self.logger.error(message)
 
+    @op_utils.concurrent_execution
     def get_period_data(
         self,
         symbol: str,
@@ -60,7 +61,7 @@ class YFinance(MarketDFUtils):
         progress: bool = False,
         **kwargs,
     ) -> pd.DataFrame:
-
+        
         download_params = dict(
             interval=interval,
             rounding=rounding,
