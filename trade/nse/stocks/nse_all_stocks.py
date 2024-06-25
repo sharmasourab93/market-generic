@@ -14,7 +14,22 @@ class AllNSEStocks(AllDataGenerics):
     nse_top: Optional[int] = NSE_TOP
     _all_ticker_type: str = "stock"
 
-    def __len__(self):
+    def __gt__(self, other: Any) -> "AllNSEStocks":
+        return self.__class__(
+            dated=self.dated,
+            symbol=[i for i in self.symbols if i.pct_change >= other])
+
+    def __lt__(self, other: Any) -> "AllNSEStocks":
+        return self.__class__(dated=self.dated,
+                              symbol=[i for i in self.symbols if i.pct_change <= other])
+
+    def __lte__(self, other: Any) -> "AllNSEStocks":
+        return self.__lt__(other)
+
+    def __gte__(self, other: Any) -> "AllNSEStocks":
+        return self.__gt__(other)
+
+    def __len__(self) -> int:
         return len(self.symbols)
 
     def __post_init__(self):

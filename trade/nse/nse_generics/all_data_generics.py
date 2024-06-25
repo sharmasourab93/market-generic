@@ -26,18 +26,6 @@ class AllDataGenerics(ABC):
 
         return item.upper() in symbols
 
-    def __gt__(self, other: Any) -> list:
-        return [i for i in self.symbols if i.pct_change >= other]
-
-    def __lt__(self, other: Any) -> list:
-        return [i for i in self.symbols if i.pct_change <= other]
-
-    def __lte__(self, other: Any) -> list:
-        return self.__lt__(other)
-
-    def __gte__(self, other: Any) -> list:
-        return self.__gt__(other)
-
     def set_config(self) -> None:
         match self._all_ticker_type:
             case "stock":
