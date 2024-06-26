@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional, Any, Union
-
+import asyncio
 from trade.nse.nse_configs.nse_config import NSE_TOP
 from trade.nse.nse_generics.all_data_generics import AllDataGenerics
 from trade.nse.stocks.nse_stock import NSEStock
@@ -43,8 +43,21 @@ class AllNSEStocks(AllDataGenerics):
         self.dated = self._config.working_day.previous_business_day.as_str
         if self.symbols is None:
             self.symbols = self._config.get_nse_stocks(self.nse_top)
+            self.symbols = asyncio.run(self.get_symbols_concurrently(self.symbols))
 
-            self.symbols = [NSEStock(i, self.dated) for i in self.symbols]
+    async def get_symbols_concurrently(self, symbols: list):
+
+        async def get_nse_stocks(dated: str, symbol:str):
+            return NSEStock(dated=dated, symbol=symbol)
+
+        return await asyncio.gather(*[get_nse_stocks(self.dated, symbol)
+                                      for symbol in symbols])
+
+    def get_historical_data(self):
+        return asyncio.run(self.get_history_concurrently())
+
+    async def get_history_concurrently(self):
+        return await asyncio.gather(*[symbol.history for symbol in self.symbols])
 
     def __getitem__(self, index: int) -> Union["AllNSEStocks", "NSEStock"]:
         if isinstance(index, slice):
