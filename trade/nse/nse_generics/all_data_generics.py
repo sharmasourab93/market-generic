@@ -1,6 +1,7 @@
 from abc import ABC
-from typing import Any, Dict, List, Tuple, Union
 from collections import Counter
+from typing import Any, Dict, List, Tuple, Union
+
 import pandas as pd
 
 from trade.nse.nse_configs.nse_config import NSEConfig
@@ -88,13 +89,11 @@ class AllDataGenerics(ABC):
         return self._config.get_fii_dii_report()
 
     def get_option_chain_analysis(self, as_dataframe: bool = True):
-        symbols = self.symbols.values() if isinstance(self.symbols, dict) else \
-            self.symbols
+        symbols = (
+            self.symbols.values() if isinstance(self.symbols, dict) else self.symbols
+        )
 
-        data = {
-            str(symbol): symbol.get_option_chain_analysis()
-            for symbol in symbols
-        }
+        data = {str(symbol): symbol.get_option_chain_analysis() for symbol in symbols}
 
         if as_dataframe:
             return pd.DataFrame(data).transpose().fillna(0)

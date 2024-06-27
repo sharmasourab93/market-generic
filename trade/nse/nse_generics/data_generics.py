@@ -100,11 +100,7 @@ class NSEDataGeneric(ABC):
 
     @property
     def as_dict(self):
-        return {
-            "symbol": self.symbol,
-            "dated": self.dated,
-            **self.ohlc
-        }
+        return {"symbol": self.symbol, "dated": self.dated, **self.ohlc}
 
     def get_history_data(self, period: str, interval: str) -> pd.DataFrame:
         # Assuming this to be at daily Timeframe.

@@ -1,15 +1,13 @@
 import datetime
 from abc import ABC, abstractclassmethod, abstractmethod
 from pathlib import Path
-from typing import Literal, Tuple, TypeVar, Union, List, Dict
-from abc import ABC, abstractmethod, abstractclassmethod
+from typing import Dict, List, Literal, Tuple, TypeVar, Union
 
 import pandas as pd
 
-from trade.nse.stocks import AllNSEStocks
-from trade.nse.nse_configs import DATE_FMT
 from trade.calendar import WorkingDayDate
-
+from trade.nse.nse_configs import DATE_FMT
+from trade.nse.stocks import AllNSEStocks
 
 STRATEGY_TYPE = Literal[
     "Intraday", "BTST", "Weekly", "Swing", "Positional", "Short-term", "Long-Term"
@@ -23,12 +21,16 @@ dated = datetime.date.today().strftime(DATE_FMT)
 
 class StockScanMaster(ABC):
     def __init__(
-        self, data: AllNSEStocks, strategy_name: str, strategy_type: STRATEGY_TYPE, top: int
+        self,
+        data: AllNSEStocks,
+        strategy_name: str,
+        strategy_type: STRATEGY_TYPE,
+        top: int,
     ):
 
         self.__name__ = strategy_name
         self.__type__ = strategy_type
-        self.stocks = data[:len(data)]
+        self.stocks = data[: len(data)]
 
     def filter_by_pct_change(
         self, pct_change: Union[float, int], compare: str = Literal["gt", "lt"]
@@ -81,5 +83,4 @@ class StockScanMaster(ABC):
 
     def strategy_from_file_name(self, file_name: str) -> str:
 
-        return Path(file_name).name.replace("_", " ").\
-            replace(".py", "").title()
+        return Path(file_name).name.replace("_", " ").replace(".py", "").title()
