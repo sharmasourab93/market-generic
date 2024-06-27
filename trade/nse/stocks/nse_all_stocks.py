@@ -1,6 +1,7 @@
-from dataclasses import dataclass
-from typing import List, Optional, Any, Union
 import asyncio
+from dataclasses import dataclass
+from typing import Any, List, Optional, Union
+
 from trade.nse.nse_configs.nse_config import NSE_TOP
 from trade.nse.nse_generics.all_data_generics import AllDataGenerics
 from trade.nse.stocks.nse_stock import NSEStock
@@ -18,13 +19,15 @@ class AllNSEStocks(AllDataGenerics):
         return AllNSEStocks(
             dated=self.dated,
             symbols=[i for i in self.symbols if i.pct_change >= other],
-            nse_top=self.nse_top
+            nse_top=self.nse_top,
         )
 
     def __lt__(self, other: Any) -> "AllNSEStocks":
-        return AllNSEStocks(dated=self.dated,
-                            symbols=[i for i in self.symbols if i.pct_change <= other],
-                            nse_top=self.nse_top)
+        return AllNSEStocks(
+            dated=self.dated,
+            symbols=[i for i in self.symbols if i.pct_change <= other],
+            nse_top=self.nse_top,
+        )
 
     def __lte__(self, other: Any) -> "AllNSEStocks":
         return self.__lt__(other)
@@ -47,11 +50,12 @@ class AllNSEStocks(AllDataGenerics):
 
     async def get_symbols_concurrently(self, symbols: list):
 
-        async def get_nse_stocks(dated: str, symbol:str):
+        async def get_nse_stocks(dated: str, symbol: str):
             return NSEStock(dated=dated, symbol=symbol)
 
-        return await asyncio.gather(*[get_nse_stocks(self.dated, symbol)
-                                      for symbol in symbols])
+        return await asyncio.gather(
+            *[get_nse_stocks(self.dated, symbol) for symbol in symbols]
+        )
 
     def get_historical_data(self):
         return asyncio.run(self.get_history_concurrently())
@@ -64,8 +68,8 @@ class AllNSEStocks(AllDataGenerics):
             start = index.start if index.start is not None else 0
             stop = index.stop if index.stop is not None else self.nse_top
             step = index.step if index.step is not None else 1
-            return AllNSEStocks(dated=self.dated,
-                                symbols=self.symbols[start: stop],
-                                nse_top=self.nse_top)
+            return AllNSEStocks(
+                dated=self.dated, symbols=self.symbols[start:stop], nse_top=self.nse_top
+            )
 
         return self.symbols[index]

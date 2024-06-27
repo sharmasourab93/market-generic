@@ -1,6 +1,7 @@
 from typing import List, TypeVar
-from trade.nse.stocks import AllNSEStocks
+
 from trade.nse.nse_configs import DATE_FMT
+from trade.nse.stocks import AllNSEStocks
 from trade.strategies.scan.master.swing_strategies import StockSwingScanMaster
 
 Stocks = TypeVar("NSEStocks")

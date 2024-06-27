@@ -1,10 +1,10 @@
+from datetime import date
+
 from trade.nse.indices import SpotIndices
 from trade.nse.nse_configs import DATE_FMT
+from trade.technicals.indicators import MovingAverages, PivotPoints
 from trade.utils.notify import Notifier
 from trade.utils.notify.outputs import formatters
-from trade.technicals.indicators import PivotPoints, MovingAverages
-
-from datetime import date
 
 
 class IndexReport:
@@ -33,6 +33,6 @@ class IndexReport:
         self.notify.to_telegram(text_data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     obj = IndexReport()
     obj.prepare_report()
