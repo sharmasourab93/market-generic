@@ -80,30 +80,30 @@ class NSEDataGeneric(ABC):
     def price_diff(self) -> float:
         return self.close - self.prev_close
 
-    # @property
-    # def ohlc(self):
-    #     return {
-    #         "open": float(self.open),
-    #         "low": float(self.low),
-    #         "high": float(self.high),
-    #         "close": float(self.close),
-    #         "price_diff": float(self.price_diff),
-    #         "prev_close": float(self.prev_close),
-    #         "pct_change": float(self.pct_change),
-    #         "volume": int(self.volume),
-    #         "prev_volume": int(self.prev_volume),
-    #         "volume_diff": float(self.volume_diff),
-    #     }
-    #
-    # def get_ohlc(self) -> OHLC_TYPE:
-    #     return {self.symbol: self.ohlc}
+    @property
+    def ohlc(self):
+        return {
+            "open": float(self.open),
+            "low": float(self.low),
+            "high": float(self.high),
+            "close": float(self.close),
+            "price_diff": float(self.price_diff),
+            "prev_close": float(self.prev_close),
+            "pct_change": float(self.pct_change),
+            "volume": int(self.volume),
+            "prev_volume": int(self.prev_volume),
+            "volume_diff": float(self.volume_diff),
+        }
+
+    def get_ohlc(self) -> OHLC_TYPE:
+        return {self.symbol: self.ohlc}
 
     @property
     def as_dict(self):
         return {
             "symbol": self.symbol,
             "dated": self.dated,
-            **self.ohlc,
+            **self.ohlc
         }
 
     def get_history_data(self, period: str, interval: str) -> pd.DataFrame:
@@ -216,7 +216,7 @@ class NSEDataGeneric(ABC):
         oc_data = self._config.get_option_chain_data(sym)
         month_year = self._config.working_day.as_month_year
         lot_size = self.lot_size
-        strike_multiple = self.strike_multiples[self.symbol]
+        strike_multiple = self.strike_multiples
         oc_obj = OptionChain.analyze_option_chain(
             self.symbol, self.dated, oc_data, lot_size, strike_multiple
         )

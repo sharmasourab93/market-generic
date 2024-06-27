@@ -1,19 +1,14 @@
 from abc import ABC
 from typing import Any, Dict, List, Tuple, Union
-
+from collections import Counter
 import pandas as pd
 
 from trade.nse.nse_configs.nse_config import NSEConfig
 from trade.nse.nse_configs.nse_indices_config import NSEIndexConfig
 from trade.nse.nse_generics.data_generics import OHLC_TYPE
-from trade.technicals.indicators import GenericIndicator
 
-INDICATOR_IMPLIED_TYPE = Dict[str, GenericIndicator]
 ADV_DEC_TYPE = Dict[Union[bool, None], int]
 DATA_HISTORY_DATAFRAMES = Union[Tuple[pd.DataFrame], List[pd.DataFrame]]
-INDICATOR_NOT_ALLOWED = (
-    "Cannot apply indicators to stocks. " "Only permissible for index."
-)
 
 
 class AllDataGenerics(ABC):
@@ -60,39 +55,15 @@ class AllDataGenerics(ABC):
         else:
             return pd.DataFrame([i.as_dict for i in self.symbols.values()])
 
-    def apply_indicators(
-        self,
-        gen_indicators: INDICATOR_IMPLIED_TYPE,
-        period: str = "1y",
-        interval: str = "1d",
-    ) -> Dict[str, Dict[str, float]]:
-        if self._all_ticker_type == "index":
-            symbols = (
-                list(self.symbols.values())
-                if self._all_ticker_type == "index"
-                else self.symbols
-            )
-            result = dict()
-
-            for symbol in symbols:
-                sub_data = symbol.with_indicators(gen_indicators, period, interval)
-                result.update({str(symbol): sub_data})
-
-            return result
-        else:
-            raise IOError(INDICATOR_NOT_ALLOWED)
-
     # @property
-    def adv_dev(self) -> Dict[str, int] | None:
-        if self._all_ticker_type == "stock":
-            return self._get_advance_decline()
-        return None
+    def adv_dec(self) -> Dict[str, int]:
+        return self._get_advance_decline()
 
     def _get_advance_decline(self) -> ADV_DEC_TYPE:
         counter_ = list()
         data = self._get_bhavcopy()
 
-        for i in data.iterrows():
+        for _, i in data.iterrows():
             if (i.close - i.prev_close) < 0:
                 counter_.append(False)
 
@@ -111,4 +82,21 @@ class AllDataGenerics(ABC):
 
     def _get_bhavcopy(self):
         data = self._config.get_eq_stocks_by_mcap()
+        return data
+
+    def get_fii_dii_reports(self) -> List[Dict[str, str]]:
+        return self._config.get_fii_dii_report()
+
+    def get_option_chain_analysis(self, as_dataframe: bool = True):
+        symbols = self.symbols.values() if isinstance(self.symbols, dict) else \
+            self.symbols
+
+        data = {
+            str(symbol): symbol.get_option_chain_analysis()
+            for symbol in symbols
+        }
+
+        if as_dataframe:
+            return pd.DataFrame(data).transpose().fillna(0)
+
         return data
