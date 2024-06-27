@@ -230,7 +230,7 @@ class GenericOptionChain(ABC):
                     :,
                 ].strikePrice.iloc[0]
             )
-            result_dict.update({"Support at: ": support, "Resistance at: ": resistance})
+            result_dict.update({"Nearest Support": support, "Resistance at": resistance})
 
         return result_dict
 
