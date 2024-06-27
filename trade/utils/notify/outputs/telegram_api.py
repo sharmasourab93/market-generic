@@ -96,6 +96,7 @@ class TelegramBot(OutputGenerics):
         self.telegram_enabled = telegram_bot_enabled
         self.chat_id = chat_id
         self.telegram_sign = telegram_sign
+        self.telegram_token = telegram_token
 
         if self.telegram_enabled:
             if self.telegram_token is None:

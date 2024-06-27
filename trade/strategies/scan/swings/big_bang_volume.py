@@ -42,3 +42,22 @@ class BigBangVolume(StockSwingScanMaster):
 
     def strategy_output(self):
         return self.strategy_filters()
+
+
+if __name__ == '__main__':
+    from time import perf_counter
+    from datetime import datetime
+    import cProfile
+    import pstats
+
+    profilers = cProfile.Profile()
+    profilers.enable()
+    start = perf_counter()
+    today = datetime.today().strftime(DATE_FMT)
+    data = AllNSEStocks(dated=today, nse_top=100)
+    obj = BigBangVolume(data).strategy_output()
+    end = perf_counter()
+    ttl = end - start
+    print(ttl, ttl / 60)
+    profilers.disable()
+    pstats.Stats(profilers).sort_stats(pstats.SortKey.CUMULATIVE).print_stats(1000)

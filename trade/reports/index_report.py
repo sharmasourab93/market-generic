@@ -1,3 +1,4 @@
+import os
 from trade.nse.indices import SpotIndices
 from trade.nse.nse_configs import DATE_FMT
 from trade.utils.notify import Notifier
