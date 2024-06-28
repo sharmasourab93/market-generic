@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 NAME = "market-generic"
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 DESCRITPION = "A Generic Python Package for Stock Market Analysis and Trading"
 URL = "https://github.com/sharmasourab93/market-generic"
 AUTHOR = "Sourab S Sharma"
