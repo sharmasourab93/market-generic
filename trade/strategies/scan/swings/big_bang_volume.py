@@ -45,11 +45,11 @@ class BigBangVolume(StockSwingScanMaster):
         return self.strategy_filters()
 
 
-if __name__ == '__main__':
-    from time import perf_counter
-    from datetime import datetime
+if __name__ == "__main__":
     import cProfile
     import pstats
+    from datetime import datetime
+    from time import perf_counter
 
     profilers = cProfile.Profile()
     profilers.enable()
