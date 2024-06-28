@@ -28,6 +28,7 @@ class BigBangVolume(StockSwingScanMaster):
     """
 
     def __init__(self, data: AllNSEStocks, top: int = None):
+        self.ENABLED = True
         strategy_name = self.strategy_from_file_name(__file__)
         super().__init__(data, strategy_name, top=top)
 
