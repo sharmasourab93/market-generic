@@ -13,6 +13,7 @@ REPORT_FORMAT = Dict[str, Union[Dict[str, Union[str, float, list]], Dict[str, st
 INDEX_DEFAULT_INDICATORS = {"pivots": PivotPoints, "mas": MovingAverages}
 PICKED_COLS = [
     "symbol",
+    "close",
     "pct_change",
     "cpr",
     "cpr_width",
@@ -30,7 +31,7 @@ PICKED_COLS = [
     "Straddle",
     "Overall PCR",
     "Verdict",
-    "Max Put & Call OI at",
+    # "Max Put & Call OI at",
 ]
 
 
