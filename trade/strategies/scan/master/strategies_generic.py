@@ -21,6 +21,7 @@ dated = datetime.date.today().strftime(DATE_FMT)
 
 class StockScanMaster(ABC):
     ENABLED = None
+
     def __init__(
         self,
         data: AllNSEStocks,
