@@ -26,6 +26,7 @@ class BigBangVolume(StockSwingScanMaster):
 
     Exit 1:3 Min, if Higher, start pyramiding.
     """
+
     ENABLED = True
 
     def __init__(self, data: AllNSEStocks, top: int = None):

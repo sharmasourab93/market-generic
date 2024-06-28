@@ -1,9 +1,8 @@
-from typing import TypeVar, Dict, Any
-from pathlib import Path
-import sys
-import inspect
 import importlib.util as import_util
-
+import inspect
+import sys
+from pathlib import Path
+from typing import Any, Dict, TypeVar
 
 CURR_DIR = Path(__file__).parent
 T = TypeVar("T")
@@ -30,8 +29,7 @@ class ScanStocks:
 
     def get_modules(self):
 
-        python_files = [f for f in self.strategy_path.iterdir()
-                        if f.suffix == ".py"]
+        python_files = [f for f in self.strategy_path.iterdir() if f.suffix == ".py"]
         modules_ = []
         for file in python_files:
             module_name = file.stem
