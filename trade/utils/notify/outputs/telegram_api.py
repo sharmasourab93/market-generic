@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 from functools import cache
 from typing import Any, Dict, Union
-
+from tabulate import tabulate
 import telegram
 from pandas import DataFrame
 
@@ -137,7 +137,8 @@ class TelegramBot(OutputGenerics):
         if self.telegram_enabled:
             chat_id = asyncio.run(self.get_chat_id())
             if self.telegram_sign is not None:
-                text += self.telegram_sign.format(datetime.now().strftime(date_format))
+                text += self.telegram_sign.format(datetime.today().strftime(
+                    date_format))
             else:
                 text += "\n{0}".format()
             asyncio.run(self.bot.send_message(text=text, chat_id=chat_id))
