@@ -1,4 +1,4 @@
-from typing import List, TypeVar, Tuple
+from typing import List, Tuple, TypeVar
 
 from trade.nse.nse_configs import DATE_FMT
 from trade.nse.stocks import AllNSEStocks
