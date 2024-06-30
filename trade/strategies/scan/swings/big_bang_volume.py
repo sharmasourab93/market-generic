@@ -1,4 +1,4 @@
-from typing import List, TypeVar
+from typing import List, TypeVar, Tuple
 
 from trade.nse.nse_configs import DATE_FMT
 from trade.nse.stocks import AllNSEStocks
@@ -43,24 +43,7 @@ class BigBangVolume(StockSwingScanMaster):
 
         return filtered_result
 
-    def strategy_output(self):
-        return self.strategy_filters()
-
-
-if __name__ == "__main__":
-    import cProfile
-    import pstats
-    from datetime import datetime
-    from time import perf_counter
-
-    profilers = cProfile.Profile()
-    profilers.enable()
-    start = perf_counter()
-    today = datetime.today().strftime(DATE_FMT)
-    data = AllNSEStocks(dated=today, nse_top=100)
-    obj = BigBangVolume(data).strategy_output()
-    end = perf_counter()
-    ttl = end - start
-    print(ttl, ttl / 60)
-    profilers.disable()
-    pstats.Stats(profilers).sort_stats(pstats.SortKey.CUMULATIVE).print_stats(1000)
+    def strategy_output(self) -> Tuple[AllNSEStocks, List[str]]:
+        result = self.strategy_filters()
+        telegram_cols = ["symbol", "pct_change", "volume_diff"]
+        return AllNSEStocks(dated=self.stocks.dated, symbols=result), telegram_cols
