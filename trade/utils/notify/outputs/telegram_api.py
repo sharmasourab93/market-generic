@@ -5,6 +5,7 @@ from typing import Any, Dict, Union
 
 import telegram
 from pandas import DataFrame
+from tabulate import tabulate
 
 from trade.utils.notify.outputs.output_generics import OutputGenerics
 
@@ -96,6 +97,7 @@ class TelegramBot(OutputGenerics):
         self.telegram_enabled = telegram_bot_enabled
         self.chat_id = chat_id
         self.telegram_sign = telegram_sign
+        self.telegram_token = telegram_token
 
         if self.telegram_enabled:
             if self.telegram_token is None:
@@ -136,7 +138,9 @@ class TelegramBot(OutputGenerics):
         if self.telegram_enabled:
             chat_id = asyncio.run(self.get_chat_id())
             if self.telegram_sign is not None:
-                text += self.telegram_sign.format(datetime.now().strftime(date_format))
+                text += self.telegram_sign.format(
+                    datetime.today().strftime(date_format)
+                )
             else:
                 text += "\n{0}".format()
             asyncio.run(self.bot.send_message(text=text, chat_id=chat_id))

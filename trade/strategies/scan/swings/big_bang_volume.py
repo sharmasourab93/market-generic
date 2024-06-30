@@ -1,5 +1,7 @@
-from typing import List, TypeVar
+from typing import List, Tuple, TypeVar
 
+from trade.nse.nse_configs import DATE_FMT
+from trade.nse.stocks import AllNSEStocks
 from trade.strategies.scan.master.swing_strategies import StockSwingScanMaster
 
 Stocks = TypeVar("NSEStocks")
@@ -25,19 +27,23 @@ class BigBangVolume(StockSwingScanMaster):
     Exit 1:3 Min, if Higher, start pyramiding.
     """
 
-    def __init__(self):
-        super().__init__(self.strategy_from_file_name, top=1000)
+    ENABLED = True
+
+    def __init__(self, data: AllNSEStocks, top: int = None):
+        strategy_name = self.strategy_from_file_name(__file__)
+        super().__init__(data, strategy_name, top=top)
 
     def strategy_filters(self) -> STOCK_LISTS:
         min_pct_change = 5
-        compare = "gt"
         min_volume_diff = 10.0
-        _strategy_data = self.filter_by_pct_change(min_pct_change, compare)
+        _strategy_data = self.stocks > min_pct_change
         filtered_result = [
             i for i in _strategy_data if i.volume_diff >= min_volume_diff
         ]
 
         return filtered_result
 
-    def strategy_output(self):
-        return self.strategy_filters()
+    def strategy_output(self) -> Tuple[AllNSEStocks, List[str]]:
+        result = self.strategy_filters()
+        telegram_cols = ["symbol", "pct_change", "volume_diff"]
+        return AllNSEStocks(dated=self.stocks.dated, symbols=result), telegram_cols

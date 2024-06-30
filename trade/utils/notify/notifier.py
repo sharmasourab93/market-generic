@@ -14,7 +14,7 @@ class Notifier:
         data: Any,
         telegram_signature: str = TELEGRAM_SIGNATURE,
         chat_id: str = getenv("TELEGRAM_CHATID", None),
-        telegram_token: str = getenv("GSHEET_KEY", None),
+        telegram_token: str = getenv("TELEGRAM_TOKEN", None),
         **kwargs,
     ) -> None:
         TelegramBot.communicate_data(

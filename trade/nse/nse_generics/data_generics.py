@@ -100,11 +100,7 @@ class NSEDataGeneric(ABC):
 
     @property
     def as_dict(self):
-        return {
-            "symbol": self.symbol,
-            "dated": self.dated,
-            **self.ohlc,
-        }
+        return {"symbol": self.symbol, "dated": self.dated, **self.ohlc}
 
     def get_history_data(self, period: str, interval: str) -> pd.DataFrame:
         # Assuming this to be at daily Timeframe.
@@ -148,14 +144,21 @@ class NSEDataGeneric(ABC):
             start=start_date.as_date,
             end=end_date.as_date,
             interval=self.tf,
+            threads=True,
+            concurrent=True,
         )
 
     def get_curr_bhav(self):
         curr_date = DateObj(self.dated, date_fmt=DATE_FMT)
-        start_date = curr_date - 4
+        start_date = curr_date - 365
         end_date = curr_date + 1
         result = self._get_result_data(start_date, end_date)
+        self._history = result
         self._set_values(result)
+
+    @property
+    def history(self) -> pd.DataFrame:
+        return self._history
 
     @property
     def ticker(self) -> Ticker:
@@ -209,7 +212,7 @@ class NSEDataGeneric(ABC):
         oc_data = self._config.get_option_chain_data(sym)
         month_year = self._config.working_day.as_month_year
         lot_size = self.lot_size
-        strike_multiple = self.strike_multiples[self.symbol]
+        strike_multiple = self.strike_multiples
         oc_obj = OptionChain.analyze_option_chain(
             self.symbol, self.dated, oc_data, lot_size, strike_multiple
         )
