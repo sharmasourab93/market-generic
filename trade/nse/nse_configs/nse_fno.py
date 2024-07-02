@@ -83,6 +83,9 @@ class NSEFNO(ABC):
             if month in data.keys():
                 return int(data[month])
 
+            if month.capitalize() in data.keys():
+                return int(data[month.capitalize()])
+
         raise KeyError(f"{ticker} or {month} not in NSE FO Lots List.")
 
     @timed_lru_cache(seconds=300)
