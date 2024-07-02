@@ -1,3 +1,4 @@
+from typing import Dict, List
 from trade.nse.nse_configs import DATE_FMT
 from trade.nse.stocks import AllNSEStocks
 from trade.strategies.scan import ScanStocks
