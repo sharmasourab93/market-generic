@@ -1,12 +1,12 @@
-from datetime import datetime, date
-from trade.nse.stocks import AllNSEStocks
+from datetime import date, datetime
+
 from trade.nse.nse_configs import DATE_FMT
-from trade.reports import StockReporter, IndexReport
+from trade.nse.stocks import AllNSEStocks
+from trade.reports import IndexReport, StockReporter
 
 
 def all_stocks():
-    return AllNSEStocks(dated=date.today().strftime(DATE_FMT),
-                        nse_top=1000)
+    return AllNSEStocks(dated=date.today().strftime(DATE_FMT), nse_top=1000)
 
 
 def index_reports():
