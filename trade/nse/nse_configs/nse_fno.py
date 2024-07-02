@@ -2,7 +2,7 @@ from abc import ABC
 from functools import cache, cached_property
 from io import BytesIO
 from typing import Dict, List, Union
-
+from datetime import datetime, timedelta
 import pandas as pd
 
 from trade.utils.op_utils import find_least_difference_strike, timed_lru_cache
@@ -77,7 +77,7 @@ class NSEFNO(ABC):
 
     def get_ticker_folots(self, ticker: str, month: str) -> int:
 
-        if ticker in self.get_fo_mktlots.values():
+        if ticker in self.get_fo_mktlots.keys():
             data = self.get_fo_mktlots[ticker]
             if month in data.keys():
                 return int(data[month])
@@ -85,7 +85,9 @@ class NSEFNO(ABC):
             if month.capitalize() in data.keys():
                 return int(data[month.capitalize()])
 
-        raise KeyError(f"{ticker} or {month} not in NSE FO Lots List.")
+        month = datetime.strptime(month, "%b-%y")
+        month = (month - timedelta(days=1)).strftime("%b-%y")
+        return self.get_ticker_folots(ticker, month)
 
     @timed_lru_cache(seconds=300)
     def get_derivative_quote(self, symbol: str) -> dict:
