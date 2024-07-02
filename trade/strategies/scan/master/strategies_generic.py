@@ -1,3 +1,4 @@
+import datetime
 from abc import ABC, abstractclassmethod, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Literal, Tuple, TypeVar, Union
@@ -5,6 +6,7 @@ from typing import Dict, List, Literal, Tuple, TypeVar, Union
 import pandas as pd
 
 from trade.calendar import WorkingDayDate
+from trade.nse.nse_configs import DATE_FMT
 from trade.nse.stocks import AllNSEStocks
 
 STRATEGY_TYPE = Literal[
@@ -14,29 +16,39 @@ HISTORICAL_DATASET = Dict[str, pd.DataFrame]
 Indicators = TypeVar("Indicators")
 INDICATORS = Union[List[Indicators], Tuple[Indicators]]
 
+dated = datetime.date.today().strftime(DATE_FMT)
+
 
 class StockScanMaster(ABC):
+    ENABLED = None
+
     def __init__(
-        self, strategy_name: str, strategy_type: STRATEGY_TYPE, dated: str, top: int
+        self,
+        data: AllNSEStocks,
+        strategy_name: str,
+        strategy_type: STRATEGY_TYPE,
+        top: int,
     ):
 
         self.__name__ = strategy_name
         self.__type__ = strategy_type
-        self.stocks = AllNSEStocks(dated, nse_top=top)
+        self.stocks = data[: len(data)]
 
     def filter_by_pct_change(
         self, pct_change: Union[float, int], compare: str = Literal["gt", "lt"]
     ):
 
-        match compare:
-            case "gt":
-                return self.stocks > pct_change
+        if isinstance(self.stocks, AllNSEStocks):
 
-            case "lt":
-                return self.stocks < pct_change
+            match compare:
+                case "gt":
+                    return self.stocks > pct_change
 
-            case _:
-                raise KeyError("Invalid comparator")
+                case "lt":
+                    return self.stocks < pct_change
+
+                case _:
+                    raise KeyError("Invalid comparator")
 
     def historical_data(self, period: str, interval: str) -> HISTORICAL_DATASET:
 
@@ -71,7 +83,6 @@ class StockScanMaster(ABC):
     def strategy_output(self):
         raise NotImplemented()
 
-    @property
-    def strategy_from_file_name(self) -> str:
+    def strategy_from_file_name(self, file_name: str) -> str:
 
-        return Path(__file__).name.replace("_", " ").capitalize()
+        return Path(file_name).name.replace("_", " ").replace(".py", "").title()

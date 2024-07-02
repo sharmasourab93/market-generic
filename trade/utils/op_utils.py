@@ -1,4 +1,6 @@
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from functools import lru_cache, wraps
+from os import cpu_count
 from re import compile, search
 from time import monotonic_ns
 from typing import List, Union
@@ -60,3 +62,17 @@ def calculate_pct_diff(
         return round(result, rounding)
 
     return result
+
+
+def concurrent_execution(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if kwargs.get("concurrent", False):
+            _ = kwargs.pop("concurrent") if "concurrent" in kwargs.keys() else None
+            with ThreadPoolExecutor(max_workers=1000) as executor:
+                return executor.submit(func, self, *args, **kwargs).result()
+
+        else:
+            return func(self, *args, **kwargs)
+
+    return wrapper

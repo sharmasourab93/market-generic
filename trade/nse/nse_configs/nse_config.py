@@ -35,6 +35,7 @@ TIMINGS = MarketTimings(
 TOP_BOTTOM_TYPE = Dict[str, Dict[str, float]]
 ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
 ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
+FII_DII_REPORT = List[Dict[str, str]]
 
 
 class NSEConfig(Exchange, NSEFNO):
@@ -139,7 +140,7 @@ class NSEConfig(Exchange, NSEFNO):
     def get_eq_bhavcopy(self) -> pd.DataFrame:
         headers = self.advanced_header
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
-        today = self.working_day.previous_business_day.as_str
+        today = self.working_day.curr_bday.as_str
         url = url.format(today)
         result = self.download_data(url, headers)
 
@@ -200,7 +201,7 @@ class NSEConfig(Exchange, NSEFNO):
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
         data = data.rename(columns={"tottrdqty": "volume", "prevclose": "prev_close"})
-        data["pct_change"] = round((data.close - data.prev_close) / data.prev_close, 2)
+        data["pct_change"] = (data.close - data.prev_close) / data.prev_close
         data = data.loc[
             :,
             [
@@ -260,6 +261,13 @@ class NSEConfig(Exchange, NSEFNO):
     def get_all_etfs(self):
 
         url = self.main_domain + self.etf_all
+        data = self.get_request_api(url, self.advanced_header).json()
+
+        return data
+
+    def get_fii_dii_report(self) -> FII_DII_REPORT:
+
+        url = self.main_domain + self.fii_dii_report
         data = self.get_request_api(url, self.advanced_header).json()
 
         return data

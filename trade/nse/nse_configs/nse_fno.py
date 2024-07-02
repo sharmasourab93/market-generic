@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import datetime, timedelta
 from functools import cache, cached_property
 from io import BytesIO
 from typing import Dict, List, Union
@@ -79,11 +80,15 @@ class NSEFNO(ABC):
 
         if ticker in self.get_fo_mktlots.keys():
             data = self.get_fo_mktlots[ticker]
-
             if month in data.keys():
                 return int(data[month])
 
-        raise KeyError(f"{ticker} or {month} not in NSE FO Lots List.")
+            if month.capitalize() in data.keys():
+                return int(data[month.capitalize()])
+
+        month = datetime.strptime(month, "%b-%y")
+        month = (month - timedelta(days=1)).strftime("%b-%y")
+        return self.get_ticker_folots(ticker, month)
 
     @timed_lru_cache(seconds=300)
     def get_derivative_quote(self, symbol: str) -> dict:
