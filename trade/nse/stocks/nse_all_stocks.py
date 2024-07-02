@@ -43,7 +43,7 @@ class AllNSEStocks(AllDataGenerics):
             self.nse_top = NSE_TOP
 
         self.set_config()
-        self.dated = self._config.working_day.previous_business_day.as_str
+        self.dated = self._config.working_day.curr_bday.as_str
         if self.symbols is None:
             self.symbols = self._config.get_nse_stocks(self.nse_top)
             self.symbols = asyncio.run(self.get_symbols_concurrently(self.symbols))
