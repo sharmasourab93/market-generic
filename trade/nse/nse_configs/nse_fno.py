@@ -79,7 +79,7 @@ class NSEFNO(ABC):
 
         if ticker in self.get_fo_mktlots.keys():
             data = self.get_fo_mktlots[ticker]
-
+            print(data)
             if month in data.keys():
                 return int(data[month])
 
