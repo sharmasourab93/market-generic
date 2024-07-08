@@ -3,7 +3,7 @@ from datetime import datetime
 from functools import cache
 from pathlib import Path
 from typing import Dict, List, Optional, Union
-
+from requests.exceptions import InvalidURL
 import pandas as pd
 
 from trade.calendar.calendar_data import (
@@ -142,7 +142,10 @@ class NSEConfig(Exchange, NSEFNO):
         url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
         today = self.working_day.curr_bday.as_str
         url = url.format(today)
-        result = self.download_data(url, headers)
+        try:
+            result = self.download_data(url, headers)
+        except InvalidURL:
+            raise FileNotFoundError(f"The following url isn't updated: {url}.")
 
         return result
 
