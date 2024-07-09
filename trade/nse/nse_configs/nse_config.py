@@ -37,6 +37,9 @@ ENABLE_TIME = bool(os.getenv("ENABLE_TIME", False))
 ENABLE_PROFILE = bool(os.getenv("ENABLE_PROFILE", False))
 FII_DII_REPORT = List[Dict[str, str]]
 
+# Reference: NSE Circular No.  62424
+NSE_BHAVCOPY_MOD_CIRCULAR_DATE = "05-Jul-2024"
+
 
 class NSEConfig(Exchange, NSEFNO):
     __metaclass__ = UtilityEnabler
@@ -138,10 +141,17 @@ class NSEConfig(Exchange, NSEFNO):
 
     @cache
     def get_eq_bhavcopy(self) -> pd.DataFrame:
-        headers = self.advanced_header
-        url = self.eq_bhavcopy["url"] + self.eq_bhavcopy["url_params"]
-        today = self.working_day.curr_bday.as_str
-        url = url.format(today)
+        today = self.working_day.curr_bday
+
+        if today < NSE_BHAVCOPY_MOD_CIRCULAR_DATE:
+            headers = self.advanced_header
+            url = self.eq_bhavcopy["prev_url"] + self.eq_bhavcopy["prev_url_params"]
+            url = url.format(today.as_str)
+        else:
+            url = self.eq_bhavcopy["url"]
+            url = url.format(today.as_format("%d%m%Y"))
+            headers = self.simple_headers
+
         try:
             result = self.download_data(url, headers)
         except InvalidURL:
@@ -187,7 +197,8 @@ class NSEConfig(Exchange, NSEFNO):
 
     def apply_nse_data_preprocessing(self, data) -> pd.DataFrame:
         data = data.loc[:, ~data.columns.str.contains("^Unnamed")]
-        data.columns = [i.lower() for i in data.columns]
+        data.columns = [i.lower().strip() for i in data.columns]
+        data.loc[:, "series"] = data.series.apply(lambda x: x.strip())
         data = data.loc[data.series == "EQ", :]
         data = self.apply_mcap(data)
         return data
@@ -203,7 +214,17 @@ class NSEConfig(Exchange, NSEFNO):
 
         data = self.get_eq_bhavcopy()
         data = self.apply_nse_data_preprocessing(data)
-        data = data.rename(columns={"tottrdqty": "volume", "prevclose": "prev_close"})
+        data = data.loc[~data.series.isna(), :]
+        rename_columns = {
+            "open_price": "open",
+            "high_price": "high",
+            "low_price": "low",
+            "last_price": "last",
+            "close_price": "close",
+            "ttl_trd_qnty": "volume",
+            "prevclose": "prev_close"
+        }
+        data = data.rename(columns=rename_columns)
         data["pct_change"] = (data.close - data.prev_close) / data.prev_close
         data = data.loc[
             :,

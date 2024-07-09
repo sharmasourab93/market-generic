@@ -191,8 +191,9 @@
                     "EQ-BHAVCOPY": {
                         "file_path": "data/input/downloaded/temp.zip",
                         "name": "EQ-BhavCopy",
-                        "url": "https://www.nseindia.com/api/reports?",
-                        "url_params": "archives=%5B%7B%22name%22%3A%22CM%20-%20Bhavcopy(csv)%22%2C%22type%22%3A%22archives%22%2C%22category%22%3A%22capital-market%22%2C%22section%22%3A%22equities%22%7D%5D&date={0}&type=equities&mode=single"
+                        "prev_url": "https://www.nseindia.com/api/reports?",
+                        "prev_url_params": "archives=%5B%7B%22name%22%3A%22CM%20-%20Bhavcopy(csv)%22%2C%22type%22%3A%22archives%22%2C%22category%22%3A%22capital-market%22%2C%22section%22%3A%22equities%22%7D%5D&date={0}&type=equities&mode=single",
+                        "url": "https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_{0}.csv"
                     },
                     "FO-MKLOTS": {
                         "domain": "https://nsearchives.nseindia.com",

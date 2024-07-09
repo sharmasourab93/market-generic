@@ -51,6 +51,9 @@ class DateObj:
     def __post_init__(self):
         self._formatted_date = datetime.strptime(self.raw_date, self.date_fmt).date()
 
+    def as_format(self, format: str) -> str:
+        return self._formatted_date.strftime(format)
+
     @property
     def as_date(self) -> datetime:
         return self._formatted_date
