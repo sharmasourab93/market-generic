@@ -3,8 +3,9 @@ from datetime import datetime
 from functools import cache
 from pathlib import Path
 from typing import Dict, List, Optional, Union
-from requests.exceptions import InvalidURL
+
 import pandas as pd
+from requests.exceptions import InvalidURL
 
 from trade.calendar.calendar_data import (
     MarketHolidayType,
@@ -222,7 +223,7 @@ class NSEConfig(Exchange, NSEFNO):
             "last_price": "last",
             "close_price": "close",
             "ttl_trd_qnty": "volume",
-            "prevclose": "prev_close"
+            "prevclose": "prev_close",
         }
         data = data.rename(columns=rename_columns)
         data["pct_change"] = (data.close - data.prev_close) / data.prev_close
